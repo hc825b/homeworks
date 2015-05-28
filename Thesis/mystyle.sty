@@ -1,0 +1,36 @@
+\ProvidesPackage{mystyle}
+
+\RequirePackage[noend]{algorithm2e} % For algorithm related environments
+
+\RequirePackage{newtxmath} % For math symbols and equations
+\RequirePackage{bussproofs} % For writing logic proof
+
+\RequirePackage{tikz} % For tikzpicture
+\usetikzlibrary{arrows,calc}
+
+\RequirePackage{varwidth} % Adjust text to fit in tikz node
+
+\RequirePackage{caption}
+\RequirePackage{subcaption} % For subfigure
+\captionsetup{compatibility=false}
+
+\RequirePackage{hyperref} % For hyperlinks, especially website links
+
+\RequirePackage{import}% For project structure
+
+\RequirePackage{multirow}
+
+% Some command aliases
+\newcommand{\hide}[1]{}%{#1}}
+\newcommand{\smallnode}[1]{{#1}}
+
+\newcommand{\fun}[1]{\mathtt{{#1}}}
+\newcommand{\TT}{\mathtt{true}}
+\newcommand{\FF}{\mathtt{false}}
+\newcommand{\assert}[1]{(\!| {#1} |\!)}
+
+% Environments 
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}

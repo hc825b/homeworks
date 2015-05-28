@@ -1,0 +1,42 @@
+
+\chapter{Introduction}\label{ch:introduction}
+
+Program verification is a grand challenge with significant impact in computer science.
+Its main difficulty is in great part due to complicated program features such as concurrent execution, \hide{of threads,} pointers, \hide{with unbounded heap size,} recursive function calls, \hide{with recursions,} and unbounded basic data types~\cite{ClarkeJS05}. Subsequently, it is extremely tedious to develop a verification algorithm that handles all features. Researches on program verification typically address some of these features and simplify others. Verification tools however are required to support as many features as possible. Since implementation becomes increasingly unmanageable with additional features, incorporating algorithms for all features in verification tools can be a nightmare for developers.
+
+One way to address the implementation problem is by reduction. If verifying a new feature can be transformed to existing features, development efforts can be significantly reduced.
+In this paper, we propose an algorithm to extend intraprocedure (recursion-free) program analyzers to verify recursive programs. Such analyzers supply an \emph{inductive invariant} when a program is verified to be correct and support program constructs such as assumptions, assertions, and nondeterministic values. Our algorithm transforms any recursive program into non-recursive ones and invokes an intraprocedure program analyzer to verify properties about the generated non-recursive programs. The verification results allow us to infer properties on the given recursive program.
+
+Our algorithm proceeds by iterations. In each iteration, it transforms the recursive program into a non-recursive program that \emph{under-approximates} the behaviors of the original and sends the under-approximation to an intraprocedure program analyzer. If the analyzer verifies the under-approximation, purported \emph{function summaries} for recursive functions are computed. Our algorithm then transforms the original recursive program into more non-recursive programs with purported function summaries. It finally checks if purported function summaries are correct by sending these non-recursive programs to the analyzer.
+
+Compared with other analysis algorithms for recursive programs, our approach is very lightweight. It only performs syntactic transformation and requires standard functionalities from underlying intraprocedure program analyzers. Moreover, our technique is very modular. Any intraprocedural analyzer providing proofs of inductive invariants can be employed in our algorithm. With the interface between our algorithm and program analyzers described here, incorporating recursive analysis with existing program analyzers thus only requires minimal implementation efforts. Recursive analysis hence benefits from future advanced intraprocedural analysis with little cost through our~lightweight and~modular~technique. 
+
+We implement a prototype using \textsc{CPAChecker} (over 140 thousand lines of \textsc{Java} code) as the underlying program analyzer~\cite{BeyerK11}. In our prototype, 1256 lines of \textsc{OCaml} code are for syntactic transformation and 705 lines of \textsc{Python} code for the rest of the algorithm. 270 lines among them are for extracting function summaries. Since syntactic transformation is independent of underlying program analyzers, only about 14\% of code need to be rewritten should another analyzer be employed. We compare it with program analyzers specialized for recursion in experiments. Although \textsc{CPAChecker} does not support recursion, our prototype scores slightly better than the second-place tool \textsc{Ultimate Automizer} on the benchmarks in the 2014 Competition on Software Verification~\cite{svcomp14}. 
+
+\hide{
+Notice that in order to simplify the implementation effort, we turned off important optimizations such as adjust block encoding provided in \textsc{CPAChecker}, the performance of the prototype can be even better with those optimizations turned on.
+}
+\hide{
+\noindent
+\textbf{Related Works.}
+In~\cite{LalR08,LalR09}, a reduction technique for checking context-bounded concurrent programs to sequential analysis is developed. Numerous intraprocedural analysis techniques have been developed over the years. Many tools are in fact freely available (see, for instance, \textsc{Blast}~\cite{BeyerHJM07}, \textsc{CPAChecker}~\cite{BeyerK11}, and \textsc{UFO}~\cite{AlbarghouthiLGC12}). Interprocedural analysis techniques are also available (see~\cite{RepsHS95,BallR01,CousotCFMMMR05,CuoqKKPSY12,coverity,polyspace} for a hopelessly incomplete list). Recently, recursive analysis attracts new attention. The Competition on Software Verification adds a new category for recursive programs in 2014~\cite{svcomp14}. Among the participants, \textsc{CBMC}~\cite{ClarkeKL04}, \textsc{Ultimate Automizer}~\cite{HeizmannCDEHLNSP13}, and \textsc{Ultimiate Kojak}~\cite{ErmisNDHP14} are the top three tools for the recursive category. Our work is inspired by \textsc{Whale}~\cite{AlbarghouthiGC12}. Similar to \textsc{Whale}, we apply a Hoare logic proof rule for recursive calls. However, our technique works on control flow graphs and builds on an intraprocedural analysis tool. It is hence very lightweight and modular. Better intraprocedural analysis tools easily give better recursive analysis through our technique. \textsc{Whale}, on the other hand, analyzes by exploring abstract reachability graphs. Since \textsc{Whale} extends summary computation and covering relations for recursion, its implementation is more involved. Although \textsc{Whale} is able to analyze recursive program in theory, its implementation does not appear to support this feature.
+}
+\noindent
+\textbf{Organization:} Preliminaries are given in Chapter~\ref{ch:preliminaries}. We give an overview of our technique in Chapter~\ref{ch:overview}. Technical contributions are presented in Chapter~\ref{ch:proving-via-transformation}. Chapter~\ref{ch:experiments} reports experimental results. Chapter~\ref{ch:related} describes related works.
+Finally, some insights and improvements are discussed in Chapter~\ref{ch:conclusion}.
+
+\hide{
+Difference compared with Whale
+In general, Whale tries to extend Lazy Abstraction to verify interprocedual program.
+It mainly constructs an iARG with path conditions that can encode function calls and check for reachability of bug.
+Also it introduces an extended covering relation over summaries of function calls to deal with recursion.
+Our work, however, uses bounded times of unwinding to construct paths across functions,
+and we find reasonable summaries for recursive functions when proving safety of program.
+
+For guessing summaries, both Whale and our work use under-approximation of function calls.
+In Whale, the under-approximation of a function call is constructed through exploring paths without function call in the called function.
+In our work, the function call is unwinded and transformed, and the exploration is achieved by the program analyzer we used.
+With our method, we can create more precise under-approximation by unwinding more times before tranforming.
+
+For proving summaries, Whale and our work apply the Hoare rule of recursion. Whale defines the covering relation between summaries upon Hoare rule of consequence for proving. Our work, in other way, directly proves by the used program analyzer.
+}

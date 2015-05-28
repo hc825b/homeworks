@@ -1,0 +1,119 @@
+
+\section{Unwinding}\label{sec:unwinding}
+As introduced in Chapter~\ref{ch:overview}, our algorithm produces more and more accurate under-approximations through unwinding the program.
+The function $\textsc{unwind}(G^\fun{f})$ not only returns a CFG $K^\fun{f}$ obtained by replacing all function call edges in $G^\fun{f}$ with the CFG of the called function, but also keeps the program behavior of $K^\fun{f}$ be the same as the behavior of $G^\fun{f}$ (Figure~\ref{figure:unwinding}). The formal definition is given below.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (-4, -2) {$\ell'$};
+
+      \draw [fill=gray!10] (4, -1) ellipse (1.8 and 1.5);
+      \node (text) at (4, -1) {$\textsc{rename}(G_\fun{g},i)$};
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+      \node[node] (10) at (4, 0)  {\smallnode{$s_i$}};
+      \node[node] (11) at (4, -2) {\smallnode{$e_i$}};
+      \node (arrow_s) at (-2.5, -1) {};
+      \node (arrow_e) at (-0.5, -1) {};
+
+      \path
+        (arrow_s) edge [dotted]
+                  node {} (arrow_e)
+        (0) edge 
+            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$} (1)
+
+        (00) edge 
+             node {$\overline{\mathtt{u}}_i^\fun{g} := \overline{p}$} (10)
+
+        (11) edge 
+             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}_i^\fun{g}}$} (01) ;
+    \end{tikzpicture}
+
+  \caption{Unwinding Function Calls}
+  \label{figure:unwinding}
+\end{figure}
+
+We first define the function $\textsc{rename}(G^\fun{f},i)$. It returns a CFG obtained by first replacing every return command $\mathtt{return}\ \overline{q}$ with assignments to return variables $\overline{\texttt{r}}^\fun{f} := \overline{q}$ and then renaming all variables and locations in $G^\fun{f}$ with the given index value $i$. The function $\textsc{addindex}(c, i)$ is used to rename all variable occurrences with index $i$ in a command $c$. Formally,
+\[
+\begin{array}{l}
+\textsc{rename}(\langle V, E,\textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle,i) = \langle V_i, E_i,\textmd{cmd}_i^\fun{f},
+\overline{\texttt{u}}_i^\fun{f}, \overline{\texttt{r}}_i^\fun{f},s_i,e_i \rangle \text{ such that}\\
+V_i = \{\ell_i:\ell \in V\} \\
+E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
+\textmd{cmd}_i^\fun{f}(\ell_i,\ell'_i) = 
+  \left\{
+  \begin{array}{ll}
+   \textsc{addindex}(\overline{\texttt{r}}^\fun{f}:=\overline{q}, i) &\text{if } \textmd{cmd}^\fun{f}(\ell,\ell') = \mathtt{return}\  \overline{q} \\
+   \textsc{addindex}(\textmd{cmd}^\fun{f}(\ell,\ell'), i) &\text{otherwise}
+  \end{array}
+  \right.
+\end{array}
+\]
+Detail of $\textsc{addindex}(c, i)$ is not described here for simplicity.
+
+Then, given a CFG $G^\fun{f}=\langle
+V, E,\textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
+we use $\hat{E} =\{(\ell, \ell')\in E: \textmd{cmd}^\fun{f} (\ell,\ell')= (\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{idx}(e)$ that maps a call edge $e$ to a unique index value.
+\hide{ % TODO
+The predicate below then can be used to c a renamed CFG $\textsc{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
+\[
+\begin{split}
+{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\textsc{idx}(\ell, \ell')=i  \\
+  \wedge \textsc{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
+\end{split}
+\]
+}
+Finally, we provide the formal definition of $\textsc{unwind}(G^\fun{f})$.
+\todo[inline]{The definition of \textmd{cmd}is not complete}
+\[
+\begin{array}{l}
+\textsc{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ such that} \\
+
+\begin{split}
+ V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\textsc{idx}(\ell, \ell')=i  \\
+  \wedge \textsc{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
+\end{split}\\
+
+\begin{split}
+ E_u = E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s_i),(e_i, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p})) \\
+  \wedge \textsc{idx}(\ell, \ell')=i \wedge \textsc{rename}(G^\fun{g},i) =
+\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \} 
+\end{split}\\
+
+\textmd{cmd}_u^\fun{f} (\ell, \ell') =
+\left\{
+  \begin{array}{ll}
+  (\overline{\texttt{u}}_i:=\overline{p}) &\text{if } (\ell,\ell')=(\ell,s_i)
+  \\
+  (\overline{\texttt{x}}:=\overline{\texttt{r}}^\fun{g}_i) &\text{if } (\ell,\ell')=(e_i,\ell') \\
+  \textmd{cmd}^\fun{g}_i(\ell, \ell') &\text{if } (\ell, \ell') \in E_i \\
+  \textmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
+  \end{array}
+\right.
+
+\end{array}
+\]
+
+%$\textsc{unwind}(G) = \langle
+%V', E' \rangle$ such that 
+%(1) For all edges $(\ell, \ell')\in E$ with $\textmd{cmd} (\ell, \ell')=$
+
+
+We first define the function \(\textsc{duplicate}(Prog, \fun{rec},i)\). to produce a copy of the given function $\fun{f}$.
+\begin{equation*}
+  \textsc{duplicate}(\langle \mathbf{pname},main,\fun{body}\rangle, \fun{rec},i) 
+    = \langle \mathbf{pname}\cup\{rec_1, rec_2\dotsc rec_i\},main,\fun{body}\rangle
+\end{equation*}
+
+
+
+\begin{proposition}
+  Let $G^\fun{f}$ be a control flow graph. $P$ and $Q$ are logic formulae with
+  free variables over program variables of $G^\fun{f}$. $\assert{P}\ G^\fun{f}\ 
+  \assert{Q}$ if and only if $\assert{P}\ \textsc{unwind} (G^\fun{f})\ \assert{Q}$.
+\end{proposition}
+Essentially, $G^\fun{f}$ and $\textsc{unwind} (G^\fun{f})$ represent the same function $\fun{f}$. The only difference is that the latter has more program variables after unwinding, but this does not affect the states over program variables of $G^\fun{f}$ before and after the function.

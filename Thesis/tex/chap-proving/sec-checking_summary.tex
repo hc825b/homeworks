@@ -1,0 +1,155 @@
+
+\section{Checking Summaries}\label{sec:checking-summary}
+
+Here we explain how to handle the function $\textmd{CheckSummary} (P_k, S[\bullet])$, where $P_k$ is an unwound program and $S[\bullet]$ is an
+array of function summaries.
+Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
+control flow graph for the function $\fun{f}$ in $P_k$. In order to check whether the function
+summary $S[{\mathtt{f}}]$ for $\mathtt{f}$ specifies the relation 
+between the formal parameters and return values of $\mathtt{f}$, 
+we define another control flow graph
+$\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
+\begin{equation*}
+\hspace{-0.2cm}
+  \begin{array}{rcl}
+    \hat{\textmd{cmd}}^\fun{f} (\ell, \ell') & = &
+    \left\{
+      \begin{array}{ll}
+        \overline{\mathtt{x}} := 
+        \overline{\mathtt{nondet}};
+        \mathtt{assume\ }S[{\mathtt{g}}][
+        \mathtt{\overline{u}^g} \mapsto \overline{p},
+        \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]    
+        &
+        \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = 
+        \overline{\mathtt{x}} := \mathtt{g} (\overline{p})\\
+		\mathtt{\overline{r}}^\fun{f} := \overline{q}
+        &
+        \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = \mathtt{return\ }
+        \overline{q}\\
+        \textmd{cmd}^\fun{f} (\ell, \ell')
+        &
+		\textmd{ otherwise}        
+      \end{array}
+    \right.
+  \end{array}
+\end{equation*}
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+
+      \node (arrow_s0) at ( .3, -1) {};
+      \node (arrow_e0) at (1.3, -1) {};
+
+      \node[node] (10) at (1.6, 0)  {$\ell$};
+      \node[node] (11) at (1.6, -2) {$\ell'$};
+
+      \node[node] (20) at (7.4, 0)  {$\ell$};
+      \node[node] (21) at (7.4, -2) {$\ell'$};
+
+      \node (arrow_s1) at (7.8, -1) {};
+      \node (arrow_e1) at (8.7, -1) {};
+
+      \node[node] (30) at (9, 0)  {$\ell$};
+      \node[node] (31) at (9, -2) {$\ell'$};
+
+      
+      \path
+        (00) edge [left]
+             node {$\overline{\mathtt{x}} := \mathtt{g}(\overline{p})$} (01)
+
+        (arrow_s0) edge [dotted]
+                  node {} (arrow_e0)
+
+        (10) edge
+             node {$
+               \begin{array}{l}
+                 \overline{\mathtt{x}} := \overline{\mathtt{nondet}};\\
+                 \mathtt{assume\ }S[\mathtt{g}]
+                 [\mathtt{\overline{u}^g} \mapsto \overline{p},
+                  \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]
+               \end{array}
+             $} (11)
+
+        (20) edge [left]
+             node {$\mathtt{return\ } \overline{q}$} (21) 
+
+        (arrow_s1) edge [dotted]
+                  node {} (arrow_e1)
+
+        (30) edge 
+             node {$\mathtt{\overline{r}} := \overline{q}$} (31) 
+             ;
+    \end{tikzpicture}
+
+  \caption{Instantiating a Summary}
+  \label{figure:instantiating-summary}
+\end{figure}
+
+The control flow graph $\hat{G}^{\fun{f}}_{k,S}$ replaces every
+function call in $G_k^\fun{f}$ by instantiating a function
+summary (Figure~\ref{figure:instantiating-summary}).
+Using the Hoare Logic proof rule for recursive functions~\cite{Oheimb99}, we have the
+following proposition:
+\begin{proposition}
+  \label{proposition:check_summary}
+  Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
+  $\mathtt{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
+  parameters and return variables of each function. If $\assert{\TT}\
+  \hat{G}^\fun{g}_{k,S}\ \assert{S[\mathtt{g}]}$ for every
+  function $\mathtt{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  \fun{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$.
+\end{proposition}
+
+It is easy to check $\assert{\TT}\ \hat{G}^\fun{g}_{k,S}\
+\assert{S[\mathtt{g}]}$ by program analysis. Let $G_k^{\mathtt{f}}$ be
+the control flow graph for the function $\mathtt{f}$ and
+$\hat{G}^\fun{g}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ as
+above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
+\langle \tilde{V}, \tilde{E}, \tilde{\textmd{cmd}}^\fun{f} , \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
+\begin{equation*}
+  \begin{array}{rcl}
+    \tilde{V} & = & V \cup \{ \tilde{e} \}\\
+    \tilde{E} & = & E \cup \{ (e, \tilde{e}) \}\\
+    \tilde{\textmd{cmd}}^\fun{f} (\ell, \ell') & = &
+    \left\{
+      \begin{array}{ll}
+        \hat{\textmd{cmd}}^\fun{f} (\ell, \ell') & 
+        \textmd{ if } (\ell, \ell') \in E\\
+        \mathtt{assert\ } S[\mathtt{f}] &
+        \textmd{ if } (\ell, \ell') = (e, \tilde{e})
+      \end{array}
+    \right.
+  \end{array}
+\end{equation*}
+
+\begin{corollary}
+  Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
+  $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
+  parameters and return variables of each function. If $\textsc{BasicChecker}
+  (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
+  $\fun{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\mathtt{f}]}$.
+  \label{corollary:check-summary}
+\end{corollary}
+
+\begin{algorithm}[t]
+  \KwIn{$P_k$ : an unwound program; $S[\bullet]$ : an array of function summaries}
+  \KwOut{$\TT$ if all function summaries are valid; $\FF$ otherwise}
+  \ForEach{function $G_k^\fun{g} \in P_k$}
+  {
+    \lIf{$\textsc{BasicChecker} (\tilde{G}_{k,S}^{\fun{g}}) \neq
+      \mathit{Pass}$}
+    {
+      \Return $\FF$
+    }
+  }
+  \Return $\TT$\;
+  \caption{$\textmd{CheckSummary} (P_k, S)$}
+  \label{algorithm:check-summary}
+\end{algorithm}

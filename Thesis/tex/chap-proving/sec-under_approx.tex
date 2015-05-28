@@ -1,0 +1,56 @@
+
+
+\section{Under-approximation}\label{sec:under-approximation}
+
+Let $G^\fun{f} = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow
+graph. The control flow graph $\underline{G}^\fun{f} = \langle V, E,
+\underline{\textmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every
+function call in $G$ with $\mathtt{assume\ false}$
+(Figure~\ref{figure:under-approximation}). That is,
+\begin{equation*}
+  \underline{\textmd{cmd}}^\fun{f} (\ell, \ell') =
+  \left\{
+    \begin{array}{ll}
+      \textmd{cmd}^\fun{f} (\ell, \ell') & 
+      \textmd{if } \textmd{cmd}^\fun{f} (\ell, \ell') 
+      \textmd{ does not contain function calls}\\
+      \mathtt{assume\ false} &
+      \textmd{otherwise}
+    \end{array}
+  \right.
+\end{equation*}
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+
+      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (-4, -2) {$\ell'$};
+
+      \node[node] (00) at (0, 0)  {$\ell$};
+      \node[node] (01) at (0, -2) {$\ell'$};
+      \node (arrow_s) at (-2.5, -1) {};
+      \node (arrow_e) at (-0.5, -1) {};
+
+      \path
+        (arrow_s) edge [dotted]
+                  node {} (arrow_e)
+        (0) edge 
+            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$} (1)
+
+        (00) edge 
+             node {$\mathtt{assume\ false}$} (01);
+    \end{tikzpicture}
+
+  \caption{Under-approximation}
+  \label{figure:under-approximation}
+\end{figure}
+
+\begin{proposition}
+  Let $G^\fun{f}$ be a control flow graph. $P$ and $Q$ are logic formulae with
+  free variables over program variables of $G^\fun{f}$. If $\assert{P}
+  G^\fun{f} \assert{Q}$, then 
+  $\assert{P} \underline{G}^\fun{f} \assert{Q}$.
+\end{proposition}
+The above holds because the computation of $\underline{G}^\fun{f}$ under-approximates the computation of $G^\fun{f}$. If all computation of $G^\fun{f}$ from a state satisfying $P$ always ends with a state satisfying $Q$, the same should also hold for the computation of $\underline{G}^\fun{f}$.

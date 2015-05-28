@@ -1,0 +1,85 @@
+%%!TEX encoding = UTF-8 Unicode
+
+\documentclass[oneside]{ntuthesis}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{mystyle}
+
+%% TODO remove this package after finishing editing
+\usepackage{todonotes}
+
+% Type your personal information
+%% Chinese
+%\setUniversityZH  {國立臺灣大學} 
+\setCollegeZH     {電機資訊學院}
+\setInstituteZH   {電子工程學研究所}
+\setThesisTypeZH  {碩士論文}
+\setTitleZH       {我的論文}
+\setAuthorZH      {謝~橋}
+\setAdvisorNameZH {王~凡}
+\setAdvisorTitleZH{博士}
+%\setGradYearZH    {104} % The date is generated using \today
+%\setGradMonthZH   {6}   % You can un-comment and specify the date
+
+%% English
+%\setUniversityEN  {National Taiwan University}
+\setCollegeEN     {College of Electrical Engineering and Computer Science}
+\setInstituteEN   {Graduate Institute of Electronics Engineering}
+\setThesisTypeEN  {Master Thesis}
+\setTitleEN       {My Thesis}
+\setAuthorEN      {Hsieh, Chiao}
+\setAdvisorNameEN {Farn Wang}
+\setAdvisorTitleEN{Ph.D.}
+%\setGradYearEN    {2015} % The date is generated using \today
+%\setGradMonthEN   {June} % You can un-comment and specify the date
+
+%% For partial compilation
+%\includeonly{tex/ch_introduction, tex/ch_preliminaries}
+
+\begin{document}
+\begin{CJK*}{UTF8}{bkai}
+
+\frontmatter
+\maketitle   % Generate title page
+
+\begin{doublespace}
+\include{tex/acknowledgements}
+\end{doublespace}
+
+\begin{onehalfspace}
+\include{tex/abstractZH}
+\end{onehalfspace}
+
+\begin{doublespace}
+\include{tex/abstractEN}
+\end{doublespace}
+
+\begin{doublespace}
+\tableofcontents
+\listoffigures
+\listoftables
+\end{doublespace}
+
+
+\mainmatter
+\begin{doublespace}
+\include{tex/ch-introduction}
+\include{tex/ch-preliminaries}
+\include{tex/ch-overview}
+\subimport*{tex/}{ch-proving}
+\include{tex/ch-experiments}
+\include{tex/ch-related}
+\include{tex/ch-conclusion}
+\end{doublespace}
+
+\backmatter
+% Bibliography
+\begin{doublespace}
+\bibliographystyle{plain}
+\bibliography{bib/proceedings,bib/inproceedings,bib/articles,bib/books}
+\addcontentsline{toc}{chapter}{\bibname}
+\end{doublespace}
+
+\end{CJK*}
+\end{document}

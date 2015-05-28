@@ -1,0 +1,70 @@
+
+\section{Correctness}\label{sec:correctness}
+
+We are ready to sketch the proof of Theorem~\ref{theorem:soundness}. 
+Assume Algorithm~\ref{algorithm:overview} returns $\mathit{Pass} (\Pi (\underline{G}^{\fun{main}}_k, \TT))$ and $S[\bullet]$ on the input control flow graph $G^\fun{main} =
+\langle V, E, \textmd{cmd}^\fun{main}, \overline{\mathtt{u}}^\fun{main}, \overline{\mathtt{r}}^\fun{main},s,e \rangle$. Let $\underline{G}^{\fun{main}}_k = \langle \underline{V}_k, \underline{E}_k,
+\underline{\textmd{cmd}}_k^\fun{main} , \overline{\mathtt{u}}^\fun{main}, \overline{\mathtt{r}}^\fun{main},s,e \rangle$ and $\Pi (\underline{G}^{\fun{main}}_k, \TT) = \{ \underline{I}_{\ell}
+: \ell \in \underline{V}_k \}$. By the definition of inductive invariants, we have
+$\assert{\underline{I}_{\ell}}\ \underline{\textmd{cmd}}_k^\fun{main} (\ell, \ell')\ \assert{\underline{I}_{\ell'}}$
+for every $(\ell, \ell') \in  \underline{E}_k$. Moreover, $V \subseteq  \underline{V}_k$ since
+$\underline{G}^{\fun{main}}_k$ is obtained by unwinding $G^\fun{main}$. Define 
+$\Gamma (G^\fun{main}, \mathtt{true}) = \{ \underline{I}_{\ell} \in \Pi (\underline{G}^{\fun{main}}_k,
+\mathtt{true}) : \ell \in V \}$. We claim $\Gamma (G^\fun{main}, \mathtt{true})$
+is in fact an inductive invariant for $G^\fun{main}$. 
+
+Let $\hat{E} = \{ (\ell, \ell') \in E : \textmd{cmd}^\fun{main} (\ell, \ell') =
+\overline{\mathtt{x}} := \mathtt{f} (\overline{p}) \}$. We have
+$\textmd{cmd}^\fun{main} (\ell, \ell') = \underline{\textmd{cmd}}_k^\fun{main} (\ell, \ell')$ for every
+$(\ell, \ell') \in E \setminus \hat{E}$. Thus $\assert{\underline{I}_{\ell}}\
+\textmd{cmd}^\fun{main} (\ell, \ell')\ \assert{\underline{I}_{\ell'}}$ for every $(\ell,
+\ell') \in E \setminus \hat{E}$ by the definition of $\Gamma (G,
+\mathtt{true})$ and the inductiveness of $\Pi (\underline{G}^{\fun{main}}_k,
+\mathtt{true})$. It suffices to show that
+\begin{equation*}
+  \assert{\underline{I}_{\ell}}\
+  \overline{\mathtt{x}} := \mathtt{f} (\overline{p})
+  \ \assert{\underline{I}_{\ell'}}
+  \hspace{0.5em}
+  \textmd{or, equivalently,}
+  \hspace{0.5em}
+  \assert{\underline{I}_{\ell}}\ 
+  \overline{\mathtt{u}}^\fun{f} := \overline{p};\ 
+  \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f});\ 
+  \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}
+  \ \assert{\underline{I}_{\ell'}}
+\end{equation*}
+for every $(\ell, \ell') \in \hat{E}$. 
+By the inductiveness of $\Pi (\underline{G}^{\fun{main}}_k, \mathtt{true})$, we have
+$\assert{\underline{I}_{\ell}}\ \overline{\mathtt{u}}^\fun{f} := \overline{p}\
+\assert{\underline{I}_{s_k^\fun{f}}}$ and
+$\assert{\underline{I}_{e_k^\fun{f}}}\ \overline{\mathtt{x}} :=
+\mathtt{\overline{r}}^\fun{f}\ \assert{\underline{I}_{\ell'}}$. 
+Moreover,
+$\assert{\underline{I}_{s_k^\mathtt{f}}}\
+\mathtt{\overline{r}}^\fun{f} := \mathtt{f}
+(\overline{\mathtt{u}}^\fun{f})\ \assert{\underline{I}_{e_k^\fun{f}}}$ 
+by Proposition~\ref{propposition:strengthen_postcondition} and \ref{proposition:check_summary}.
+Therefore
+\begin{prooftree}
+  \AxiomC{$\assert{\underline{I}_{\ell}}\
+    \overline{\mathtt{u}}^\fun{f} := \overline{p}\ 
+    \assert{\underline{I}_{s_k^\fun{f}}}$}
+
+  \AxiomC{$\assert{\underline{I}_{s_k^\fun{f}}}\ 
+    \mathtt{\overline{r}}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ 
+    \assert{\underline{I}_{e_k^\fun{f}}}$}
+
+  \AxiomC{$\assert{\underline{I}_{e_k^\fun{f}}}\ 
+    \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}\ 
+    \assert{\underline{I}_{\ell'}}$}
+
+  \TrinaryInfC{$\assert{\underline{I}_{\ell}}\ 
+    \overline{\mathtt{u}}^\fun{f} := \overline{p};\ 
+    \mathtt{\overline{r}^\fun{f} := \mathtt{f} (\overline{\mathtt{u}}^\fun{f});\ 
+    \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}}\ 
+    \assert{\underline{I}_{\ell'}}$}
+  \UnaryInfC{$\assert{\underline{I}_{\ell}}\ 
+    \overline{\mathtt{x}} := \mathtt{f} (\overline{p})\ 
+    \assert{\underline{I}_{\ell'}}$}
+\end{prooftree}

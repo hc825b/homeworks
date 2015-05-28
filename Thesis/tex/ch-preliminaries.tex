@@ -1,0 +1,217 @@
+
+\chapter{Preliminaries}\label{ch:preliminaries}
+
+
+\section{Programming Language}\label{sec:model}
+
+We consider a variant of the WHILE language from~\cite{NielsonHC99}:
+\begin{equation*}
+  \begin{array}{rccll}
+    \mathtt{Expression} & \ni p & ::= &
+    \mathtt{x} & \mathtt{x} \in \mathtt{Vars}\\
+    & & \mid &
+    \mathtt{false}\ \mid\ \mathtt{true}\ \mid\ 
+    \mathtt{0}\ \mid\ \mathtt{1}\ \mid\ \ldots\hspace{5mm} &
+    \textmd{constant}\\
+    & & \mid &
+    \mathtt{nondet} & \textmd{nondeterministic value}\\
+    & & \mid &
+    \mathtt{f}(\overline{p}) &
+    \textmd{function invocation}\\
+    & & \mid &
+    p \odot p  & \odot \in \{ +, -, =, >, \mathtt{and}, \mathtt{or} \}\\
+    & & \mid & \mathtt{not}\ p\\
+    \mathtt{Command} & \ni c & ::= &
+    \overline{\mathtt{x}} := \overline{p}
+    & \textmd{assignment}\\
+    & & \mid &
+    c\mathtt{;}\ c &
+    \textmd{sequential composition}\\
+    & & \mid &
+    \mathtt{return}\ \overline{p} & \textmd{function return}\\
+    & & \mid &
+    \mathtt{assume}\ p & \textmd{assumption}\\
+    & & \mid &
+    \mathtt{assert}\ p & \textmd{assertion}
+  \end{array}
+\end{equation*}
+$\mathtt{Vars}$ denotes the set of \emph{program variables}, and 
+$\mathtt{Vars}' = \{ \mathtt{x}' : \mathtt{x} \in \mathtt{Vars} \}$
+where $\mathtt{x}'$ represents the new value of $\mathtt{x}$ after
+execution of a command.
+%Let $t_i$ denote the $i$-th element in the sequence $\overline{t}$.
+The $\mathtt{nondet}$ expression evaluates to a type-safe
+nondeterministic value.
+Simultaneous assignments are allowed in our language. To
+execute a simultaneous assignment, all expressions on the right hand
+side are first evaluated and then assigned to respective variables. 
+We assume that simultaneous assignments are type-safe in the sense that the number of variables on the left-hand-side always matches that of the right-hand-side.
+The $\mathtt{return}$ command accepts several expressions as arguments.
+Together with simultaneous assignments, functions can have several
+return values. 
+
+A function $\fun{f}$ is represented as a \emph{control flow graph
+  (CFG)} $G^{\fun{f}} = \langle V, E, \textmd{cmd}^{\fun{f}},
+\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
+e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
+\subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
+E$ is labeled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
+The special $\mathtt{main}$ function specifies where a program starts.
+To simplify presentation, we assume the functions in a program use disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there are no global variables because they can be simulated by allowing simultaneous assignment to return variables~\cite{BallR00}. 
+
+Figure~\ref{figure:mccarthy91} shows control flow graphs for the
+McCarthy 91 program from~\cite{MannaP70}. The $\mathtt{main}$ function assumes the
+variable $\mathtt{n}$ is non-negative. It then checks if the result
+of $\mathtt{mc91(n)}$ is no less than 90
+(Figure~\ref{figure:mccarthy91:main}). The $\mathtt{mc91}$ function
+branches on whether the variable $\mathtt{m}$ is greater than 100. If
+so, it returns $\mathtt{m} - 10$. Otherwise, 
+$\mathtt{mc91(m)}$ stores the result of $\mathtt{mc91(m + 11)}$
+in $\mathtt{s}$, and returns the result of $\mathtt{mc91(s)}$
+(Figure~\ref{figure:mccarthy91:mc91}). Observe that a conditional
+branch is modeled with the $\mathtt{assume}$ command in the
+figure. Loops can be modeled similarly.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{.35\textwidth}
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \node[node] (0) at (0, 0) {$s$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (1) at (0, -1) {$1$};
+      \node[node] (2) at (0, -2) {$2$};
+      \node[node] (3) at (0, -3) {$3$};
+      \node[node] (4) at (0, -4) {$e$};
+
+      \path
+        (0) edge 
+            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+        (1) edge 
+            node [left] {$\mathtt{r := mc91(n)}$} (2)
+        (2) edge 
+            node [left] {$
+              \begin{array}{l}
+                \mathtt{assert\ {[}r = 91\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ (n > 101\ and\ \ }\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ \ r = n - 10){]}}
+              \end{array}$} (3) 
+        (3) edge 
+            node [left] {$\mathtt{return\ 0}$} (4);
+    \end{tikzpicture}
+    \caption{$\mathtt{main}$}
+    \label{figure:mccarthy91:main}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{.6\textwidth}
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \node[node] (0) at ( 0,  0) {$s$}; %[label=above:$\mathtt{mc91(n)}$]
+      \node[node] (1) at (-1, -2) {$1$};
+      \node[node] (2) at ( 1, -0.8) {$2$};
+      \node[node] (3) at ( 1, -2) {$3$};
+      \node[node] (4) at ( 1, -3.2) {$4$};
+      \node[node] (5) at ( 0, -4) {$e$};
+
+      \path
+        (0) edge [bend right=30]
+            node [left] {$\mathtt{assume\ m > 100}$} (1)
+            edge [bend left=30]
+            node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
+        (1) edge [bend right=30]
+            node [left] {$\mathtt{return\ m - 10}$} (5)
+        (2) edge 
+            node [right] {$\mathtt{s := mc91(m + 11)}$} (3)
+        (3) edge 
+            node [right] {$\mathtt{t := mc91(s)}$} (4)
+        (4) edge [bend left=30]
+            node [right] {$\mathtt{return\ t}$} (5);
+    \end{tikzpicture}
+    \caption{$\mathtt{mc91}$}
+    \label{figure:mccarthy91:mc91}
+  \end{subfigure}
+  \caption{McCarthy 91}
+  \label{figure:mccarthy91}
+\end{figure}
+
+%\todo{definitions of accessible variables, program states}
+Let $G^{\fun{f}} = \langle V, E ,\textmd{cmd}^{\fun{f}},
+\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,
+e \rangle$ be a CFG. An \emph{inductive invariant} $\Pi (G^{\fun{f}},
+I_0) = \{ I_\ell : \ell \in V \}$ for $G^{\fun{f}}$ from $I_0$ is a
+set of first-order logic formulae such that $I_s = I_0$, and
+for every $(\ell, \ell') \in E$ 
+\begin{equation*}
+I_{\ell} \wedge \tau_{\textmd{cmd}^\fun{f}(\ell, \ell')} \implies I'_{\ell'}
+\end{equation*}
+where $I'$ is obtained by replacing every $\mathtt{x} \in
+\mathtt{Vars}$ in $I$ with $\mathtt{x}' \in \mathtt{Vars}'$, and
+$\tau_{\textmd{cmd}^\fun{f} (\ell, \ell')}$ specifies the semantics of the command
+$\textmd{cmd}^\fun{f} (\ell, \ell')$. An inductive invariant $\Pi
+(G^{\fun{f}}, I_0)$ is an 
+over-approximation to the computation of $G^{\fun{f}}$ from $I_0$. More
+precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
+$I_0$. For every $\ell\in V$, $G^{\fun{f}}$ must arrive in a state
+satisfying $I_{\ell}$ when the computation reaches $\ell$. 
+
+
+\section{Hoare Logic based Program Analysis}\label{sec:analysis}
+
+Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands). $P$ and $Q$
+are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
+specifies that the program fragment $T$ will reach a program state satisfying
+$Q$ provided that $T$ starts with a program state satisfying $P$ and
+terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for partial correctness with
+two additional rules for the assumption and assertion commands:
+\begin{center}
+  \AxiomC{}
+  \LeftLabel{Assume}
+  \UnaryInfC{$\assert{P}\ \mathtt{assume\ } q\ 
+    \assert{P \wedge q}$} 
+  \DisplayProof
+  ~
+  \AxiomC{$P \implies q$}
+  \LeftLabel{Assert}
+  \UnaryInfC{$\assert{P}\ \mathtt{assert\ } q\  \assert{P}$}
+  \DisplayProof
+\end{center}
+The $\mathtt{assume}$ command excludes all computation not satisfying the given
+expression. The $\mathtt{assert}$ command aborts the computation
+if the given expression is not implied by the precondition. No postcondition can be guaranteed in such a case.
+%For instance, the following command always terminates normally:
+%\begin{equation*}
+% \mathtt{assume\ false};\ \ \mathtt{assert\ false}
+%\end{equation*}
+Observe that an inductive invariant $\Pi (G^{\fun{f}}, I_0)$ establishes 
+$\assert{I_0} G^{\fun{f}} \assert{I_{e}}$.
+A \emph{program analyzer} accepts programs as inputs and
+checks if all assertions (specified by the $\mathtt{assert}$ command)
+are satisfied. One way to implement program analyzers is to compute
+inductive invariants. 
+\begin{proposition}
+Let $G^{\fun{f}} = \langle V, E,\textmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a CFG and $\Pi (G^{\fun{f}}, \mathtt{true})$ be an inductive invariant
+for $G^{\fun{f}}$ from 
+$\mathtt{true}$. If $\models I_{\ell} \implies B_{\ell}$ for every
+edge $(\ell, \ell') \in E$ with $\textmd{cmd} (\ell, \ell') =
+\mathtt{assert} (B_{\ell})$, then all assertions in $G^{\fun{f}}$ are satisfied.
+\label{proposition:inductive-invariant}
+\end{proposition}
+A program analyzer checks assertions by computing inductive invariants
+is called an \emph{inductive} program analyzer. Note that an inductive
+program analyzer need not give any information when an assertion fails. 
+Indeed, most inductive program analyzers simply report false positives
+when inductive invariants are too coarse. 
+%A \emph{program checker} is
+%a program analyzer that returns an error trace when an assertion
+%fails; an \emph{error trace} is a sequence of variable valuations from
+%the program entry to the failed assertion. Rather than reporting false
+%positives, program checkers have to return error traces to witness 
+%failed assertions. %Producing error traces (especially for recursive
+%programs) complicates analysis algorithms. We hence consider a
+%subclass of program checker. 
+A \emph{recursion-free
+  inductive program analyzer} is a program analyzer that checks
+recursion-free programs by computing inductive invariants. Several recursion-free
+inductive program analyzers are available, such as \textsc{CPAChecker}~\cite{BeyerK11},
+\textsc{Blast}~\cite{BeyerHJM07}, \textsc{UFO}~\cite{AlbarghouthiLGC12}, \textsc{Astr\'ee}~\cite{CousotCFMMMR05}, etc. Our goal is to check
+recursive programs by using a recursion-free inductive program analyzer
+as a black box.

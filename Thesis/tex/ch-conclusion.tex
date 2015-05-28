@@ -1,0 +1,24 @@
+
+\chapter{Conclusion}\label{ch:conclusion}
+
+% Extension: using program analyzer + bounded model checking
+
+The number of unwindings is perhaps the most important factor in our
+recursive analysis technique (Table~\ref{table:experiments}). We find
+that \textsc{CPAChecker} performs poorly when many unwindings are
+needed. We however do not enable the more efficient block encoding in
+\textsc{CPAChecker} for the ease of implementation. One can improve
+the performance of our algorithm with the efficient but complicated
+block encoding. A bounded analyzer may also speed up the
+verification of bounded properties. 
+
+Our algorithm extracts function summaries from inductive invariants. 
+There are certainly many heuristics to optimize the computation of
+function summaries. For instance, some program analyzers return error
+traces when properties fail. In particular, a valuation of formal
+parameters is obtained when \textmd{CheckSummary}
+(Algorithm~\ref{algorithm:check-summary}) returns $\FF$. If the
+valuation is not possible in the $\mathtt{main}$ function, one can use
+its inductive invariant to refine function summaries. We in 
+fact exploit error traces computed by \textsc{CPAChecker} in the
+implementation. 

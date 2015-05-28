@@ -1,0 +1,26 @@
+
+\chapter{Proving via Transformation}
+\label{ch:proving-via-transformation}
+
+We give details of the constructions and establish the soundness of
+Algorithm~\ref{algorithm:overview}. Our goal is to establish the
+following theorem:
+
+\begin{theorem}
+  Let $G^\fun{main} = \langle V, E, \textmd{cmd}^\fun{main} , \overline{\mathtt{u}}^\fun{main}, \overline{\mathtt{r}}^\fun{main},s,e \rangle$ be a control flow
+  graph in $P$. If Algorithm~\ref{algorithm:overview} returns
+  $\mathit{Pass}$, there is an inductive invariant $\Pi (G^\fun{main}, \TT)$
+  such that $I_{\ell} \implies B_{\ell}$ for every $(\ell, \ell') \in
+  E$ with $\textmd{cmd}^\fun{main} (\ell, \ell') = \mathtt{assert\ } B_{\ell}$.
+  \label{theorem:soundness}
+\end{theorem}
+By Proposition~\ref{proposition:inductive-invariant}, it follows that
+all assertions in $G^\fun{main}$ are satisfied.
+Moreover, by the semantics of the 
+$\mathtt{assert}$ command, all assertions in the program are satisfied.
+
+\input{chap-proving/sec-unwinding}
+\input{chap-proving/sec-under_approx}
+\input{chap-proving/sec-computing_summary}
+\input{chap-proving/sec-checking_summary}
+\input{chap-proving/sec-correctness}
