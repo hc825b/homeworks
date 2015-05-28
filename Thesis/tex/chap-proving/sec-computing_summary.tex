@@ -20,21 +20,27 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
 \}$ (Algorithm~\ref{algorithm:update-summary}). 
 
 \begin{algorithm}
-  \KwIn{$P_k$: a program; $\{ I_\ell : \ell \in V \}$: an inductive invariant of $\underline{G}^{\fun{main}}_k$}
+  \KwIn
+  {
+    $P_k$: a program;
+    $\{ I_\ell : \ell \in V \}$: an inductive invariant of $\underline{G}^{\fun{main}}_k$
+  }
   \KwOut{$S[\bullet]$: function summaries}
 
   \ForEach{function $\fun{f}$ in the program $P_k$}
-  {	
-  	$S[\fun{f}]:=\TT$\;
- 	\ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
-   	{
-   		\lIf{$I_{s_i^\fun{f}}$ contains return variables of $\mathtt{f}$}
-       	{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. I_{e_i^\fun{f}}$       	}
-       	}
-       	\lElse{
-         		$S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$
-   	}
+  { 
+    $S[\fun{f}]:=\TT$\;
+    \ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
+    {
+      \lIf{$I_{s_i^\fun{f}}$ contains return variables of $\mathtt{f}$}
+      {
+        $S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. I_{e_i^\fun{f}}$
+      }
+      \lElse
+      {
+        $S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\mathtt{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$
+      }
+    }
     
   }
  

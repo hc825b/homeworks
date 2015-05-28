@@ -50,6 +50,9 @@ The $\mathtt{return}$ command accepts several expressions as arguments.
 Together with simultaneous assignments, functions can have several
 return values. 
 
+\todo[inline]{Set restrictions on CFG to prevent arbitrary edges on graph
+since the behavior may be undefined.}
+
 A function $\fun{f}$ is represented as a \emph{control flow graph
   (CFG)} $G^{\fun{f}} = \langle V, E, \textmd{cmd}^{\fun{f}},
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
@@ -153,8 +156,9 @@ precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
 $I_0$. For every $\ell\in V$, $G^{\fun{f}}$ must arrive in a state
 satisfying $I_{\ell}$ when the computation reaches $\ell$. 
 
+\todo[inline]{A section about operational semantics?}
 
-\section{Hoare Logic based Program Analysis}\label{sec:analysis}
+\section{Axiomatic Semantics and Hoare Logic}\label{sec:analysis}
 
 Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands). $P$ and $Q$
 are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
