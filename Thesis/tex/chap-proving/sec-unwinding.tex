@@ -79,7 +79,7 @@ Then, given a CFG $G^\fun{f}=\langle V, E,\textmd{cmd}^\fun{f},
 \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
 we use $\hat{E} =\{(\ell, \ell')\in E: \textmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{idx}(e)$ that maps a call edge $e$ to a unique index value.
 \hide{ % TODO
-The predicate below then can be used to c a renamed CFG $\textsc{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
+The predicate below then can be used to represent a renamed CFG $\textsc{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
 \[
 \begin{split}
 {UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\textsc{idx}(\ell, \ell')=i  \\
@@ -123,12 +123,31 @@ Finally, we provide the formal definition of $\textsc{unwind}(G^\fun{f})$.
   free variables over program variables of $G^\fun{f}$. $\assert{P}\ G^\fun{f}\
   \assert{Q}$ if and only if $\assert{P}\ \textsc{unwind} (G^\fun{f})\ \assert{Q}$.
 \end{proposition}
-\todo[inline]{Describe why unwound function and original function have the same behavior via simple Hoare rule}
-Essentially, $G^\fun{f}$ and $\textsc{unwind} (G^\fun{f})$ represent the same function $\fun{f}$. The only difference is that the latter has more program variables after unwinding, but this does not affect the states over program variables of $G^\fun{f}$ before and after the function.
-
+\todo[inline]{Describe why unwound function and original function have the same
+ behavior via simple Hoare rule}
+Essentially, $G^\fun{f}$ and $\textsc{unwind} (G^\fun{f})$ represent the same
+function $\fun{f}$. The only difference is that the latter has more program
+variables after unwinding,
+but this does not affect the states over program variables of $G^\fun{f}$
+before and after the function.
 
 \subsection{Alternative Unwinding Method}\label{subsec:new-unwinding}
-We first define the function \(\textsc{duplicate}(Prog, \fun{rec},i)\). to produce a copy of the given function $\fun{f}$.
+In the previously mentioned method, there is an obvious drawback that it will
+cause exponential increase in size of the unwound program.
+Considering the McCarthy 91 function, the number of recursive calls in the
+program doubles in the unwound function at each iteration of 
+Algorithm~\ref{algorithm:overview},
+and the program size doubles at next iteration since every function call is
+inlined, i.e., transformed to a copy of the function body.
+Therefore, we devised another function $\textsc{unwind'}(G^\fun{f})$ that
+preserves part of the function calls to prevent exponential growth, 
+but it still provides more and more accurate under-approximation in each
+iteration.
+This method requires that the underlying analyzers can deal with
+recursion-free functions, and fortunately most analyzers support this feature.
+
+To unwind a given recursive function $\fun{f}$, we first duplicate the function body
+$G^\fun{f}$
 \begin{equation*}
   \textsc{duplicate}(\langle \mathbf{pname},main,\fun{body}\rangle, \fun{rec},i)
     = \langle \mathbf{pname}\cup\{rec_1, rec_2\dotsc rec_i\},main,\fun{body}\rangle
