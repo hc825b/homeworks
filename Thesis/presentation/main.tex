@@ -1,0 +1,176 @@
+% Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+%
+% In principle, this file can be redistributed and/or modified under
+% the terms of the GNU Public License, version 2.
+%
+% However, this file is supposed to be a template to be modified
+% for your own needs. For this reason, if you use this file as a
+% template and not specifically distribute it as part of a another
+% package/program, I grant the extra permission to freely copy and
+% modify this file as you see fit and even to delete this copyright
+% notice. 
+
+\PassOptionsToPackage{usenames,dvipsnames}{xcolor}
+
+\documentclass[compress]{beamer}
+
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{cancel}
+\newcommand\Ccancel[2][black]{\renewcommand\CancelColor{\color{#1}}\xcancel{#2}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,chains,fit}
+\usepackage{graphicx}
+\usepackage{varwidth}
+
+\usepackage{multirow} 
+
+\usepackage[super]{nth}
+
+\usepackage{listings}
+\usepackage{minted}
+\usemintedstyle{colorful}
+
+%\usepackage{pgfpages}
+%\setbeameroption{show notes}
+
+% TODO Add personal theme
+\usetheme{default}
+
+
+% \setbeamertemplate{footline}[frame number]
+
+\newcommand{\smallnode}[1]{\begin{varwidth}{0.4cm}\scalebox{0.8}{\hspace{-0.2cm}#1}\end{varwidth}}
+\newcommand{\fun}[1]{\mathtt{{#1}}}
+
+
+\title{Verifying Recursive Programs \\ using \\ Intraprocedural Analyzers}
+\author{Yu-Fang~Chen\inst{1} \and \underline{Chiao~Hsieh}\inst{1,2} \and 
+  Ming-Hsien~Tsai\inst{1} \and Bow-Yaw~Wang\inst{1} \and Farn~Wang\inst{2}}
+
+\institute{
+  \inst{1}
+  Institute of Information Science, 
+  Academia Sinica, Taiwan
+  \and
+  \inst{2}
+  Graduate Institute of Electrical Engineering,
+  National Taiwan University, Taiwan
+}
+
+\date{\nth{6} WAVAS}
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection, hideallsubsections]
+  \end{frame}
+}
+
+% Let's get started
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents[hideallsubsections]
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+% Section and subsections will appear in the presentation overview
+% and table of contents.
+\section{Overview}
+\include{tex/overview}
+
+\section{Approximation with Transformation}
+\include{tex/approx}
+
+\section{Function Summary with Transformation}
+\include{tex/compute}
+\include{tex/check}
+
+% TODO
+% Add a frame to briefly summarize
+\begin{frame}{Overview}
+\tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
+\tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
+\tikzstyle{input} = [data, text width=1.7cm]
+\tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
+  % We need to set at bounding box first. Otherwise the diagram
+  % will change position for each frame.
+  \useasboundingbox (-5.7,-1) rectangle (4.3,4);
+
+  % Nodes
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Intra-proc. Program};
+
+  \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
+
+  \node[decision,above=.5cm of proof] (check) {Check};
+
+  \node[input] (rc_prog) at (rf_prog |- check) {Recursive Program};
+  \node[output, right=of analyzer] (unsafe) {ERROR};
+  \node[output] (safe) at (check -| unsafe) {PASS};
+
+  % Edges
+  \path[->]
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+
+  \path[->]
+    (rc_prog) edge 
+      node[anchor=east]{Under-approx.}
+    (rf_prog);
+
+  \path[->]
+    (analyzer) edge node[anchor=west]{Pass, Compute Summaries} (proof);
+  \path[->]
+    (proof) edge (check)
+    (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
+    (check) edge node[anchor=south,sloped]{Pass} (safe);
+
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+\section{Experiments}
+\include{tex/experiments}
+
+\section{Conclusion}
+\include{tex/conclusion}
+
+% Placing a * after \section means it will not show in the
+% outline or table of contents.
+
+\begin{frame}
+
+\begin{center}{
+  \Huge Thank you $\sim$
+
+\hfill
+
+\hfill \includegraphics[width=0.4\textwidth]{img/ASlogoLetterGIF.png}
+\hfill \includegraphics[width=0.4\textwidth]{img/ntu.png} \hfill
+}
+
+\end{center}
+\end{frame}
+
+\end{document}
+
+

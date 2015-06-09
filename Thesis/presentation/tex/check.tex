@@ -1,0 +1,231 @@
+\stepcounter{subsection}
+
+\begin{frame}{Overview}
+\tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
+\tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
+\tikzstyle{input} = [data, text width=1.7cm]
+\tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
+\tikzstyle{cross_out} = [red, pos=0.5, auto=false, cross out, -, draw, thick]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
+  % We need to set at bounding box first. Otherwise the diagram
+  % will change position for each frame.
+  \useasboundingbox (-5.7,-1) rectangle (4.3,4);
+
+  % Nodes
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Intra-proc. Program};
+
+  \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
+
+  \node[decision,red,above=.5cm of proof] (check) {Check};
+
+  \node[input] (rc_prog) at (rf_prog |- check) {Recursive Program};
+  \node[output, right=of analyzer] (unsafe) {ERROR};
+  \node[output] (safe) at (check -| unsafe) {PASS};
+
+  % Edges
+  \path[->]
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+
+  \path[->]
+    (rc_prog) edge 
+      node[anchor=east]{Under-approx.}
+    (rf_prog);
+
+  \path[->]
+    (analyzer) edge node[anchor=west]{Pass, Compute Summaries} (proof);
+  \path[->]
+    (proof) edge (check)
+    (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
+    (check) edge node[anchor=south,sloped]{Pass} (safe);
+
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Rough Description for Check}
+  \begin{itemize}
+
+  \item Check if candidates over-approximate recursive functions
+  \item By Hoare logic proof rule for recursive function
+  \begin{itemize}
+    \item Given a recursive function and a summary candidate
+    \item With assumption that \\
+       all recursive calls are summarized by their candidates
+    \item Prove its function body is summarized by this candidate
+  \end{itemize}
+  \item See \S 4.4 and references
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Check Function Summaries}
+
+\begin{overlayarea}{\textwidth}{.15\textheight}
+  
+  Check summary candidate: $\mathtt{r^{mc91} \geq 91 \ and\ r^{mc91}=m-10}$
+
+\uncover<2-> {
+  \begin{itemize}
+    \item {
+      \only<2>{Follow Hoare logic proof rule
+      }\only<3>{Replace function call by instantiating the summary
+      }\only<4>{Replace $\mathtt{return}$ by assignments to return variables
+      }\only<5>{Add an assertion to validate this summary
+      }\only<6->{Use \textsc{BasicAnalyzer} to prove this assertion}
+    }
+  \end{itemize}
+}
+
+\end{overlayarea}
+
+\begin{figure}
+  \centering
+  \resizebox{!}{.45\textheight}
+  {
+    \alt<6>{\tikzstyle{error_path} = [red]}{\tikzstyle{error_path} = []}
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \useasboundingbox (-3.5,-4.5) rectangle (6.5,0.2);
+
+      \node[node,label=above:$\mathtt{mc91(m)}$] (s) at ( 0,  0) {$s$};
+      \node[node] (1) at (-1, -2) {$1$};
+      \node[node] (2) at ( 1, -0.8) {$2$};
+      \node[node] (3) at ( 1, -2) {$3$};
+      \node[node] (4) at ( 1, -3.2) {$4$};
+      \node[node] (5) at ( 0, -4) {\alt<1-4>{$e$}{$5$}};
+      \uncover<5->{\node[node] (e) at ( 0, -5) {$e$};}
+
+      \path
+        (s) edge [bend right=30]
+            node [left] {$\mathtt{assume\ m > 100}$} (1)
+            edge [error_path, bend left=30]
+            node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
+        (1) edge [bend right=30]
+            node [left] {
+              \only<1-3>{$\mathtt{return\ m - 10}$
+              }\only<4->{\only<4>{\color{red}}$\mathtt{r^{mc91} := m - 10}$}
+            } (5)
+        (2) edge [error_path]
+            node [right] (2_3) {
+              \only<1-2>{$\mathtt{s := mc91(m + 11)}$ \only<2>{\color{Blue}{Assume at recursive call}}
+              }\only<3->{\only<3>{\color{red}}$
+              \begin{array}{l}
+              \mathtt{s := nondet;}\\
+              \mathtt{assume\ s \geq 91 \ and\ s=m+11-10} 
+              \end{array}
+              $}
+            } (3)
+        (3) edge [error_path]
+            node [right] (3_4){
+              \only<1-2>{$\mathtt{t := mc91(s)}$ \only<2>{\color{Blue}{Assume at recursive call}}
+              }\only<3->{\only<3>{\color{red}}$
+              \begin{array}{l}
+              \mathtt{t := nondet;}\\
+              \mathtt{assume\ t \geq 91 \ and\ t=s-10}
+              \end{array}$}
+            } (4)
+        (4) edge [error_path, bend left=30]
+            node [right] {
+              \only<1-3>{$\mathtt{return\ t}$
+              }\only<4->{\only<4>{\color{red}}$\mathtt{r^{mc91} := t}$}
+            } (5)
+        ;
+    \uncover<3>{
+      \node [below right=-4mm and 25mm of 2]{\Ccancel[red]{$\mathtt{s := mc91(m + 11)}$}};
+      \node [below right=-4mm and 25mm of 3]{\Ccancel[red]{$\mathtt{t := mc91(s)}$}};
+    }
+    \uncover<2,5->{
+      \path
+        (5) edge [error_path]
+            node [right] (assert) {
+              \only<2>  {\color{Blue}{Assert at the exit for proving}
+              }\only<5->{\only<5>{\color{red}}$
+                \mathtt{assert\ r^{mc91} \geq 91 \ and\ r^{mc91}=m-10}
+              $}
+            } (e)
+        ;}
+    \uncover<6->{
+      \node [left=4mm of assert]
+      {CEX: \color{BrickRed}{$\mathtt{m = 100, r^{mc91}=91}$}};
+    }
+    \end{tikzpicture}
+  }
+  %\caption{Check Summary in McCarthy 91}
+  \label{figure:check-summary-mccarthy91}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Check Function Summaries $\sim$}
+
+\begin{overlayarea}{\textwidth}{.15\textheight}
+  
+  Valid function summary: {$
+    \begin{array}{l}
+      \mathtt{(m \leq 101\ and\ r^{mc91}=91)\ or} \\
+      \mathtt{(m>101\ and\ m-r^{mc91}=10)}
+    \end{array}
+  $}
+\end{overlayarea}
+
+\begin{figure}
+  \centering
+  \resizebox{!}{.45\textheight}
+  {
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \useasboundingbox (-3.5,-4.5) rectangle (6.5,0.2);
+
+      \node[node,label=above:$\mathtt{mc91(m)}$] (s) at ( 0,  0) {$s$};
+      \node[node] (1) at (-1, -2) {$1$};
+      \node[node] (2) at ( 1, -0.8) {$2$};
+      \node[node] (3) at ( 1, -2) {$3$};
+      \node[node] (4) at ( 1, -3.2) {$4$};
+      \node[node] (5) at ( 0, -4) {$5$};
+      \node[node] (e) at ( 0, -5) {$e$};
+
+      \path
+        (s) edge [bend right=30]
+            node [left] {$\mathtt{assume\ m > 100}$} (1)
+            edge [bend left=30]
+            node [right] {$\mathtt{assume\ not(m > 100)}$} (2)
+        (1) edge [bend right=30]
+            node [left] {$\mathtt{r^{mc91} := m - 10}$} (5)
+        (2) edge 
+            node [right] (2_3) {\footnotesize$
+              \begin{array}{l}
+                \mathtt{s := nondet;}\\
+                \mathtt{assume\ (m+11 \leq 101\ and\ s=91)\ or}\\
+                \mathtt{\ \ \ \ \ (m+11>101\ and\ m+11-s=10)}
+              \end{array}
+            $} (3)
+        (3) edge 
+            node [right] (3_4){\footnotesize$
+              \begin{array}{l}
+                \mathtt{t := nondet;}\\
+                \mathtt{assume\ (s \leq 101\ and\ t=91)\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ (s>101\ and\ s-t=10)}
+              \end{array}
+            $} (4)
+        (4) edge [bend left=30]
+            node [right] {$\mathtt{r^{mc91} := t}$} (5)
+        ;
+
+      \path
+        (5) edge
+            node [right] (assert) {\footnotesize$
+              \begin{array}{l}
+                \mathtt{assert\ (m \leq 101\ and\ r^{mc91}=91)\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ (m>101\ and\ m-r^{mc91}=10)}
+              \end{array}
+            $} (e)
+        ;
+    \end{tikzpicture}
+  }
+  %\caption{Check Summary in McCarthy 91}
+\end{figure}
+
+\end{frame}

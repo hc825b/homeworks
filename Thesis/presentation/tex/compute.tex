@@ -1,0 +1,224 @@
+\stepcounter{subsection}
+
+\begin{frame}{Overview}
+\tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
+\tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
+\tikzstyle{input} = [data, text width=1.7cm]
+\tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
+\tikzstyle{cross_out} = [red, pos=0.5, auto=false, cross out, -, draw, thick]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
+  % We need to set at bounding box first. Otherwise the diagram
+  % will change position for each frame.
+  \useasboundingbox (-5.7,-1) rectangle (4.3,4);
+
+  % Nodes
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Intra-proc. Program};
+
+  \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
+
+  \node[decision,above=.5cm of proof] (check) {Check};
+
+  \node[input] (rc_prog) at (rf_prog |- check) {Recursive Program};
+  \node[output, right=of analyzer] (unsafe) {ERROR};
+  \node[output] (safe) at (check -| unsafe) {PASS};
+
+  % Edges
+  \path[->]
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+
+  \path[->]
+    (rc_prog) edge 
+      node[anchor=east]{Under-approx.}
+    (rf_prog);
+
+  \path[->]
+    (analyzer) edge node[red, anchor=west]{Pass, Compute Summaries} (proof);
+  \path[->]
+    (proof) edge (check)
+    (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
+    (check) edge node[anchor=south,sloped]{Pass} (safe);
+
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Desired Program Analyzer}
+
+\begin{overlayarea}{\textwidth}{.12\textheight}
+  \textsc{BasicAnalyzer}
+  \begin{itemize}
+  \item Provide \emph{inductive invariants} when program passed analysis
+  \end{itemize}
+\end{overlayarea}
+  \begin{figure}
+    \tikzstyle{every node}=[font=\small]
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \useasboundingbox (-5,-4) rectangle (5,0.5);
+
+      \node[node,label=above:$\mathtt{main()}$] (0) at (0, 0) 
+        [label=right:\color{Blue}\{$\mathtt{true}$\}] {$s$};
+      \node[node] (1) at (0, -1)
+        [label=right:\color{Blue}\{$\mathtt{n \geq 0}$\}] {$1$};
+      \node[node] (2) at (0, -2)
+        [label=right:\color{Blue}\{$\mathtt{false}$\}] {$2$};
+      \node[node] (3) at (0, -3)
+        [label=right:\color{Blue}\{$\mathtt{false}$\}] {$3$};
+      \node[node] (4) at (0, -4)
+        [label=right:\color{Blue}\{$\mathtt{false}$\}] {$e$};
+
+      \path
+        (0) edge 
+            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+        (1) edge 
+            node [left] {\Ccancel[red]{$\color{OliveGreen}{\mathtt{r := mc91(n)}}$}} (2)
+        (1) edge
+            node [right]{${\mathtt{assume\ false}}$} (2)
+                
+              
+        (2) edge 
+            node [left] {$
+              \begin{array}{l}
+                \mathtt{assert\ {[}r = 91\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ (n > 101\ and\ \ }\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ \ r = n - 10){]}}
+              \end{array}$} (3) 
+        (3) edge 
+            node [left] {$\mathtt{return\ 0}$} (4);
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Compute Function Summaries}
+
+\begin{overlayarea}{\textwidth}{.12\textheight}
+  \only<1>{Inductive Invariants for under-approximation
+  }\only<2>{Invariants enclose under-approximated function call
+  }\only<3>{Extract pair of invariants for function call
+  }\only<4>{Replace actual parameters to formal parameters
+  }\only<5->{
+    Compute with $\mathtt{(\{true\}, \{r^{mc91} \geq 91 \ and\ r^{mc91}=m-10\})}$
+  }
+  
+  \begin{itemize}
+    \item {
+      \only<1>{Over-approximation of computation of under-approximation
+      }\only<2>{Possibly over-approximate original function call
+      }\only<3>{$\mathtt{(\{true\}, \{r \geq 91 \ and\ r=n-10\})}$
+      }\only<4>{$\mathtt{(\{true\}, \{{\color{BrickRed}r^{mc91}} \geq 91 \ and\ {\color{BrickRed}r^{mc91}}={\color{BrickRed}m}-10\})}$
+      }\only<5->{Summary: $\mathtt{true \implies r^{mc91} \geq 91 \ and\ r^{mc91}=m-10}$}
+    }
+  \end{itemize}
+\end{overlayarea}
+
+\begin{overlayarea}{\textwidth}{.6\textheight}
+\begin{figure}
+  \centering
+  \resizebox{\linewidth}{!}
+  {  
+    \tikzstyle{every node}=[font=\small]
+    \tikzstyle{inv_DC}=[label=right:\color{Blue}\{$\mathtt{...}$\}]
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw}]
+      \useasboundingbox (-7.5,-4.5) rectangle (4,0.8);
+      
+      \node[node,label=above:$\mathtt{main()}$] (0) at (-4, 0)
+        [label=left:\color{Blue}\{$\mathtt{true}$\}] {$s$};
+      \node[node] (1) at (-4, -1) 
+        [label=left:\alt<1>{\color{Blue}}{\color{Red}}\{$\mathtt{true}$\}]
+        {$1$};
+      \node[node] (2) at (-4, -2) 
+        [label=right:\alt<1>{\color{Blue}}{\color{Red}}\scriptsize
+          $\begin{Bmatrix}
+           \mathtt{r \geq 91 \ and} \\
+           \mathtt{r=n-10}
+          \end{Bmatrix}$
+        ]
+        {$2$};
+      \node[node, inv_DC] (3) at (-4, -3) {$3$};
+      \node[node, inv_DC] (4) at (-4, -4) {$e$};
+
+      \node[node] (00) at ( 0,  0) [label=5:\color{Blue}\{$\mathtt{...}$\}]
+        {\smallnode{$s_1^{\fun{mc91}}$}};
+      \node[node, inv_DC] (01) at (-1, -2) {$1_1$};
+      \node[node, inv_DC] (02) at ( 1, -0.8) {$2_1$};
+      \node[node, inv_DC] (03) at ( 1, -2) {$3_1$};
+      \node[node, inv_DC] (04) at ( 1, -3.2) {$4_1$};
+      \node[node] (05) at ( 0, -4) [label=-5:\color{Blue}\{$\mathtt{...}$\}]
+        {\smallnode{$e_1^{\fun{mc91}}$}};
+
+      \path
+        (0) edge 
+            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+        (2) edge
+            node [left] {$
+              \begin{array}{l}
+                \mathtt{assert\ {[}r = 91\ or}\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ (n > 101\ and\ \ }\\
+                \mathtt{\ \ \ \ \ \ \ \ \ \ \ \ r = n - 10){]}}
+              \end{array}$} (3) 
+        (3) edge 
+            node [left] {$\mathtt{return\ 0}$} (4);
+
+      \path
+        (1) edge[draw=none] node[anchor=center]
+          {\color{Gray}{$\mathtt{r := mc91(n)}$}}
+        (2);
+
+
+      \path
+        (1) edge [bend left]
+            node [above] {$\mathtt{m_1 := n}$} (00)
+        (00) edge [bend right]
+            node [left] {$\mathtt{assume\ m_1 > 100}$} (01)
+            edge [bend left=30]
+            node [right] {$\mathtt{assume\ not(m_1 > 100)}$} (02)
+        (01) edge [bend right]
+            node [left] {$
+              \begin{array}{c}
+                \mathtt{r^{mc91} :=}\\
+                \mathtt{m_1 - 10}
+              \end{array}$} (05)
+        (02) edge 
+            node [right] {$\mathtt{assume\ false}$} (03)
+        (03) edge 
+            node [right] {$\mathtt{assume\ false}$} (04)
+        (04) edge [bend left]
+            node [right] {$\mathtt{r^{mc91}_1 := t_1}$} (05)
+
+        (05) edge [bend left]
+             node [below=8pt] {$\mathtt{r := r^{mc91}_1}$} (2);
+
+    \uncover<4>{
+      \node[node, dashed, left=2.5cm of 0] (decl)
+        [label=above:\color{BrickRed}$\mathtt{mc91(m)}$] {$s$};
+    }
+
+    \end{tikzpicture}
+  }
+  \label{figure:inductive-invariants}
+\end{figure}
+\end{overlayarea}
+  \note [figure]{The pair of locations for extract summary is different than described in paper.}
+\end{frame}
+
+
+\begin{frame}{Compute Function Summaries $\sim$}
+\begin{itemize}
+  \item This method produces summary for one function call
+  \item<2-> Function Summary Candidate:\\
+            {\color{red}Conjunction} of summaries from all function calls
+  \item<2-> Details in \S 4.3.
+\end{itemize}
+
+\uncover<3->{
+\begin{center}
+  \Large How to check derived candidates?
+\end{center}
+}
+\end{frame}

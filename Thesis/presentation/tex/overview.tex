@@ -1,0 +1,124 @@
+\stepcounter{subsection}
+
+\begin{frame}{Overview}
+
+\begin{overlayarea}{\textwidth}{.15\textheight}
+  \begin{itemize}
+  \item<1-> {
+    \only<1>   {Desired Program Analyzer
+    }\only<2>  {Established analyzers for intraprocedural program
+    }\only<3-9>{How to handle recursion with established analyzers?
+    }\only<10->{How to prove original program safe\alt<9-11>{?}{ with passed summaries?}}
+  }
+
+  \item<3-11,13-> {
+    \only<3-4>{
+      Hack to extend the analyzers.
+      \uncover<4>{Too much efforts.}
+    }\only<5-7>{
+      Transform to 
+      \only<5-6>{intraprocedural version. \uncover<6>{Not helpful.}
+      }\only<7> {{\color{red}under-approximations}.}
+    }\only<8>  {Cannot prove original program safe.
+    }\only<9>  {With proof for under-approximation.
+    }\only<10> {Compute summary candidates for recursive functions.
+    }\only<11> {Check if candidates do summarize recursive functions.
+    }\only<13> {Build {\color{red}over-approximations} with summaries and analyze.
+    }\only<14->{This step can be omitted. See \S4 in paper.}
+  }
+
+  \end{itemize}
+\end{overlayarea}
+
+
+\tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
+\tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
+\tikzstyle{input} = [data, text width=1.7cm]
+\tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
+\tikzstyle{cross_out} = [red, pos=0.5, auto=false, cross out, -, draw, thick]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
+  % We need to set at bounding box first. Otherwise the diagram
+  % will change position for each frame.
+  \useasboundingbox (-5.7,-1) rectangle (4.3,4);
+
+  % Nodes
+  \uncover<1-2,5->{ \node[decision] (analyzer) {Analyzer};}
+  \node[input, left=of analyzer] (rf_prog) {
+    \only<1>{Arbitrary}\only<2->{Intra-proc.}
+    Program
+  };
+
+  \uncover<10->{
+    \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
+  }
+  \uncover<11->{
+    \node[decision,above=.5cm of proof] (check) {Check};
+  }
+
+  \node<2->  [input] (rc_prog) at (rf_prog |- check) {Recursive Program};
+  \node<3-4> [decision] (new_analyzer)
+    {\only<4>{\Ccancel[red]}{Analyzer$2.0$}};
+
+  \node[output, right=of analyzer] (unsafe) {ERROR};
+  
+  \uncover<1-8, 14->{
+    \node[output] (safe) at (check -| unsafe) {\only<8>{\Ccancel[red]}{PASS}};
+  }
+
+  % Edges
+  \path[->]<1-2,5-> 
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+  \path[->]<1-2,5-8>
+    (analyzer) edge node[anchor=south,sloped]{Pass} (safe);
+
+  \path[->]<2> (rc_prog) edge node [cross_out]{} (analyzer);
+
+  \path[->]<3-4> 
+    (rc_prog) edge (new_analyzer)
+    (rf_prog) edge (new_analyzer)
+    (new_analyzer) edge (safe)
+    (new_analyzer) edge (unsafe);
+
+  \path[->]<5->
+    (rc_prog) edge 
+      node[anchor=east]{\only<5-6>{\only<6>{\Ccancel[red]}{Exact Transform}}\only<7->{Under-approx.}}
+    (rf_prog);
+
+  \path[->]<9->
+    (analyzer) edge node[anchor=west]{Pass{\uncover<10->{, Compute Summaries}}} (proof);
+  \path[->]<11->
+    (proof) edge (check)
+    (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
+    (check) edge node[anchor=south,sloped]{Pass} (safe);
+
+\end{tikzpicture}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Our Contributions}
+
+\Large
+\uncover<+->{Extend a \textsc{BasicAnalyzer} through}
+
+\begin{itemize}
+  \item<+-> {Build\only<+->{ and Refine} under-approximation}
+  \item<+-> {Compute\only<+->{ and Check} function summaries}
+\end{itemize}
+
+\uncover<+->{
+  Via syntactic program transformation
+    \note{and a quantifier}
+}
+
+\note {
+  Avoid building a new analyzer from scratch, \\
+  and focus on how to cope with recursion
+  %TODO mention the benefits of our approach
+}
+
+\end{frame}

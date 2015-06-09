@@ -1,0 +1,90 @@
+\stepcounter{subsection}
+
+\begin{frame}{Brief Summary}
+  Algorithm
+  \begin{itemize}
+    \item Use established analyzers as \textsc{BasicAnalyzer}
+    \item Enhance \textsc{BasicAnalyzer} via syntactic transformation
+  \end{itemize}
+  \vfill
+  Proof
+  \begin{itemize}
+    \item Use proof of under-approximation as summary candidates
+    \item Verify candidates using Hoare proof rule for recursion  
+  \end{itemize}
+  \vfill
+  Experiment Result
+  \begin{itemize}
+    \item Our approach is as good as tools specialized for recursion
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Advantages}
+  Lightweight
+  \begin{itemize}
+    \item Avoid hacking into \textsc{BasicAnalyzer}
+    \item Syntactic transformation only
+    \item Much less efforts on implementation
+  \end{itemize}
+  \vfill
+  Modular
+  \begin{itemize}
+    \item Standard functionality from \textsc{BasicAnalyzer}
+    \item Benefit from future advanced analyzers
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Work in progress}
+  Exponential growth of size of transformed program
+  \begin{itemize}
+    \item Due to unwinding recursive calls in each iteration
+    \item Better transformation for analyzers supporting function call
+  \end{itemize}
+  \vfill
+  Participating Competition on Software Verification 2015
+  \begin{itemize}
+    \item \textsc{CPArec} is freely available on GitHub
+    \item \href{https://github.com/fmlab-iis/cparec}{https://github.com/fmlab-iis/cparec}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Future Work}
+
+Can this technique handle other kinds of program features, e.g.~Pointer, Concurrency, etc.?
+
+\tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
+\tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
+\tikzstyle{input} = [data, text width=1.7cm]
+\tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
+\tikzstyle{cross_out} = [red, pos=0.5, auto=false, cross out, -, draw, thick]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
+  % We need to set at bounding box first. Otherwise the diagram
+  % will change position for each frame.
+  \useasboundingbox (-5.7,-1) rectangle (4.3,4);
+
+  % Nodes
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Program w/o feat.};
+
+  \node[input] (rc_prog) at (rf_prog |- check) {Program w/ feat.};
+
+  \node[output, right=of analyzer] (unsafe) {ERROR};
+  
+  \node[output] (safe) at (check -| unsafe) {PASS};
+
+
+  % Edges
+  \path[->]
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+  \path[->]
+    (analyzer) edge node[anchor=south,sloped]{Pass} (safe);
+
+  \path[->] (rc_prog) edge node [cross_out]{} (analyzer);
+
+\end{tikzpicture}
+\end{figure}
+
+\end{frame}
