@@ -20,7 +20,7 @@
 \newcommand\Ccancel[2][black]{\renewcommand\CancelColor{\color{#1}}\xcancel{#2}}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows,shapes,chains,fit}
+\usetikzlibrary{arrows,shapes,chains,fit,calc,patterns}
 \usepackage{graphicx}
 \usepackage{varwidth}
 
@@ -39,27 +39,26 @@
 \usetheme{default}
 
 
-% \setbeamertemplate{footline}[frame number]
+\setbeamertemplate{footline}[frame number]
 
 \newcommand{\smallnode}[1]{\begin{varwidth}{0.4cm}\scalebox{0.8}{\hspace{-0.2cm}#1}\end{varwidth}}
 \newcommand{\fun}[1]{\mathtt{{#1}}}
 
 
-\title{Verifying Recursive Programs \\ using \\ Intraprocedural Analyzers}
-\author{Yu-Fang~Chen\inst{1} \and \underline{Chiao~Hsieh}\inst{1,2} \and 
-  Ming-Hsien~Tsai\inst{1} \and Bow-Yaw~Wang\inst{1} \and Farn~Wang\inst{2}}
+\title{Verifying Recursive Program via Source-to-Source Program Transformation}
+\author{Chiao~Hsieh\inst{1,2}}
 
 \institute{
   \inst{1}
   Institute of Information Science, 
-  Academia Sinica, Taiwan
+  Academia Sinica
   \and
   \inst{2}
   Graduate Institute of Electrical Engineering,
-  National Taiwan University, Taiwan
+  National Taiwan University
 }
 
-\date{\nth{6} WAVAS}
+\date{Summer, 2015}
 
 % If you have a file called "university-logo-filename.xxx", where xxx
 % is a graphic format that can be processed by latex or pdflatex,
@@ -82,6 +81,24 @@
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+\begin{frame}{Previous Works}
+\begin{itemize}
+  \item Verifying Recursive Programs Using Intraprocedural Analyzers
+  \begin{itemize}
+    \item The 21th International Static Analysis Symposium~(SAS 2014)
+    \item Author: Yu-Fang Chen, Chiao Hsieh, Ming-Hsien Tsai, Bow-Yaw Wang, Farn Wang
+  \end{itemize}
+  \vfill
+  \item CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation
+  \begin{itemize}
+    \item 21st International Conference on Tools and Algorithms
+          for the Construction and Analysis of Systems~(TACAS 2015)
+    \item Contribution on Software Verification Competition
+    \item Author: Yu-Fang Chen, Chiao Hsieh, Ming-Hsien Tsai, Bow-Yaw Wang, Farn Wang
+  \end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Outline}

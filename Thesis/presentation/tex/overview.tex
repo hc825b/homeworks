@@ -1,41 +1,183 @@
 \stepcounter{subsection}
 
+\def \unit {0.8mm}
+\newsavebox{\pokerface}
+\savebox{\pokerface}
+{
+  \begin{tikzpicture}
+    \node [inner sep=0, text width=20*\unit]
+    {\includegraphics[width=\textwidth]{img/pokerface_clean}};
+  \end{tikzpicture}
+}
+
 \begin{frame}{Overview}
 
-\begin{overlayarea}{\textwidth}{.15\textheight}
-  \begin{itemize}
-  \item<1-> {
-    \only<1>   {Desired Program Analyzer
-    }\only<2>  {Established analyzers for intraprocedural program
-    }\only<3-9>{How to handle recursion with established analyzers?
-    }\only<10->{How to prove original program safe\alt<9-11>{?}{ with passed summaries?}}
-  }
-
-  \item<3-11,13-> {
-    \only<3-4>{
-      Hack to extend the analyzers.
-      \uncover<4>{Too much efforts.}
-    }\only<5-7>{
-      Transform to 
-      \only<5-6>{intraprocedural version. \uncover<6>{Not helpful.}
-      }\only<7> {{\color{red}under-approximations}.}
-    }\only<8>  {Cannot prove original program safe.
-    }\only<9>  {With proof for under-approximation.
-    }\only<10> {Compute summary candidates for recursive functions.
-    }\only<11> {Check if candidates do summarize recursive functions.
-    }\only<13> {Build {\color{red}over-approximations} with summaries and analyze.
-    }\only<14->{This step can be omitted. See \S4 in paper.}
-  }
-
-  \end{itemize}
+\begin{overlayarea}{\textwidth}{.1\textheight}
+   \only<1>{Powerful existing analyzers for recursion-free program
+          }\only<2>{Limited or no support for recursion
+          }\only<3>{Approximate and Refine via {\color{red}syntactic transformation}
+          }\only<4>{Guess \& Check
+          }\only<5-7>{Progress Iteratively}
+    \begin{itemize}
+      \item \only<1>{Years of hard work
+            }\only<2>{However, hard for us to modify their work
+            }\only<3>{Able to treat the analyzer as a black-box
+            }\only<4>{Achieved by transformation and output from \colorbox{black}{\color{white}Analyzer}
+            }\only<5>{More accurate
+            }\only<6-7>{More and more accurate}
+    \end{itemize}
 \end{overlayarea}
 
+\center
+\begin{tikzpicture}[
+  x=1*\unit, y=1*\unit,
+  approx/.style={draw=black,pattern color=green, pattern=north east lines},
+  result_node/.style={draw, rounded rectangle, minimum width=20*\unit},
+  analyzer/.style={inner sep=0, diamond, aspect=2, fill=black, text=white},
+  every edge/.style={draw, ->, >=latex', thick}
+  ]
 
+  \path[use as bounding box] (-66,-40) rectangle (66,40);
+  \node [result_node, text=green] (pass) at (54, 20) {PASS};
+  \node [result_node, text=red] (error) at (54, -20) {ERROR};
+
+  \node<1-2> [analyzer, label=above:{Black-box}, label=below:{CPAchecker}] (basic_analyzer) at (24, 0){Analyzer};
+  \node<3->[analyzer] (analyzer_under) at (24,-20) {Analyzer};
+  \node<3>[analyzer] (analyzer_over)  at (24, 20) {Analyzer};
+  \node<4->[analyzer, fill=Gray](check) at (analyzer_over) {Check};
+
+  \node<1>[draw=none, minimum width=30*\unit, minimum height=30*\unit, label=above:{Recursion-free program}]
+    (creeper) at (-54, 0){};
+  \filldraw<1>[approx, even odd rule]
+    ($ (creeper) + (-12, -12) $) rectangle ($ (creeper) + (12, 12) $)
+    ($ (creeper) + (-9, 0) $) rectangle ($ (creeper) + (-3, 6) $)
+    ($ (creeper) + (3, 0) $) rectangle ($ (creeper) + (9, 6) $)
+    ($ (creeper) + (-6, -12) $)--($ (creeper) + (-3, -12) $)
+    --($ (creeper) + (-3, -9) $) --($ (creeper) + (3, -9) $)
+    --($ (creeper) + (3, -12) $) --($ (creeper) + (6, -12) $)
+    --($ (creeper) + (6, -3) $) --($ (creeper) + (3, -3) $)
+    --($ (creeper) + (3, 0) $) --($ (creeper) + (-3, 0) $)
+    --($ (creeper) + (-3, -3) $) --($ (creeper) + (-6, -3) $)--cycle;
+
+  \node<2-> [label=above:{Recursive program}] (poker) at (creeper) {\usebox{\pokerface}};
+
+  \node<3-> (poker_over) at (-10, 20){\usebox{\pokerface}};
+  \draw<3-4> [approx]
+    ($ (poker_over) + (-12, -18) $) rectangle ($ (poker_over) + (12, 18) $);
+  \draw<5> [approx]
+    ($ (poker_over) + (-12, -6) $) -- ($ (poker_over) + (-6, -6) $)
+    -- ($ (poker_over) + (-6, -12) $) -- ($ (poker_over) + (0, -12) $)
+    -- ($ (poker_over) + (0, -18) $) -- ($ (poker_over) + (6, -18) $)
+    -- ($ (poker_over) + (6, -12) $) -- ($ (poker_over) + (12, -12) $)
+    -- ($ (poker_over) + (12, 12) $) -- ($ (poker_over) + (6, 12) $)
+    -- ($ (poker_over) + (6, 18) $) -- ($ (poker_over) + (-12, 18) $)
+    -- cycle;
+  \draw<6> [approx]
+    ($ (poker_over) + (-12, -3) $) -- ($ (poker_over) + (-9, -3) $)
+    -- ($ (poker_over) + (-9, -6) $) -- ($ (poker_over) + (-6, -6) $)
+    -- ($ (poker_over) + (-6, -9) $) -- ($ (poker_over) + (0, -9) $)
+    -- ($ (poker_over) + (0, -15) $) -- ($ (poker_over) + (3, -15) $)
+    -- ($ (poker_over) + (3, -9) $) -- ($ (poker_over) + (9, -9) $)
+    -- ($ (poker_over) + (9, -6) $) -- ($ (poker_over) + (12, -6) $)
+    -- ($ (poker_over) + (12, 6) $) -- ($ (poker_over) + (9, 6) $)
+    -- ($ (poker_over) + (9, 12) $) -- ($ (poker_over) + (6, 12) $)
+    -- ($ (poker_over) + (6, 15) $) -- ($ (poker_over) + (-9, 15) $)
+    -- ($ (poker_over) + (-9, 12) $)-- ($ (poker_over) + (-12, 12) $)
+    -- cycle;
+  \draw<7-> [approx]
+    ($ (poker_over) + (-10.5, -3) $) -- ($ (poker_over) + (-9, -3) $)
+    -- ($ (poker_over) + (-9, -4.5) $) -- ($ (poker_over) + (-7.5, -4.5) $)
+    -- ($ (poker_over) + (-7.5, -6) $) -- ($ (poker_over) + (-6, -6) $)
+    -- ($ (poker_over) + (-6, -7.5) $) -- ($ (poker_over) + (-4.5, -7.5) $)
+    -- ($ (poker_over) + (-4.5, -9) $) -- ($ (poker_over) + (0, -9) $)
+    -- ($ (poker_over) + (0, -12) $) -- ($ (poker_over) + (1.5, -12) $)
+    -- ($ (poker_over) + (1.5, -15) $) -- ($ (poker_over) + (3, -15) $)
+    -- ($ (poker_over) + (3, -9) $) -- ($ (poker_over) + (7.5, -9) $)
+    -- ($ (poker_over) + (7.5, -7.5) $) -- ($ (poker_over) + (9, -7.5) $)
+    -- ($ (poker_over) + (9, -6) $) -- ($ (poker_over) + (10.5, -6) $)
+    -- ($ (poker_over) + (10.5, 6) $) -- ($ (poker_over) + (9, 6) $)
+    -- ($ (poker_over) + (9, 9) $) -- ($ (poker_over) + (7.5, 9) $)
+    -- ($ (poker_over) + (7.5, 10.5) $) -- ($ (poker_over) + (6, 10.5) $)
+    -- ($ (poker_over) + (6, 12) $) -- ($ (poker_over) + (4.5, 12) $)
+    -- ($ (poker_over) + (4.5, 13.5) $) -- ($ (poker_over) + (1.5, 13.5) $)
+    -- ($ (poker_over) + (1.5, 15) $) -- ($ (poker_over) + (-7.5, 15) $)
+    -- ($ (poker_over) + (-7.5, 13.5) $) -- ($ (poker_over) + (-9, 13.5) $)
+    -- ($ (poker_over) + (-9, 12) $)-- ($ (poker_over) + (-10.5, 12) $)
+    -- cycle;
+
+  \node<3-> [label=below:{Recursion-free}] (poker_under) at (-10, -20){\usebox{\pokerface}};
+  \draw<3-4> [approx]
+    ($ (poker_under) + (-6, -5) $) rectangle ($ (poker_under) + (6, 7) $);
+  \draw<5> [approx]
+    ($ (poker_under) + (-6, -5) $) -- ($ (poker_under) + (6, -5) $)
+    -- ($ (poker_under) + (6, 7) $) -- ($ (poker_under) + (0, 7) $)
+    -- ($ (poker_under) + (0, 13) $) -- ($ (poker_under) + (-6, 13) $)
+    -- cycle;
+  \draw<6> [approx]
+    ($ (poker_under) + (-9, 1) $)  -- ($ (poker_under) + (-6, 1) $)
+    -- ($ (poker_under) + (-6, -5) $) -- ($ (poker_under) + (0, -5) $)
+    -- ($ (poker_under) + (0, -8) $) -- ($ (poker_under) + (3, -8) $)
+    -- ($ (poker_under) + (3, -5) $) -- ($ (poker_under) + (6, -5) $)
+    -- ($ (poker_under) + (6, -2) $) -- ($ (poker_under) + (9, -2) $)
+    -- ($ (poker_under) + (9, 4) $) -- ($ (poker_under) + (6, 4) $)
+    -- ($ (poker_under) + (6, 7) $) -- ($ (poker_under) + (3, 7) $)
+    -- ($ (poker_under) + (3, 10) $) -- ($ (poker_under) + (0, 10) $)
+    -- ($ (poker_under) + (0, 13) $) -- ($ (poker_under) + (-6, 13) $)
+    -- ($ (poker_under) + (-6, 10) $) -- ($ (poker_under) + (-9, 10) $)
+    -- cycle;
+  \draw<7-> [approx]
+    ($ (poker_under) + (-9, -0.5) $)  -- ($ (poker_under) + (-7.5, -0.5) $)
+    -- ($ (poker_under) + (-7.5, -3.5) $) -- ($ (poker_under) + (-6, -3.5) $)
+    -- ($ (poker_under) + (-6, -5) $) -- ($ (poker_under) + (-4.5, -5) $)
+    -- ($ (poker_under) + (-4.5, -6.5) $) -- ($ (poker_under) + (-1.5, -6.5) $)
+    -- ($ (poker_under) + (-1.5, -8) $) -- ($ (poker_under) + (4.5, -8) $)
+    -- ($ (poker_under) + (4.5, -6.5) $) -- ($ (poker_under) + (7.5, -6.5) $)
+    -- ($ (poker_under) + (7.5, -3.5) $) -- ($ (poker_under) + (9, -3.5) $)
+    -- ($ (poker_under) + (9, 4) $) -- ($ (poker_under) + (7.5, 4) $)
+    -- ($ (poker_under) + (7.5, 7) $) -- ($ (poker_under) + (6, 7) $)
+    -- ($ (poker_under) + (6, 8.5) $) -- ($ (poker_under) + (4.5, 8.5) $)
+    -- ($ (poker_under) + (4.5, 10) $) -- ($ (poker_under) + (3, 10) $)
+    -- ($ (poker_under) + (3, 11.5) $) -- ($ (poker_under) + (0, 11.5) $)
+    -- ($ (poker_under) + (0, 13) $) -- ($ (poker_under) + (-6, 13) $)
+    -- ($ (poker_under) + (-6, 11.5) $) -- ($ (poker_under) + (-7.5, 11.5) $)
+    -- ($ (poker_under) + (-7.5, 10) $) -- ($ (poker_under) + (-9, 10) $)
+    -- cycle;
+
+%% Draw edges
+  \path<1>
+    (creeper) edge (basic_analyzer.west);
+  \path<2>
+    (poker) edge node [draw, cross out, red] {} (basic_analyzer.west);
+  \path<1-2>
+    (basic_analyzer.east) edge (error) edge (pass);
+  \path<3->
+    (poker) edge node[anchor=north,sloped] (under-approx) {Under-approx.}(poker_under)
+    (poker_under) edge (analyzer_under)
+    (analyzer_under.east) edge node[anchor=north,sloped]{Error} (error)
+    ;
+  \path<3>
+    (poker_over)  edge (analyzer_over)
+    (analyzer_over.east) edge node[anchor=south,sloped]{Pass} (pass)
+    (analyzer_over.north) edge[bend right] node[anchor=south,sloped]{\only<7>{\Ccancel[red]}{Error, Refine}} (poker_over)
+    (analyzer_under.north) edge[bend right] node[anchor=south,sloped]{Pass, Refine} (poker_under)
+    ;
+  \path<3-4>
+    (poker) edge node[anchor=south,sloped] (over-approx) {\only<4>{\Ccancel[red]}{Over-approx.}}(poker_over)
+    ;
+  \path<4->
+    (analyzer_under.north) edge node[anchor=west]{Pass, \only<4>{\color{red}}Compute over-approx.} (poker_over)
+    (poker_over) edge (check)
+    (check) edge node[anchor=south]{Pass} (pass)
+    (check) edge node[anchor=west]{Error, Refine} (poker_under)
+    ;
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Overview}
 \tikzstyle{decision} = [diamond, aspect=2, draw, align=center]
 \tikzstyle{data} = [draw,trapezium,trapezium left angle=70,trapezium right angle=-70,minimum height=0.6cm]
 \tikzstyle{input} = [data, text width=1.7cm]
 \tikzstyle{output} = [rounded corners, draw, text width=1.5cm, align=center,minimum height=0.7cm]
-\tikzstyle{cross_out} = [red, pos=0.5, auto=false, cross out, -, draw, thick]
 
 \begin{figure}
 \begin{tikzpicture}[node distance=1cm and 1.2cm, auto,>=latex', thick]
@@ -44,61 +186,37 @@
   \useasboundingbox (-5.7,-1) rectangle (4.3,4);
 
   % Nodes
-  \uncover<1-2,5->{ \node[decision] (analyzer) {Analyzer};}
-  \node[input, left=of analyzer] (rf_prog) {
-    \only<1>{Arbitrary}\only<2->{Intra-proc.}
-    Program
-  };
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Intra-proc. Program};
 
-  \uncover<10->{
-    \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
-  }
-  \uncover<11->{
-    \node[decision,above=.5cm of proof] (check) {Check};
-  }
+  \node[data, above=.5cm of analyzer,text width=18mm] (proof) {Summary Candidates};
 
-  \node<2->  [input] (rc_prog) at (rf_prog |- check) {Recursive Program};
-  \node<3-4> [decision] (new_analyzer)
-    {\only<4>{\Ccancel[red]}{Analyzer$2.0$}};
+  \node[decision,above=.5cm of proof] (check) {Check};
 
+  \node[input] (rc_prog) at (rf_prog |- check) {Recursive Program};
   \node[output, right=of analyzer] (unsafe) {ERROR};
-  
-  \uncover<1-8, 14->{
-    \node[output] (safe) at (check -| unsafe) {\only<8>{\Ccancel[red]}{PASS}};
-  }
+  \node[output] (safe) at (check -| unsafe) {PASS};
 
   % Edges
-  \path[->]<1-2,5-> 
+  \path[->]
     (rf_prog) edge (analyzer)
     (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
-  \path[->]<1-2,5-8>
-    (analyzer) edge node[anchor=south,sloped]{Pass} (safe);
 
-  \path[->]<2> (rc_prog) edge node [cross_out]{} (analyzer);
-
-  \path[->]<3-4> 
-    (rc_prog) edge (new_analyzer)
-    (rf_prog) edge (new_analyzer)
-    (new_analyzer) edge (safe)
-    (new_analyzer) edge (unsafe);
-
-  \path[->]<5->
+  \path[->]
     (rc_prog) edge 
-      node[anchor=east]{\only<5-6>{\only<6>{\Ccancel[red]}{Exact Transform}}\only<7->{Under-approx.}}
+      node[anchor=east]{Under-approx.}
     (rf_prog);
 
-  \path[->]<9->
-    (analyzer) edge node[anchor=west]{Pass{\uncover<10->{, Compute Summaries}}} (proof);
-  \path[->]<11->
+  \path[->]
+    (analyzer) edge node[anchor=west]{Pass, Compute Summaries} (proof);
+  \path[->]
     (proof) edge (check)
     (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
     (check) edge node[anchor=south,sloped]{Pass} (safe);
 
 \end{tikzpicture}
 \end{figure}
-
 \end{frame}
-
 
 \begin{frame}{Our Contributions}
 
@@ -107,7 +225,7 @@
 
 \begin{itemize}
   \item<+-> {Build\only<+->{ and Refine} under-approximation}
-  \item<+-> {Compute\only<+->{ and Check} function summaries}
+  \item<+-> {Compute\only<+->{ and Check} function summaries for over-approximation}
 \end{itemize}
 
 \uncover<+->{

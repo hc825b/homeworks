@@ -175,10 +175,11 @@ int mc91(int m) {
 \end{overlayarea}
 \end{frame}
 
-\begin{frame}{Under-approximation of Recursive Call}
-  Under-approximate recursive function call
+\begin{frame}{\only<1>{Under}\only<2>{Over}-approximation of Recursive Call}
+  \only<1>{Under}\only<2>{Over}-approximate recursive function call
   \begin{itemize}
-    \item Use $\mathtt{assume\ false}$
+    \item Use $\mathtt{assume\ \only<1>{false}\only<2>{\mathtt{S}}}$ 
+          \only<2>{if $\mathtt{S}$ summarizes the behavior of $\mathtt{g}$}
   \end{itemize}
 
   \begin{figure}
@@ -200,7 +201,7 @@ int mc91(int m) {
       node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$}
     (1)
 
-    (00) edge node {$\mathtt{assume\ false}$} (01);
+    (00) edge node {$\mathtt{assume\ \only<1>{false}\only<2>{\mathtt{S}}}$} (01);
   \end{tikzpicture}
   \end{figure}
   \note {Block some of the execution paths to under-approximate computations}
@@ -517,4 +518,12 @@ RET_1:;
   \label{figure:unwind-mccarthy91}
   \vspace{-1cm}
 \end{figure}
+\end{frame}
+
+\begin{frame}{Alternative Unwinding Method}
+
+\alert{TODO}
+
+Describe the alternative method, and how it can prevent size explosion
+
 \end{frame}
