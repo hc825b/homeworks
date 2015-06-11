@@ -73,7 +73,6 @@ E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
   \right.
 \end{array}
 \]
-Detail of $\textsc{addindex}(c, i)$ is not described here for simplicity.
 
 Then, given a CFG $G^\fun{f}=\langle V, E,\textmd{cmd}^\fun{f},
 \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
@@ -132,33 +131,54 @@ but this does not affect the states over program variables of $G^\fun{f}$
 before and after the function.
 
 \subsection{Alternative Unwinding Method}\label{subsec:new-unwinding}
-In the previously mentioned method, there is an obvious drawback that it will
+The previously mentioned method comes with an obvious drawback that it will
 cause exponential increase in size of the unwound program.
 Considering the McCarthy 91 function, the number of recursive calls in the
-program doubles in the unwound function at each iteration of 
+program doubles in the unwound function at each iteration of
 Algorithm~\ref{algorithm:overview},
 and the program size doubles at next iteration since every function call is
 inlined, i.e., transformed to a copy of the function body.
 Therefore, we devised another function $\textsc{unwind'}(G^\fun{f})$ that
-preserves certain function calls to prevent exponential growth, 
-and still provides more and more accurate under-approximation in each
-iteration.
+inserts extra functions and function calls instead of inlining to prevent
+exponential growth. The $\textsc{unwind'}(G^\fun{f})$ preserves the behavior
+of original function as well.
+
+The intuition behind the new method is simple.
+We give a function body $G^\fun{f}$ which contains multiple function call edges
+to the same functions $\fun{g}$ as an example.
+In the old method, each function call to $\fun{g}$ is replaced by almost the
+same function body $G^\fun{g}$ except being indexed during unwinding,
+and therefore the program size grows exponentially.
+The new method directly replace those calls with calls to a newly created
+function $\fun{g}_i$ with the function body $G^\fun{g}$.
+Hence, only one additional function body is introduced for multiple function
+calls. The formal definition is given as follows.
+
+First, we define how to insert a copy of $\fun{f}$ into the program $P$.
+That is, given an index value $i$, we create a new function $\fun{f}_i$ with
+the body $G^{\fun{f}_i}$ which is exactly the same as $G^\fun{f}$.
+\begin{equation*}
+  \textsc{duplicate}_P(\fun{f}, i) = P\cup\{G^{\fun{f}_i}\} \text{ where }
+  G^{\fun{f}_i} = G^\fun{f}
+\end{equation*}
+To unwind a given recursive function $\fun{f}$,
+\todo[inline]{The formal definition of new unwinding method}
+\todo[inline]{Proposition for unwind'}
+Since $\fun{g}_i$ does not belongs to original program $P$, it won't introduce
+recursion.
+
 \todo[inline]{
 Move following words to a better section
+
+
 
 \{
 This method requires the underlying analyzers dealing with
 recursion-free functions.
 Fortunately most modern analyzers support this feature.
 \}
+\{
+It still provides more and more accurate under-approximation in each
+iteration.
+\}
 }
-
-First, we define how to insert a copy of $\fun{f}$ into the program $P$.
-That is, given an index value $i$, we create a new function $\fun{f}_i$ with 
-the body $G^{\fun{f}_i}$ which is exactly the same as $G^\fun{f}$.
-\begin{equation*}
-  \textsc{duplicate}(P, \fun{f}, i) = P\cup\{G^{\fun{f}_i}\} \text{ where }
-  G^{\fun{f}_i} = G^\fun{f}
-\end{equation*}
-To unwind a given recursive function $\fun{f}$, 
-\todo[inline]{The formal definition of new unwinding method}
