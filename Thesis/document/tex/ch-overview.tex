@@ -26,6 +26,7 @@ computation, our algorithm unwinds the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}[htb]
+\begin{doublespace}
   \KwIn{A program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
 
   $k \leftarrow 0$\;
@@ -52,6 +53,7 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
     $\textmd{complete?} \leftarrow \textmd{CheckSummary} (P_k, S)$\;
   }
   \Return $\mathit{Pass} (\Pi (\underline{G}^{\fun{main}}_k, \TT))$, $S$\;
+\end{doublespace}
   \caption{Overview}
   \label{algorithm:overview}
 \end{algorithm} 
