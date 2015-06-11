@@ -3,8 +3,8 @@
 As introduced in Chapter~\ref{ch:overview}, our algorithm produces more and more
 accurate under-approximations through unwinding the program.
 The function $\textsc{unwind}(G^\fun{f})$ not only returns a CFG $K^\fun{f}$
-obtained by replacing all function call edges in $G^\fun{f}$ with the CFG of
-the called function,
+obtained by replacing all function call edges in $G^\fun{f}$ with the CFGs of
+the called functions,
 but also keeps the program behavior of $K^\fun{f}$ be the same as the behavior
 of $G^\fun{f}$ (Figure~\ref{figure:unwinding}).
 The formal definition is given below.
@@ -49,7 +49,7 @@ $\mathtt{return}\ \overline{q}$ with assignments to return variables
 $\overline{\texttt{r}}^\fun{f} := \overline{q}$ and then renaming all variables
 and locations in $G^\fun{f}$ with the given index value $i$.
 The function $\textsc{addindex}(c, i)$ is used to rename all variables in a
-command $c$with index $i$.
+command $c$ with index $i$.
 Formally,
 \[
 \begin{array}{l}
@@ -140,16 +140,25 @@ Algorithm~\ref{algorithm:overview},
 and the program size doubles at next iteration since every function call is
 inlined, i.e., transformed to a copy of the function body.
 Therefore, we devised another function $\textsc{unwind'}(G^\fun{f})$ that
-preserves part of the function calls to prevent exponential growth, 
-but it still provides more and more accurate under-approximation in each
+preserves certain function calls to prevent exponential growth, 
+and still provides more and more accurate under-approximation in each
 iteration.
-This method requires that the underlying analyzers can deal with
-recursion-free functions, and fortunately most analyzers support this feature.
+\todo[inline]{
+Move following words to a better section
 
-To unwind a given recursive function $\fun{f}$, we first duplicate the function body
-$G^\fun{f}$
+\{
+This method requires the underlying analyzers dealing with
+recursion-free functions.
+Fortunately most modern analyzers support this feature.
+\}
+}
+
+First, we define how to insert a copy of $\fun{f}$ into the program $P$.
+That is, given an index value $i$, we create a new function $\fun{f}_i$ with 
+the body $G^{\fun{f}_i}$ which is exactly the same as $G^\fun{f}$.
 \begin{equation*}
-  \textsc{duplicate}(\langle \mathbf{pname},main,\fun{body}\rangle, \fun{rec},i)
-    = \langle \mathbf{pname}\cup\{rec_1, rec_2\dotsc rec_i\},main,\fun{body}\rangle
+  \textsc{duplicate}(P, \fun{f}, i) = P\cup\{G^{\fun{f}_i}\} \text{ where }
+  G^{\fun{f}_i} = G^\fun{f}
 \end{equation*}
+To unwind a given recursive function $\fun{f}$, 
 \todo[inline]{The formal definition of new unwinding method}
