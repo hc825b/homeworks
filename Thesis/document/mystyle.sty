@@ -1,7 +1,6 @@
 \ProvidesPackage{mystyle}
 
 \RequirePackage[noend]{algorithm2e} % For algorithm related environments
-
 \RequirePackage{newtxmath} % For math symbols and equations
 \RequirePackage{bussproofs} % For writing logic proof
 
@@ -24,11 +23,13 @@
 \newcommand{\hide}[1]{}%{#1}}
 \newcommand{\smallnode}[1]{{#1}}
 
+\newcommand{\prog}[1]{\textup{\texttt{{#1}}}}
 \newcommand{\fun}[1]{\mathtt{{#1}}}
-\newcommand{\Prog}[1]{\texttt{{#1}}}
 \newcommand{\TT}{\mathtt{true}}
 \newcommand{\FF}{\mathtt{false}}
 \newcommand{\assert}[1]{(\!| {#1} |\!)}
+
+\newcommand{\method}[1]{\textup{\textsc{#1}}}
 
 % Environments 
 \newtheorem{theorem}{Theorem}[chapter]

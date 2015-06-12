@@ -2,10 +2,10 @@
 \section{Computing Summaries}\label{sec:computing-summary}
 
 \todo[inline]{Rewrite marking function}
-In order to help extracting summaries from the $K^\fun{f}$, $\textsc{unwind}(G^\fun{f})$ annotates in $K^\fun{f}$ the outermost pair of the entry and exit locations ${s_i}$ and ${e_i}$ of each unwound function $\fun{g}$ with an additional superscript $\fun{g}$, i.e., $s_i^\fun{g}$ and $e_i^\fun{g}$
-The function $\textsc{mark}_\fun{f}(G^\fun{g})$ returns a CFG that is identical to $G^\fun{g}$, except that, for the case that no location with superscript $\fun{g}$ appears in $V$ (the locations of $G^\fun{f}$), it annotates the entry and exit locations, $s_k$ and $e_k$, of the returned CFG with superscript $\fun{g}$, i.e., $s_k^\fun{g}$ and $e_k^\fun{g}$. That is, 
+In order to help extracting summaries from the $K^\fun{f}$, $\method{unwind}(G^\fun{f})$ annotates in $K^\fun{f}$ the outermost pair of the entry and exit locations ${s_i}$ and ${e_i}$ of each unwound function $\fun{g}$ with an additional superscript $\fun{g}$, i.e., $s_i^\fun{g}$ and $e_i^\fun{g}$
+The function $\method{mark}_\fun{f}(G^\fun{g})$ returns a CFG that is identical to $G^\fun{g}$, except that, for the case that no location with superscript $\fun{g}$ appears in $V$ (the locations of $G^\fun{f}$), it annotates the entry and exit locations, $s_k$ and $e_k$, of the returned CFG with superscript $\fun{g}$, i.e., $s_k^\fun{g}$ and $e_k^\fun{g}$. That is, 
 \[
-\textsc{mark}_\fun{f}(\langle
+\method{mark}_\fun{f}(\langle
 V, E,\textmd{cmd}^\fun{g}, \overline{\texttt{u}}^\fun{g}, \overline{\texttt{r}}^\fun{g},s,e \rangle) = 
 \langle V, E,\textmd{cmd}^\fun{g}, \overline{\texttt{u}}^\fun{g}, \overline{\texttt{r}}^\fun{g},s,e \rangle
 \]
@@ -15,7 +15,7 @@ Note that, for each unwinding of function call, we mark only the outermost pair 
 
 Let the CFG for the $\fun{main}$ function $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\textmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
 Function 
-ComputeSummary($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
+ComputeSummary($\prog{P}_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
 extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V
 \}$ (Algorithm~\ref{algorithm:update-summary}). 
 
@@ -23,12 +23,12 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
 \begin{doublespace}
   \KwIn
   {
-    $P_k$: a program;
+    $\prog{P}_k$: a program;
     $\{ I_\ell : \ell \in V \}$: an inductive invariant of $\underline{G}^{\fun{main}}_k$
   }
   \KwOut{$S[\bullet]$: function summaries}
 
-  \ForEach{function $\fun{f}$ in the program $P_k$}
+  \ForEach{function $\fun{f}$ in the program $\prog{P}_k$}
   { 
     $S[\fun{f}]:=\TT$\;
     \ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
@@ -48,11 +48,11 @@ extracts summaries from the inductive invariant $\Pi (\underline{G}^{\fun{main}}
   \Return $S[\bullet]$\;
 \end{doublespace}
   \caption{
-  $\textmd{ComputeSummary}(P_k, \Pi (\underline{G}^{\fun{main}}_k, \TT))$}
+  $\textmd{ComputeSummary}(\prog{P}_k, \Pi (\underline{G}^{\fun{main}}_k, \TT))$}
   \label{algorithm:update-summary}
 \end{algorithm}
 
-For each function $\fun{f}$ in the program $P_k$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
+For each function $\fun{f}$ in the program $\prog{P}_k$, we first initialize its summary $S[\fun{f}]$ to $\TT$.
 The set $X_\fun{f}$ contains all variables appearing in $\underline{G}^{\fun{main}}_k$ except the set of formal parameters and return variables of $\fun{f}$.
 For each pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underline{G}^{\fun{main}}_k$, if the invariant of location $s_i^\fun{f}$ contains return variables of $\fun{f}$, we update $S[\fun{f}]$ to the formula $S[\fun{f}]\wedge \forall X_\fun{f}.I_{e_i^\fun{f}}$. Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$ (Figure~\ref{figure:updating-summary}).
 
@@ -62,7 +62,7 @@ For each pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$ in $\underli
       distance=2cm,thick,node/.style={circle,draw}]
 
       \draw [fill=gray!10] (3.5, -1) ellipse (1.8 and 1.5);
-      \node (text) at (3.5, -1) {$\textsc{mark}_\fun{f}(\textsc{rename}(G_\fun{f},i))$};
+      \node (text) at (3.5, -1) {$\method{mark}_\fun{f}(\method{rename}(G_\fun{f},i))$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
       \node[node] (10) at (3.5, 0)  {$s_i^\fun{f}$};

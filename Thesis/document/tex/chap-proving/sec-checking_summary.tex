@@ -1,16 +1,15 @@
 
 \section{Checking Summaries}\label{sec:checking-summary}
 
-Here we explain how to handle the function $\textmd{CheckSummary} (P_k, S[\bullet])$, where $P_k$ is an unwound program and $S[\bullet]$ is an
+Here we explain how to handle the function $\textmd{CheckSummary} (\prog{P}_k, S[\bullet])$, where $\prog{P}_k$ is an unwound program and $S[\bullet]$ is an
 array of function summaries.
 Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
-control flow graph for the function $\fun{f}$ in $P_k$. In order to check whether the function
+control flow graph for the function $\fun{f}$ in $\prog{P}_k$. In order to check whether the function
 summary $S[{\mathtt{f}}]$ for $\mathtt{f}$ specifies the relation 
 between the formal parameters and return values of $\mathtt{f}$, 
 we define another control flow graph
 $\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
 \begin{equation*}
-\hspace{-0.2cm}
   \begin{array}{rcl}
     \hat{\textmd{cmd}}^\fun{f} (\ell, \ell') & = &
     \left\{
@@ -102,7 +101,7 @@ following proposition:
   $\mathtt{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
   parameters and return variables of each function. If $\assert{\TT}\
   \hat{G}^\fun{g}_{k,S}\ \assert{S[\mathtt{g}]}$ for every
-  function $\mathtt{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  function $\mathtt{g}$ in $\prog{P}$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
   \fun{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$.
 \end{proposition}
 
@@ -131,20 +130,20 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
 \begin{corollary}
   Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
   $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
-  parameters and return variables of each function. If $\textsc{BasicChecker}
+  parameters and return variables of each function. If $\method{BasicChecker}
   (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
-  $\fun{g}$ in $P$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  $\fun{g}$ in \prog{P}, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
   \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\mathtt{f}]}$.
   \label{corollary:check-summary}
 \end{corollary}
 
 \begin{algorithm}[t]
 \begin{doublespace}
-  \KwIn{$P_k$ : an unwound program; $S[\bullet]$ : an array of function summaries}
+  \KwIn{$\prog{P}_k$ : an unwound program; $S[\bullet]$ : an array of function summaries}
   \KwOut{$\TT$ if all function summaries are valid; $\FF$ otherwise}
-  \ForEach{function $G_k^\fun{g} \in P_k$}
+  \ForEach{function $G_k^\fun{g} \in \prog{P}_k$}
   {
-    \lIf{$\textsc{BasicChecker} (\tilde{G}_{k,S}^{\fun{g}}) \neq
+    \If{$\method{BasicChecker} (\tilde{G}_{k,S}^{\fun{g}}) \neq
       \mathit{Pass}$}
     {
       \Return $\FF$
@@ -152,6 +151,6 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
   }
   \Return $\TT$\;
 \end{doublespace}
-  \caption{$\textmd{CheckSummary} (P_k, S)$}
+  \caption{$\textmd{CheckSummary} (\prog{P}_k, S)$}
   \label{algorithm:check-summary}
 \end{algorithm}
