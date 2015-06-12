@@ -2,11 +2,19 @@
 \section{Unwinding}\label{sec:unwinding}
 As introduced in Chapter~\ref{ch:overview}, our algorithm produces more and more
 accurate under-approximations through unwinding the program.
-The function $\textsc{unwind}(G^\fun{f})$ not only returns a CFG $K^\fun{f}$
+An important feature of unwinding is that it should keep the behavior of unwound
+program being the same as the original one.
+In this section, we introduce two unwinding methods accompanied with simple 
+proofs of the equivalence between the original and unwound programs.
+
+\subsection{Function Inlining Method}\label{subsec:inlining}
+The function inlining method directly follows the concept of inline function in
+C/C++ language and compiler optimizations.
+It expands the body at the location a function call.
+We can achieve this in our program model.
+The function $\method{unwind}(G^\fun{f})$ returns a CFG $K^\fun{f}$
 obtained by replacing all function call edges in $G^\fun{f}$ with the CFGs of
-the called functions,
-but also keeps the program behavior of $K^\fun{f}$ be the same as the behavior
-of $G^\fun{f}$ (Figure~\ref{figure:unwinding}).
+the called functions~(Figure~\ref{figure:unwinding}).
 The formal definition is given below.
 
 \begin{figure}[t]
@@ -18,7 +26,7 @@ The formal definition is given below.
       \node[node] (1) at (-4, -2) {$\ell'$};
 
       \draw [fill=gray!10] (4, -1) ellipse (1.8 and 1.5);
-      \node (text) at (4, -1) {$\textsc{rename}(G_\fun{g},i)$};
+      \node (text) at (4, -1) {$\method{rename}(G_\fun{g},i)$};
       \node[node] (00) at (0, 0)  {$\ell$};
       \node[node] (01) at (0, -2) {$\ell'$};
       \node[node] (10) at (4, 0)  {\smallnode{$s_i$}};
@@ -43,17 +51,17 @@ The formal definition is given below.
   \label{figure:unwinding}
 \end{figure}
 
-We first define the function $\textsc{rename}(G^\fun{f},i)$.
+We first define the function $\method{rename}(G^\fun{f},i)$.
 It returns a CFG obtained by first replacing every return command
 $\mathtt{return}\ \overline{q}$ with assignments to return variables
 $\overline{\texttt{r}}^\fun{f} := \overline{q}$ and then renaming all variables
 and locations in $G^\fun{f}$ with the given index value $i$.
-The function $\textsc{addindex}(c, i)$ is used to rename all variables in a
+The function $\method{addindex}(c, i)$ is used to rename all variables in a
 command $c$ with index $i$.
 Formally,
 \[
 \begin{array}{l}
-\textsc{rename}(\langle V, E,\textmd{cmd}^\fun{f},\overline{\texttt{u}}^\fun{f},
+\method{rename}(\langle V, E,\textmd{cmd}^\fun{f},\overline{\texttt{u}}^\fun{f},
 \overline{\texttt{r}}^\fun{f},s,e \rangle,i)
 = \langle V_i, E_i,\textmd{cmd}_i^\fun{f},\overline{\texttt{u}}_i^\fun{f},
 \overline{\texttt{r}}_i^\fun{f},s_i,e_i \rangle \text{ such that}\\
@@ -65,9 +73,9 @@ E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
 \textmd{cmd}_i^\fun{f}(\ell_i,\ell'_i) =
   \left\{
   \begin{array}{ll}
-   \textsc{addindex}(\overline{\texttt{r}}^\fun{f}:=\overline{q}, i) &
+   \method{addindex}(\overline{\texttt{r}}^\fun{f}:=\overline{q}, i) &
      \text{if }\textmd{cmd}^\fun{f}(\ell,\ell')=\mathtt{return}\ \overline{q} \\
-   \textsc{addindex}(\textmd{cmd}^\fun{f}(\ell,\ell'), i) &
+   \method{addindex}(\textmd{cmd}^\fun{f}(\ell,\ell'), i) &
      \text{otherwise}
   \end{array}
   \right.
@@ -76,32 +84,32 @@ E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
 
 Then, given a CFG $G^\fun{f}=\langle V, E,\textmd{cmd}^\fun{f},
 \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
-we use $\hat{E} =\{(\ell, \ell')\in E: \textmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\textsc{idx}(e)$ that maps a call edge $e$ to a unique index value.
+we use $\hat{E} =\{(\ell, \ell')\in E: \textmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\method{idx}(e)$ that maps a call edge $e$ to a unique index value.
 \hide{ % TODO
-The predicate below then can be used to represent a renamed CFG $\textsc{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
+The predicate below then can be used to represent a renamed CFG $\method{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
 \[
 \begin{split}
-{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\textsc{idx}(\ell, \ell')=i  \\
-  \wedge \textsc{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
+{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
+  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
 \end{split}
 \]
 }
-Finally, we provide the formal definition of $\textsc{unwind}(G^\fun{f})$.
+Finally, we provide the formal definition of $\method{unwind}(G^\fun{f})$.
 \todo[inline]{The definition of \textmd{cmd} is not complete}
 \[
 \begin{array}{l}
-\textsc{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ such that} \\
+\method{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
 
-\begin{split}
- V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\textsc{idx}(\ell, \ell')=i  \\
-  \wedge \textsc{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
-\end{split}\\
+\begin{aligned}
+ V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
+  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
+\end{aligned}\\
 
-\begin{split}
- E_u = E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s_i),(e_i, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p})) \\
-  \wedge \textsc{idx}(\ell, \ell')=i \wedge \textsc{rename}(G^\fun{g},i) =
+\begin{aligned}
+ E_u = E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s_i),(e_i, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p})) \\
+  \wedge \method{idx}(\ell, \ell')=i \wedge \method{rename}(G^\fun{g},i) =
 \langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
-\end{split}\\
+\end{aligned}\\
 
 \textmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
@@ -120,13 +128,13 @@ Finally, we provide the formal definition of $\textsc{unwind}(G^\fun{f})$.
 \begin{proposition}
   Let $G^\fun{f}$ be a control flow graph. $P$ and $Q$ are logic formulas with
   free variables over program variables of $G^\fun{f}$. $\assert{P}\ G^\fun{f}\
-  \assert{Q}$ if and only if $\assert{P}\ \textsc{unwind} (G^\fun{f})\ \assert{Q}$.
+  \assert{Q}$ if and only if $\assert{P}\ \method{unwind}(G^\fun{f})\ \assert{Q}$.
 \end{proposition}
 \todo[inline]{Describe why unwound function and original function have the same
  behavior via simple Hoare rule}
-Essentially, $G^\fun{f}$ and $\textsc{unwind} (G^\fun{f})$ represent the same
+Essentially, $G^\fun{f}$ and $\method{unwind}(G^\fun{f})$ represent the same
 function $\fun{f}$. The only difference is that the latter has more program
-variables after unwinding,
+variables after unwinding,`
 but this does not affect the states over program variables of $G^\fun{f}$
 before and after the function.
 
@@ -138,39 +146,74 @@ program doubles in the unwound function at each iteration of
 Algorithm~\ref{algorithm:overview},
 and the program size doubles at next iteration since every function call is
 inlined, i.e., transformed to a copy of the function body.
-Therefore, we devised another function $\textsc{unwind'}(G^\fun{f})$ that
-inserts extra functions and function calls instead of inlining to prevent
-exponential growth. The $\textsc{unwind'}(G^\fun{f})$ preserves the behavior
-of original function as well.
+Therefore, we devised an alternative method $\method{unwind}_\prog{P}(G^\fun{f}, k)$
+that creates extra functions in program \prog{P} instead of inlining function
+calls to prevent exponential growth.
+Note that the $\method{unwind}_\prog{P}(G^\fun{f}, k)$ preserves the behavior of
+original function $\fun{f}$ in the modified program \prog{P} after unwinding.
 
-The intuition behind the new method is simple.
+The procedure of the new method is simple.
 We give a function body $G^\fun{f}$ which contains multiple function call edges
 to the same functions $\fun{g}$ as an example.
 In the old method, each function call to $\fun{g}$ is replaced by almost the
 same function body $G^\fun{g}$ except being indexed during unwinding,
 and therefore the program size grows exponentially.
-The new method directly replace those calls with calls to a newly created
-function $\fun{g}_i$ with the function body $G^\fun{g}$.
-Hence, only one additional function body is introduced for multiple function
-calls. The formal definition is given as follows.
+The new method creates a new function $\fun{g}_k$ with a given index value $k$.
+The function $\fun{g}_k$ has exactly the same function body $G^\fun{g}$.
+Those calls to $\fun{g}$ are then replaced with calls to $\fun{g}_k$.
+Only one additional function body is introduced for multiple function
+calls.
+The formal definition is given as follows.
 
-First, we define how to insert a copy of $\fun{f}$ into the program $P$.
-That is, given an index value $i$, we create a new function $\fun{f}_i$ with
-the body $G^{\fun{f}_i}$ which is exactly the same as $G^\fun{f}$.
-\begin{equation*}
-  \textsc{duplicate}_P(\fun{f}, i) = P\cup\{G^{\fun{f}_i}\} \text{ where }
-  G^{\fun{f}_i} = G^\fun{f}
-\end{equation*}
-To unwind a given recursive function $\fun{f}$,
-\todo[inline]{The formal definition of new unwinding method}
-\todo[inline]{Proposition for unwind'}
-Since $\fun{g}_i$ does not belongs to original program $P$, it won't introduce
-recursion.
+First, we define $\method{duplicate}_\prog{P}(\fun{g}, k)$ to copy $\fun{g}$ in
+the program \prog{P}.
+Given $k$ indicating the $k$-th iteration in Algorithm~\ref{algorithm:overview},
+we create a new function $\fun{g}_k$ with the body $G^{\fun{g}_k}$ which is
+exactly the same as $G^\fun{g}$.
+\[
+  \method{duplicate}_\prog{P}(G^\fun{g}, k)
+    = \prog{P}\cup\{G^{\fun{g}_k}:\text{ $\fun{g}_k$ is a new function}\} \text{ where }
+    G^{\fun{g}_k} = G^\fun{g}
+\]
+Then, to unwind a given CFG $G^\fun{f}$, we produce copies of the functions
+called by $\fun{f}$ and replace all call edge by calls to the duplication.
+Formally, the definition of $\method{unwind}_\prog{P}(G^\fun{f})$ is as below.
+~(Please refer to \S~\ref{subsec:inlining} for definitions of the symbols).
+\[
+\begin{array}{l}
+\method{unwind}_\prog{P}(G^\fun{f})
+  = \langle V, E,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
+  
+\textmd{cmd}_u^\fun{f} (\ell, \ell') =
+\left\{
+  \begin{array}{ll}
+  (\overline{\texttt{x}}:=\fun{g}_k(\overline{p})) &\text{if } 
+    \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
+    \land \fun{g}_k \in \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
+  \textmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
+  \end{array}
+\right.
+\
+\end{array}
+\]
+Notice that if two functions $\fun{fa}$ and $\fun{fb}$ both contain calls to $\fun{g}$
+and $\fun{fa}$ is unwound before $\fun{fb}$ with the same given $k$, 
+program \prog{P} will not increase in size during unwinding $\fun{fb}$.
+The reason is that $\fun{g}_k$ is introduced when $\fun{fa}$ is unwound.
+
+\begin{proposition}
+  Let $\fun{f}$ be a function without self or mutual recursion and 
+  $G^\fun{f}$ be its control flow graph.
+  $P$ and $Q$ are logic formulas with free variables over program variables of
+  $G^\fun{f}$.
+  $\assert{P}\ G^\fun{f}\ \assert{Q}$ if and only if 
+  $\assert{P}\ \method{unwind}_\prog{P}(G^\fun{f}, k)\ \assert{Q}$.
+\end{proposition}
+Since $\fun{g}_k$ does not belongs to original program \prog{P},
+it won't introduce recursion.
 
 \todo[inline]{
 Move following words to a better section
-
-
 
 \{
 This method requires the underlying analyzers dealing with
