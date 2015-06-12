@@ -1,15 +1,18 @@
 
 \chapter{Overview}\label{ch:overview}
 
-Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer, and let a program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$ consist of the CFGs of the $\fun{main}$ function and functions that may be invoked (transitively) from $\fun{main}$.
+Let \textsc{BasicAnalyzer} denote a recursion-free inductive program analyzer,
+and let a program $\Prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$
+consist of the CFGs of the $\fun{main}$ function and functions that may be
+invoked (transitively) from $\fun{main}$.
 Since non-recursive functions can be replaced by their control flow graphs
-after proper variable renaming, we assume that $P$ only contains the
-$\mathtt{main}$ and recursive functions. If $P$ does not contain
-recursive functions, \textsc{BasicAnalyzer} is able to check $P$ by
-computing inductive invariants.
+after proper variable renaming,
+we assume that \Prog{P} only contains the $\mathtt{main}$ and recursive functions.
+If \Prog{P} does not contain recursive functions, 
+\textsc{BasicAnalyzer} is able to check \Prog{P} by computing inductive invariants.
 
 
-When $P$ contains recursive functions, we transform $G^{\fun{main}}$ into a
+When \Prog{P} contains recursive functions, we transform $G^{\fun{main}}$ into a
 recursion-free program $\underline{G}^{\fun{main}}$. The program $\underline{G}^{\fun{main}}$
 under-approximates the computation of $G^{\fun{main}}$. That is, every computation
 of $\underline{G}^{\fun{main}}$ is also a computation of $G^{\fun{main}}$. If
@@ -17,40 +20,40 @@ of $\underline{G}^{\fun{main}}$ is also a computation of $G^{\fun{main}}$. If
 algorithm terminates and reports it. Otherwise,
 \textsc{BasicAnalyzer} has computed an inductive invariant for the
 recursion-free under-approximation $\underline{G}^{\fun{main}}$. Our algorithm
-computes function summaries of functions in $P$ from the inductive invariant of
+computes function summaries of functions in \Prog{P} from the inductive invariant of
 $\underline{G}^{\fun{main}}$. It then checks if every function summary
 over-approximates the computation of the corresponding function. If
-so, the algorithm terminates and reports that all assertions in $P$
+so, the algorithm terminates and reports that all assertions in \Prog{P}
 are satisfied. If a function summary does not over-approximate the
 computation, our algorithm unwinds the recursive function and
 reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}[htb]
 \begin{doublespace}
-  \KwIn{A program $P=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
+  \KwIn{A program $\Prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
 
   $k \leftarrow 0$\;
-  $P_0 \leftarrow P$\;
-  %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in P$}
+  $\Prog{P}_0 \leftarrow \Prog{P}$\;
+  %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in \Prog{P}$}
   %{
   %  $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
   %}
   \Repeat{$\textmd{complete?}$}
   {
     $k \leftarrow k + 1$\;
-    $P_{k} \leftarrow $ unwind every CFG in $P_{k-1}$\;
+    $\Prog{P}_{k} \leftarrow $ unwind every CFG in $\Prog{P}_{k-1}$\;
     \Switch{\textsc{BasicAnalyzer} ($\underline{G}^{\fun{main}}_k$)}
     {
       \Case{$\mathit{Pass(\Pi (\underline{G}^{\fun{main}}_k, \TT))}$:}
       {    
-        S := ComputeSummary($P_k,$ $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
+        S := ComputeSummary($\Prog{P}_k,$ $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
       }
       \lCase{$\mathit{Error}$:}
       {
         \Return $\mathit{Error}$
       }
     }
-    $\textmd{complete?} \leftarrow \textmd{CheckSummary} (P_k, S)$\;
+    $\textmd{complete?} \leftarrow \textmd{CheckSummary} (\Prog{P}_k, S)$\;
   }
   \Return $\mathit{Pass} (\Pi (\underline{G}^{\fun{main}}_k, \TT))$, $S$\;
 \end{doublespace}
@@ -129,18 +132,19 @@ check the under-approximation~$\underline{G}^{\fun{main}}_k$.
 When $\textsc{BasicAnalyzer}$ does not find any error in the
 under-approximation $\underline{G}^{\fun{main}}_k$, it computes an inductive
 invariant $\Pi (\underline{G}^{\fun{main}}_k, \TT)$. Our algorithm then computes
-summaries of functions in $P$. For each function $\fun{f}$ with
+summaries of functions in \Prog{P}. For each function $\fun{f}$ with
 formal parameters $\overline{\mathtt{u}}^{\fun{f}}$ and return
 variables $\overline{\mathtt{r}}^{\fun{f}}$, a \emph{function summary} for
 $\fun{f}$ is a 
 first-order conjunctive formula which specifies the relation between
 its formal parameters and return variables. The algorithm
-ComputeSummary($P_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$) computes summaries $S$ by inspecting
+ComputeSummary($\Prog{P}_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$) computes summaries $S$ by inspecting
 the inductive invariant $\Pi (\underline{G}^{\fun{main}}_k, \TT)$~(Section~\ref{sec:computing-summary}). 
 
 After function summaries are computed, Algorithm~\ref{algorithm:overview} 
 verifies whether function summaries correctly specify computations of
-functions by invoking CheckSummary$(P_k, S)$. The algorithm CheckSummary$(P_k, S)$ checks this by constructing a recursion-free control flow 
+functions by invoking CheckSummary$(\Prog{P}_k, S)$. 
+The algorithm CheckSummary$(\Prog{P}_k, S)$ checks this by constructing a recursion-free control flow 
 graph $\tilde{G}^{\mathtt{f}}$ with additional assertions for each
 function $\mathtt{f}$ and verifying $\tilde{G}^{\mathtt{f}}$ with
 \textsc{BasicAnalyzer}. The control flow graph
