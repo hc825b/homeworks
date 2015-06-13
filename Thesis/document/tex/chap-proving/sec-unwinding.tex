@@ -198,8 +198,8 @@ Formally, the definition of $\method{unwind}_\prog{P}(G^\fun{f})$ is as below.
 \]
 Notice that if two functions $\fun{fa}$ and $\fun{fb}$ both contain calls to $\fun{g}$
 and $\fun{fa}$ is unwound before $\fun{fb}$ with the same given $k$, 
-program \prog{P} will not increase in size during unwinding $\fun{fb}$.
-The reason is that $\fun{g}_k$ is introduced when $\fun{fa}$ is unwound.
+program $\fun{g}_k$ is not introduced again when $\fun{fb}$ is unwound.
+This also leads to less increase in program size.
 
 \begin{proposition}
   Let $\fun{f}$ be a function without self or mutual recursion and 
@@ -209,8 +209,20 @@ The reason is that $\fun{g}_k$ is introduced when $\fun{fa}$ is unwound.
   $\assert{P}\ G^\fun{f}\ \assert{Q}$ if and only if 
   $\assert{P}\ \method{unwind}_\prog{P}(G^\fun{f}, k)\ \assert{Q}$.
 \end{proposition}
-Since $\fun{g}_k$ does not belongs to original program \prog{P},
-it won't introduce recursion.
+In this method, the only modification on the $G^\fun{f}$ is substituting each
+function call to $\fun{g}$ with call to $\fun{g}_k$.
+Hence, the proposition should trivially hold if the behavior of $\fun{g}$ and
+$\fun{g}_k$ have the same behavior.
+Under the premise that $\fun{f}$ is a function without recursion,
+$\fun{g}_k$ won't introduce new recursion since it does not belongs to original
+program \prog{P}.
+Therefore, $\fun{g}_k$ and $\fun{g}$ simply behave the same because 
+$G^\fun{g}_k = G^\fun{g}$.
+Without the premise, $\fun{g}$ can directly or indirectly call to $\fun{f}$,
+and introducing $\fun{g}_k$ complicates the call graph further;
+Thus, proving the proposition without the premise is harder.
+Since the stronger proposition is not necessary for our work,
+we don't provide further proof here.
 
 \todo[inline]{
 Move following words to a better section
