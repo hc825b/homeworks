@@ -10,13 +10,13 @@ We consider a variant of the WHILE language from~\cite{NielsonHC99}:
     \mathtt{Expression} & \ni p & ::= &
     \mathtt{x} & \mathtt{x} \in \mathtt{Vars}\\
     & & \mid &
-    \mathtt{false}\ \mid\ \mathtt{true}\ \mid\ 
+    \FF\ \mid\ \TT\ \mid\
     \mathtt{0}\ \mid\ \mathtt{1}\ \mid\ \ldots\hspace{5mm} &
     \textmd{constant}\\
     & & \mid &
     \mathtt{nondet} & \textmd{nondeterministic value}\\
     & & \mid &
-    \mathtt{f}(\overline{p}) &
+    \fun{f}(\overline{p}) &
     \textmd{function invocation}\\
     & & \mid &
     p \odot p  & \odot \in \{ +, -, =, >, \mathtt{and}, \mathtt{or} \}\\
@@ -54,19 +54,19 @@ return values.
 since the behavior may be undefined.}
 
 A function $\fun{f}$ is represented as a \emph{control flow graph
-  (CFG)} $G^{\fun{f}} = \langle V, E, \textmd{cmd}^{\fun{f}},
+  (CFG)} $G^{\fun{f}} = \langle V, E, \cmd{cmd}^{\fun{f}},
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
 e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
 \subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
-E$ is labeled by the command $\textmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
-The special $\mathtt{main}$ function specifies where a program starts.
+E$ is labeled by the command $\cmd{cmd}^{\fun{f}} (\ell, \ell')$, $\overline{\mathtt{u}}^{\fun{f}}$ and $\overline{\mathtt{r}}^{\fun{f}}$ are \emph{formal parameters} and \emph{return variables} of $\fun{f}$, and $s,  e \in V$ are the \emph{entry} and \emph{exit} locations of $\fun{f}$. The superscript in $G^{\fun{f}}$ denotes the CFG corresponds to the function $\fun{f}$.
+The special $\fun{main}$ function specifies where a program starts.
 To simplify presentation, we assume the functions in a program use disjoint sets of variables and the values of formal parameters never change in a function. Notice that this will not affect the expressiveness of a CFG because one can still make copies of formal parameters by assignments and change the values of the copied versions. Also we assume that there are no global variables because they can be simulated by allowing simultaneous assignment to return variables~\cite{BallR00}. 
 
 Figure~\ref{figure:mccarthy91} shows control flow graphs for the
-McCarthy 91 program from~\cite{MannaP70}. The $\mathtt{main}$ function assumes the
+McCarthy 91 program from~\cite{MannaP70}. The $\fun{main}$ function assumes the
 variable $\mathtt{n}$ is non-negative. It then checks if the result
 of $\mathtt{mc91(n)}$ is no less than 90
-(Figure~\ref{figure:mccarthy91:main}). The $\mathtt{mc91}$ function
+(Figure~\ref{figure:mccarthy91:main}). The $\fun{mc91}$ function
 branches on whether the variable $\mathtt{m}$ is greater than 100. If
 so, it returns $\mathtt{m} - 10$. Otherwise, 
 $\mathtt{mc91(m)}$ stores the result of $\mathtt{mc91(m + 11)}$
@@ -101,7 +101,7 @@ figure. Loops can be modeled similarly.
         (3) edge 
             node [left] {$\mathtt{return\ 0}$} (4);
     \end{tikzpicture}
-    \caption{$\mathtt{main}$}
+    \caption{$\fun{main}$}
     \label{figure:mccarthy91:main}
   \end{subfigure}
   ~
@@ -129,7 +129,7 @@ figure. Loops can be modeled similarly.
         (4) edge [bend left=30]
             node [right] {$\mathtt{return\ t}$} (5);
     \end{tikzpicture}
-    \caption{$\mathtt{mc91}$}
+    \caption{$\fun{mc91}$}
     \label{figure:mccarthy91:mc91}
   \end{subfigure}
   \caption{McCarthy 91}
@@ -137,19 +137,19 @@ figure. Loops can be modeled similarly.
 \end{figure}
 
 %\todo{definitions of accessible variables, program states}
-Let $G^{\fun{f}} = \langle V, E ,\textmd{cmd}^{\fun{f}},
+Let $G^{\fun{f}} = \langle V, E ,\cmd{cmd}^{\fun{f}},
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,
 e \rangle$ be a CFG. An \emph{inductive invariant} $\Pi (G^{\fun{f}},
 I_0) = \{ I_\ell : \ell \in V \}$ for $G^{\fun{f}}$ from $I_0$ is a
 set of first-order logic formulae such that $I_s = I_0$, and
 for every $(\ell, \ell') \in E$ 
 \begin{equation*}
-I_{\ell} \wedge \tau_{\textmd{cmd}^\fun{f}(\ell, \ell')} \implies I'_{\ell'}
+I_{\ell} \wedge \tau_{\cmd{cmd}^\fun{f}(\ell, \ell')} \implies I'_{\ell'}
 \end{equation*}
 where $I'$ is obtained by replacing every $\mathtt{x} \in
 \mathtt{Vars}$ in $I$ with $\mathtt{x}' \in \mathtt{Vars}'$, and
-$\tau_{\textmd{cmd}^\fun{f} (\ell, \ell')}$ specifies the semantics of the command
-$\textmd{cmd}^\fun{f} (\ell, \ell')$. An inductive invariant $\Pi
+$\tau_{\cmd{cmd}^\fun{f} (\ell, \ell')}$ specifies the semantics of the command
+$\cmd{cmd}^\fun{f} (\ell, \ell')$. An inductive invariant $\Pi
 (G^{\fun{f}}, I_0)$ is an 
 over-approximation to the computation of $G^{\fun{f}}$ from $I_0$. More
 precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
@@ -160,12 +160,17 @@ satisfying $I_{\ell}$ when the computation reaches $\ell$.
 
 \section{Axiomatic Semantics and Hoare Logic}\label{sec:analysis}
 
-Let $T$ be a program fragment (it can be either a function represented as a CFG or a sequence of program commands). $P$ and $Q$
-are logic formulae. A \emph{Hoare triple} $\assert{P} T \assert{Q}$
-specifies that the program fragment $T$ will reach a program state satisfying
-$Q$ provided that $T$ starts with a program state satisfying $P$ and
-terminates. The formula $P$ is called the \emph{precondition} and $Q$ is the \emph{postcondition} of the Hoare triple. We use the standard proof rules for partial correctness with
-two additional rules for the assumption and assertion commands:
+Let $T$ be a program fragment (it can be either a function represented as a CFG
+or a sequence of program commands).
+$P$ and $Q$ are logic formulae.
+A \emph{Hoare triple} $\assert{P} T \assert{Q}$ specifies that the program
+fragment $T$ will reach a program state satisfying $Q$ provided that $T$ starts
+with a program state satisfying $P$ and terminates.
+The formula $P$ is called the \emph{precondition} and $Q$ is the
+emph{postcondition} of the Hoare triple.
+We use the standard proof rules for partial correctness
+\todo[inline]{Add reference for the standard proof rules}
+with two additional rules for the assumption and assertion commands:
 \begin{center}
   \AxiomC{}
   \LeftLabel{Assume}
@@ -192,10 +197,10 @@ checks if all assertions (specified by the $\mathtt{assert}$ command)
 are satisfied. One way to implement program analyzers is to compute
 inductive invariants. 
 \begin{proposition}
-Let $G^{\fun{f}} = \langle V, E,\textmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a CFG and $\Pi (G^{\fun{f}}, \mathtt{true})$ be an inductive invariant
+Let $G^{\fun{f}} = \langle V, E,\cmd{cmd}^{\fun{f}},\overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,  e \rangle$ be a CFG and $\Pi (G^{\fun{f}}, \TT)$ be an inductive invariant
 for $G^{\fun{f}}$ from 
-$\mathtt{true}$. If $\models I_{\ell} \implies B_{\ell}$ for every
-edge $(\ell, \ell') \in E$ with $\textmd{cmd} (\ell, \ell') =
+$\TT$. If $\models I_{\ell} \implies B_{\ell}$ for every
+edge $(\ell, \ell') \in E$ with $\cmd{cmd} (\ell, \ell') =
 \mathtt{assert} (B_{\ell})$, then all assertions in $G^{\fun{f}}$ are satisfied.
 \label{proposition:inductive-invariant}
 \end{proposition}

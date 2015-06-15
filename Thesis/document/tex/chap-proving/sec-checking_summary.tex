@@ -3,32 +3,32 @@
 
 Here we explain how to handle the function $\textmd{CheckSummary} (\prog{P}_k, S[\bullet])$, where $\prog{P}_k$ is an unwound program and $S[\bullet]$ is an
 array of function summaries.
-Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
+Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
 control flow graph for the function $\fun{f}$ in $\prog{P}_k$. In order to check whether the function
-summary $S[{\mathtt{f}}]$ for $\mathtt{f}$ specifies the relation 
+summary $S[{\fun{f}}]$ for $\fun{f}$ specifies the relation
 between the formal parameters and return values of $\mathtt{f}$, 
 we define another control flow graph
-$\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
+$\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\cmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
 \begin{equation*}
   \begin{array}{rcl}
-    \hat{\textmd{cmd}}^\fun{f} (\ell, \ell') & = &
+    \hat{\cmd{cmd}}^\fun{f} (\ell, \ell') & = &
     \left\{
       \begin{array}{ll}
         \overline{\mathtt{x}} := 
         \overline{\mathtt{nondet}};
-        \mathtt{assume\ }S[{\mathtt{g}}][
+        \mathtt{assume\ }S[{\fun{g}}][
         \mathtt{\overline{u}^g} \mapsto \overline{p},
         \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]    
         &
-        \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = 
-        \overline{\mathtt{x}} := \mathtt{g} (\overline{p})\\
+        \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') =
+        \overline{\mathtt{x}} := \fun{g} (\overline{p})\\
 		\mathtt{\overline{r}}^\fun{f} := \overline{q}
         &
-        \textmd{ if } \textmd{cmd}^\fun{f} (\ell, \ell') = \mathtt{return\ }
+        \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') = \mathtt{return\ }
         \overline{q}\\
-        \textmd{cmd}^\fun{f} (\ell, \ell')
+        \cmd{cmd}^\fun{f} (\ell, \ell')
         &
-		\textmd{ otherwise}        
+		\text{ otherwise}
       \end{array}
     \right.
   \end{array}
@@ -60,7 +60,7 @@ $\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\ma
       
       \path
         (00) edge [left]
-             node {$\overline{\mathtt{x}} := \mathtt{g}(\overline{p})$} (01)
+             node {$\overline{\mathtt{x}} := \fun{g}(\overline{p})$} (01)
 
         (arrow_s0) edge [dotted]
                   node {} (arrow_e0)
@@ -69,7 +69,7 @@ $\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\ma
              node {$
                \begin{array}{l}
                  \overline{\mathtt{x}} := \overline{\mathtt{nondet}};\\
-                 \mathtt{assume\ }S[\mathtt{g}]
+                 \mathtt{assume\ }S[\fun{g}]
                  [\mathtt{\overline{u}^g} \mapsto \overline{p},
                   \mathtt{\overline{r}^g} \mapsto \overline{\mathtt{x}}]
                \end{array}
@@ -97,43 +97,43 @@ Using the Hoare Logic proof rule for recursive functions~\cite{Oheimb99}, we hav
 following proposition:
 \begin{proposition}
   \label{proposition:check_summary}
-  Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
-  $\mathtt{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
+  Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
+  $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
   parameters and return variables of each function. If $\assert{\TT}\
-  \hat{G}^\fun{g}_{k,S}\ \assert{S[\mathtt{g}]}$ for every
-  function $\mathtt{g}$ in $\prog{P}$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
+  \hat{G}^\fun{g}_{k,S}\ \assert{S[\fun{g}]}$ for every
+  function $\fun{g}$ in $\prog{P}$, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
   \fun{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$.
 \end{proposition}
 
 It is easy to check $\assert{\TT}\ \hat{G}^\fun{g}_{k,S}\
-\assert{S[\mathtt{g}]}$ by program analysis. Let $G_k^{\mathtt{f}}$ be
-the control flow graph for the function $\mathtt{f}$ and
-$\hat{G}^\fun{g}_{k,S} = \langle V, E, \hat{\textmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ as
+\assert{S[\fun{g}]}$ by program analysis. Let $G_k^{\mathtt{f}}$ be
+the control flow graph for the function $\fun{f}$ and
+$\hat{G}^\fun{g}_{k,S} = \langle V, E, \hat{\cmd{cmd}}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ as
 above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
-\langle \tilde{V}, \tilde{E}, \tilde{\textmd{cmd}}^\fun{f} , \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
+\langle \tilde{V}, \tilde{E}, \tilde{\cmd{cmd}}^\fun{f} , \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ where
 \begin{equation*}
   \begin{array}{rcl}
     \tilde{V} & = & V \cup \{ \tilde{e} \}\\
     \tilde{E} & = & E \cup \{ (e, \tilde{e}) \}\\
-    \tilde{\textmd{cmd}}^\fun{f} (\ell, \ell') & = &
+    \tilde{\cmd{cmd}}^\fun{f} (\ell, \ell') & = &
     \left\{
       \begin{array}{ll}
-        \hat{\textmd{cmd}}^\fun{f} (\ell, \ell') & 
-        \textmd{ if } (\ell, \ell') \in E\\
-        \mathtt{assert\ } S[\mathtt{f}] &
-        \textmd{ if } (\ell, \ell') = (e, \tilde{e})
+        \hat{\cmd{cmd}}^\fun{f} (\ell, \ell') &
+        \text{ if } (\ell, \ell') \in E\\
+        \mathtt{assert\ } S[\fun{f}] &
+        \text{ if } (\ell, \ell') = (e, \tilde{e})
       \end{array}
     \right.
   \end{array}
 \end{equation*}
 
 \begin{corollary}
-  Let $G^\fun{f}_k = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
+  Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
   $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
   parameters and return variables of each function. If $\method{BasicChecker}
   (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
   $\fun{g}$ in \prog{P}, then $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} :=
-  \mathtt{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\mathtt{f}]}$.
+  \fun{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$.
   \label{corollary:check-summary}
 \end{corollary}
 

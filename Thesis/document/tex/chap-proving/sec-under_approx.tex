@@ -2,20 +2,20 @@
 
 \section{Under-approximation}\label{sec:under-approximation}
 
-Let $G^\fun{f} = \langle V, E, \textmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow
-graph. The control flow graph $\underline{G}^\fun{f} = \langle V, E,
-\underline{\textmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every
-function call in $G$ with $\mathtt{assume\ false}$
-(Figure~\ref{figure:under-approximation}). That is,
+Let $G^\fun{f} = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow graph.
+The control flow graph $\underline{G}^\fun{f} = \langle V, E,
+\underline{\cmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every function call in $G$ with $\mathtt{assume\ false}$
+(Figure~\ref{figure:under-approximation}).
+That is,
 \begin{equation*}
-  \underline{\textmd{cmd}}^\fun{f} (\ell, \ell') =
+  \underline{\cmd{cmd}}^\fun{f} (\ell, \ell') =
   \left\{
     \begin{array}{ll}
-      \textmd{cmd}^\fun{f} (\ell, \ell') & 
-      \textmd{if } \textmd{cmd}^\fun{f} (\ell, \ell') 
-      \textmd{ does not contain function calls}\\
+      \cmd{cmd}^\fun{f} (\ell, \ell') &
+      \text{if } \cmd{cmd}^\fun{f} (\ell, \ell')
+      \text{ does not contain function calls}\\
       \mathtt{assume\ false} &
-      \textmd{otherwise}
+      \text{otherwise}
     \end{array}
   \right.
 \end{equation*}

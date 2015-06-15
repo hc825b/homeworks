@@ -10,7 +10,7 @@ proofs of the equivalence between the original and unwound programs.
 \subsection{Function Inlining Method}\label{subsec:inlining}
 The function inlining method directly follows the concept of inline function in
 C/C++ language and compiler optimizations.
-It expands the body at the location a function call.
+It expands the body at the location of a function call.
 We can achieve this in our program model.
 The function $\method{unwind}(G^\fun{f})$ returns a CFG $K^\fun{f}$
 obtained by replacing all function call edges in $G^\fun{f}$ with the CFGs of
@@ -61,64 +61,64 @@ command $c$ with index $i$.
 Formally,
 \[
 \begin{array}{l}
-\method{rename}(\langle V, E,\textmd{cmd}^\fun{f},\overline{\texttt{u}}^\fun{f},
+\method{rename}(\langle V, E,\cmd{cmd}^\fun{f},\overline{\texttt{u}}^\fun{f},
 \overline{\texttt{r}}^\fun{f},s,e \rangle,i)
-= \langle V_i, E_i,\textmd{cmd}_i^\fun{f},\overline{\texttt{u}}_i^\fun{f},
+= \langle V_i, E_i,\cmd{cmd}_i^\fun{f},\overline{\texttt{u}}_i^\fun{f},
 \overline{\texttt{r}}_i^\fun{f},s_i,e_i \rangle \text{ such that}\\
 
 V_i = \{\ell_i:\ell \in V\} \\
 
 E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
 
-\textmd{cmd}_i^\fun{f}(\ell_i,\ell'_i) =
+\cmd{cmd}_i^\fun{f}(\ell_i,\ell'_i) =
   \left\{
   \begin{array}{ll}
    \method{addindex}(\overline{\texttt{r}}^\fun{f}:=\overline{q}, i) &
-     \text{if }\textmd{cmd}^\fun{f}(\ell,\ell')=\mathtt{return}\ \overline{q} \\
-   \method{addindex}(\textmd{cmd}^\fun{f}(\ell,\ell'), i) &
+     \text{if }\cmd{cmd}^\fun{f}(\ell,\ell')=\mathtt{return}\ \overline{q} \\
+   \method{addindex}(\cmd{cmd}^\fun{f}(\ell,\ell'), i) &
      \text{otherwise}
   \end{array}
   \right.
 \end{array}
 \]
 
-Then, given a CFG $G^\fun{f}=\langle V, E,\textmd{cmd}^\fun{f},
+Then, given a CFG $G^\fun{f}=\langle V, E,\cmd{cmd}^\fun{f},
 \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
-we use $\hat{E} =\{(\ell, \ell')\in E: \textmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\method{idx}(e)$ that maps a call edge $e$ to a unique index value.
+we use $\hat{E} =\{(\ell, \ell')\in E: \cmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\method{idx}(e)$ that maps a call edge $e$ to a unique index value.
 \hide{ % TODO
 The predicate below then can be used to represent a renamed CFG $\method{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
 \[
 \begin{split}
-{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
-  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
+{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
+  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
 \end{split}
 \]
 }
 Finally, we provide the formal definition of $\method{unwind}(G^\fun{f})$.
-\todo[inline]{The definition of \textmd{cmd} is not complete}
+\todo[inline]{The definition of \cmd{cmd} is not complete}
 \[
 \begin{array}{l}
-\method{unwind}(G^\fun{f}) = \langle V_u, E_u,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
+\method{unwind}(G^\fun{f}) = \langle V_u, E_u,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
 
 \begin{aligned}
- V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
-  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
+ V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
+  \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
 \end{aligned}\\
 
 \begin{aligned}
- E_u = E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s_i),(e_i, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \textmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p})) \\
+ E_u = E \setminus \hat{E} \cup \bigcup\{E_i\cup\{(\ell, s_i),(e_i, \ell')\}: (\ell, \ell')\in \hat{E} \wedge \cmd{cmd}^\fun{f}(\ell, \ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p})) \\
   \wedge \method{idx}(\ell, \ell')=i \wedge \method{rename}(G^\fun{g},i) =
-\langle V_i, E_i,\textmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
+\langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
 \end{aligned}\\
 
-\textmd{cmd}_u^\fun{f} (\ell, \ell') =
+\cmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
   \begin{array}{ll}
   (\overline{\texttt{u}}_i:=\overline{p}) &\text{if } (\ell,\ell')=(\ell,s_i)
   \\
   (\overline{\texttt{x}}:=\overline{\texttt{r}}^\fun{g}_i) &\text{if } (\ell,\ell')=(e_i,\ell') \\
-  \textmd{cmd}^\fun{g}_i(\ell, \ell') &\text{if } (\ell, \ell') \in E_i \\
-  \textmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
+  \cmd{cmd}^\fun{g}_i(\ell, \ell') &\text{if } (\ell, \ell') \in E_i \\
+  \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
 
@@ -165,6 +165,8 @@ Only one additional function body is introduced for multiple function
 calls.
 The formal definition is given as follows.
 
+\missingfigure{Demonstrate alternative unwinding}
+
 First, we define $\method{duplicate}_\prog{P}(\fun{g}, k)$ to copy $\fun{g}$ in
 the program \prog{P}.
 Given $k$ indicating the $k$-th iteration in Algorithm~\ref{algorithm:overview},
@@ -182,15 +184,15 @@ Formally, the definition of $\method{unwind}_\prog{P}(G^\fun{f})$ is as below.
 \[
 \begin{array}{l}
 \method{unwind}_\prog{P}(G^\fun{f})
-  = \langle V, E,\textmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
+  = \langle V, E,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
   
-\textmd{cmd}_u^\fun{f} (\ell, \ell') =
+\cmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
   \begin{array}{ll}
   (\overline{\texttt{x}}:=\fun{g}_k(\overline{p})) &\text{if } 
-    \textmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
+    \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
     \land \fun{g}_k \in \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
-  \textmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
+  \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
 \
@@ -209,8 +211,9 @@ This also leads to less increase in program size.
   $\assert{P}\ G^\fun{f}\ \assert{Q}$ if and only if 
   $\assert{P}\ \method{unwind}_\prog{P}(G^\fun{f}, k)\ \assert{Q}$.
 \end{proposition}
-In this method, the only modification on the $G^\fun{f}$ is substituting each
-function call to $\fun{g}$ with call to $\fun{g}_k$.
+In this method, the only difference between $G^\fun{f}$ and
+$\method{unwind}_\prog{P}(G^\fun{f}, k)$ is that each function call to
+$\fun{g}$ is substituted with call to $\fun{g}_k$.
 Hence, the proposition should trivially hold if the behavior of $\fun{g}$ and
 $\fun{g}_k$ have the same behavior.
 Under the premise that $\fun{f}$ is a function without recursion,
@@ -218,9 +221,9 @@ $\fun{g}_k$ won't introduce new recursion since it does not belongs to original
 program \prog{P}.
 Therefore, $\fun{g}_k$ and $\fun{g}$ simply behave the same because 
 $G^\fun{g}_k = G^\fun{g}$.
-Without the premise, $\fun{g}$ can directly or indirectly call to $\fun{f}$,
-and introducing $\fun{g}_k$ complicates the call graph further;
-Thus, proving the proposition without the premise is harder.
+Without the premise, $\fun{g}$ can directly or indirectly call $\fun{f}$,
+and introducing $\fun{g}_k$ complicates the mutual recursion further.
+Thus, proving the proposition without the premise is much harder.
 Since the stronger proposition is not necessary for our work,
 we don't provide further proof here.
 

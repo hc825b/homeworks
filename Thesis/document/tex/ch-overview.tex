@@ -7,7 +7,7 @@ consist of the CFGs of the $\fun{main}$ function and functions that may be
 invoked (transitively) from $\fun{main}$.
 Since non-recursive functions can be replaced by their control flow graphs
 after proper variable renaming,
-we assume that \prog{P} only contains the $\mathtt{main}$ and recursive functions.
+we assume that \prog{P} only contains the $\fun{main}$ and recursive functions.
 If \prog{P} does not contain recursive functions,
 \method{BasicAnalyzer} is able to check \prog{P} by computing inductive invariants.
 
@@ -30,13 +30,13 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
 
 \begin{algorithm}[htb]
 \begin{doublespace}
-  \KwIn{A program $\prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$}
+  \KwIn{A program $\prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\text{ is a function}\}$}
 
   $k \leftarrow 0$\;
   $\prog{P}_0 \leftarrow \prog{P}$\;
   %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in \prog{P}$}
   %{
-  %  $S[\mathtt{f}] \leftarrow \mathtt{true}$\;
+  %  $S[\fun{f}] \leftarrow \TT$\;
   %}
   \Repeat{$\textmd{complete?}$}
   {
@@ -76,7 +76,7 @@ check the under-approximation~$\underline{G}^{\fun{main}}_k$.
     \scalebox{1}{
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
       distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at (-4, 0) {$s$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (0) at (-4, 0) {$s$}; %[label=above:$\fun{main()}$]
       \node[node] (1) at (-4, -1) {$1$};
       \node[node] (2) at (-4, -2) {$2$};
       \node[node] (3) at (-4, -3) {$3$};
@@ -145,17 +145,17 @@ After function summaries are computed, Algorithm~\ref{algorithm:overview}
 verifies whether function summaries correctly specify computations of
 functions by invoking CheckSummary$(\prog{P}_k, S)$.
 The algorithm CheckSummary$(\prog{P}_k, S)$ checks this by constructing a recursion-free control flow
-graph $\tilde{G}^{\mathtt{f}}$ with additional assertions for each
-function $\mathtt{f}$ and verifying $\tilde{G}^{\mathtt{f}}$ with
+graph $\tilde{G}^{\fun{f}}$ with additional assertions for each
+function $\fun{f}$ and verifying $\tilde{G}^{\fun{f}}$ with
 \method{BasicAnalyzer}. The control flow graph
-$\tilde{G}^{\mathtt{f}}$ is obtained by substituting function
+$\tilde{G}^{\fun{f}}$ is obtained by substituting function
 summaries for function calls.
 \hide{
  In Algorithm~\ref{algorithm:overview},
-$S[\mathtt{g}]$ contains the function summary for the function
-$\mathtt{g}$.  
+$S[\fun{g}]$ contains the function summary for the function
+$\fun{g}$.
 }
-It is transformed from $G^{\mathtt{f}}$ by the
+It is transformed from $G^{\fun{f}}$ by the
 following three steps:
 \begin{enumerate}
 \item Replace every function call by instantiating the summary for the
@@ -165,32 +165,32 @@ following three steps:
 \end{enumerate}
 \hide{
 \begin{enumerate}
-\item Replace every function call $\overline{\mathtt{x}} := \mathtt{g}
-  (\overline{p})$ in $G_{\mathtt{f}}$ by  
+\item Replace every function call $\overline{\mathtt{x}} := \fun{g}
+  (\overline{p})$ in $G_{\fun{f}}$ by
   \begin{equation*}
     \begin{array}{l}
       \overline{\mathtt{x}} := \overline{\mathtt{nondet}};\\
       \mathtt{assume}\ 
-      S[{\mathtt{g}}]\{\overline{\mathtt{u}} \mapsto \overline{p}, 
+      S[{\fun{g}}]\{\overline{\mathtt{u}} \mapsto \overline{p},
       \overline{\mathtt{r}}^{\fun{g}} \mapsto \overline{\mathtt{x}}\}
     \end{array}
   \end{equation*}
   where $\overline{\mathtt{u}}^{\fun{g}}$
-  are the formal parameters of the function $\mathtt{g}$;
+  are the formal parameters of the function $\fun{g}$;
 \item Replace every $\mathtt{return\ } \overline{q}$ command by
   \begin{equation*}
     \overline{\mathtt{r}}^{\fun{f}} := \overline{q}
   \end{equation*}
-\item Add the command $\mathtt{assert\ }S[{\mathtt{f}}]$ at the end of
-  $G^{\mathtt{f}}$. 
+\item Add the command $\mathtt{assert\ }S[{\fun{f}}]$ at the end of
+  $G^{\fun{f}}$.
 \end{enumerate}
 }
 Figure~\ref{figure:check-summary-mccarthy91} shows the control flow
-graph $\tilde{G}^{\mathtt{mc91}}$ with the function summary
-$S[{\mathtt{mc91}}] = \mathtt{not (m \geq 0)}$. Observe that
-$\tilde{G}^{\mathtt{mc91}}$ is
+graph $\tilde{G}^{\fun{mc91}}$ with the function summary
+$S[{\fun{mc91}}] = \mathtt{not (m \geq 0)}$. Observe that
+$\tilde{G}^{\fun{mc91}}$ is
 recursion-free. \method{BasicAnalyzer} is able to check
-$\tilde{G}^{\mathtt{mc91}}$ and invalidates this function summary. 
+$\tilde{G}^{\fun{mc91}}$ and invalidates this function summary.
 
 \begin{figure}
   \centering
@@ -236,28 +236,27 @@ $\tilde{G}^{\mathtt{mc91}}$ and invalidates this function summary.
 
 In order to refine function summaries, our algorithm unwinds recursive
 functions as usual. More precisely, consider a recursive function
-$\mathtt{f}$ with formal parameters $\overline{\mathtt{u}}^{\fun{f}}$
-and return variables $\overline{\mathtt{r}}^{\fun{f}}$. Let 
-$G^{\mathtt{f}}$ be  
-the control flow graph of $\mathtt{f}$ and $G^{\fun{main}}_k$ be a
-control flow graph 
-that invokes $\mathtt{f}$. To unwind $\mathtt{f}$ in $G^{\fun{main}}_k$, 
-we first construct a control flow graph $H^{\mathtt{f}}$ by 
+$\fun{f}$ with formal parameters $\overline{\mathtt{u}}^{\fun{f}}$
+and return variables $\overline{\mathtt{r}}^{\fun{f}}$.
+Let $G^{\fun{f}}$ be the control flow graph of $\fun{f}$ and $G^{\fun{main}}_k$
+be a control flow graph that invokes $\fun{f}$.
+To unwind $\fun{f}$ in $G^{\fun{main}}_k$,
+we first construct a control flow graph $H^{\fun{f}}$ by
 replacing every $\mathtt{return}\ \overline{q}$ command in
-$\mathtt{f}$ with the assignment $\mathtt{\overline{r}}^{\fun{f}} :=
+$\fun{f}$ with the assignment $\mathtt{\overline{r}}^{\fun{f}} :=
 \overline{q}$. For each edge $(\ell,  
 \ell')$ labeled with the command $\overline{\mathtt{x}} :=
-\mathtt{f}(\overline{p})$ in $G^{\fun{main}}_k$, we remove 
-the edge $(\ell, \ell')$, make a fresh copy $K^{\mathtt{f}}$ of $H^{\mathtt{f}}$ by
+\fun{f}(\overline{p})$ in $G^{\fun{main}}_k$, we remove
+the edge $(\ell, \ell')$, make a fresh copy $K^{\fun{f}}$ of $H^{\fun{f}}$ by
 renaming all nodes and variables, and then add two edges: add an edge
-from $\ell$ to the entry node of $K^{\mathtt{f}}$ that assigns
+from $\ell$ to the entry node of $K^{\fun{f}}$ that assigns
 $\overline{p}$ to fresh copies of formal parameters in 
-$K^{\mathtt{f}}$ and another edge from the exit node to $\ell'$ that
+$K^{\fun{f}}$ and another edge from the exit node to $\ell'$ that
 assigns fresh copies of return variables to
 $\overline{\mathtt{x}}$. The control flow graph $G^{\fun{main}}_{k+1}$ 
 is obtained by unwinding every function call in $G^{\fun{main}}_k$. 
 Figure~\ref{figure:unwind-mccarthy91} shows the control flow graph
-obtained by unwinding $\mathtt{main}$ twice. Note that the
+obtained by unwinding $\fun{main}$ twice. Note that the
 unwinding graph $G^{\fun{main}}_{k+1}$ still has recursive function calls. Its
 under-approximation $\underline{G}^{\fun{main}}_{k+1}$ is more
 accurate than $\underline{G}^{\fun{main}}_k$. 
