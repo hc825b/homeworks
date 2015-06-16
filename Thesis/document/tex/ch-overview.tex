@@ -73,10 +73,9 @@ $\underline{G}^{\fun{main}}_k$ is recursion-free. \method{BasicAnalyzer} is able
 check the under-approximation~$\underline{G}^{\fun{main}}_k$.
 \begin{figure}[htb]
   \centering
-    \scalebox{1}{
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at (-4, 0) {$s$}; %[label=above:$\fun{main()}$]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
+      \node[node,label=above:$\fun{main()}$] (0) at (-4, 0) {$s$};
       \node[node] (1) at (-4, -1) {$1$};
       \node[node] (2) at (-4, -2) {$2$};
       \node[node] (3) at (-4, -3) {$3$};
@@ -92,7 +91,7 @@ check the under-approximation~$\underline{G}^{\fun{main}}_k$.
         (0) edge 
             node [left] {$\mathtt{assume\ n >= 0}$} (1)
         (1) edge [bend left=15]
-            node [above=2] {$\mathtt{m_1 := n}$} (00)
+            node [above] {$\mathtt{m_1 := n}$} (00)
         (2) edge
             node [left] {$
               \begin{array}{l}
@@ -121,10 +120,8 @@ check the under-approximation~$\underline{G}^{\fun{main}}_k$.
             node [right] {$\mathtt{r^{mc91}_1 := t_1}$} (05)
 
         (05) edge [bend left=30]
-             node [below=8] {$\mathtt{r := r^{mc91}_1}$} (2);
-
+             node [below=8pt] {$\mathtt{r := r^{mc91}_1}$} (2);
     \end{tikzpicture}
-	}  
   \caption{Under-approximation of McCarthy 91}
   \label{figure:under-mccarthy91}
 \end{figure}
@@ -194,9 +191,9 @@ $\tilde{G}^{\fun{mc91}}$ and invalidates this function summary.
 
 \begin{figure}
   \centering
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (s) at ( 0,  0) {$s$}; %[label=above:$\mathtt{mc91(n)}$]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
+      \node[node,label=above:$\fun{mc91}(\mathtt{n})$] (s) at ( 0,  0) {$s$};
       \node[node] (1) at (-1, -2) {$1$};
       \node[node] (2) at ( 1, -0.8) {$2$};
       \node[node] (3) at ( 1, -2) {$3$};
@@ -261,18 +258,12 @@ unwinding graph $G^{\fun{main}}_{k+1}$ still has recursive function calls. Its
 under-approximation $\underline{G}^{\fun{main}}_{k+1}$ is more
 accurate than $\underline{G}^{\fun{main}}_k$. 
 
-\todo[inline]{Adjust figures}
 \begin{figure}
   \centering
-  %\resizebox{1\textwidth}{!}
+  \resizebox{1\textwidth}{!}
   {
-    \begin{tikzpicture}[
-      ->,>=stealth',shorten >=1pt,thick,
-      auto, node distance=2cm,
-      node/.style={circle,draw},
-      execute at begin node={\begin{varwidth}{0.4cm}},
-      execute at end node={\end{varwidth}},
-    ]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
       \node[node] (0s) at (-4, 0) {$s$}; %[label=above:$\mathtt{main()}$]
       \node[node] (01) at (-4, -1) {$1$};
       \node[node] (02) at (-4, -2) {$2$};
@@ -304,7 +295,7 @@ accurate than $\underline{G}^{\fun{main}}_k$.
         (0s) edge 
             node [left] {$\mathtt{assume\ n >= 0}$} (01)
         (01) edge [bend left=15]
-            node [above=2] {$\mathtt{m_1 := n}$} (s)
+            node [above=2pt] {$\mathtt{m_1 := n}$} (s)
         (02) edge 
             node [left] {$
               \begin{array}{l}
@@ -341,7 +332,7 @@ accurate than $\underline{G}^{\fun{main}}_k$.
         (4) edge [bend left=30]
             node [below] {$\mathtt{r^{mc91}_1 := t_1}$} (e)
         (e) edge [bend left=15]
-            node [below=9] {$\mathtt{r := r^{mc91}_1}$} (02)
+            node [below=9pt] {$\mathtt{r := r^{mc91}_1}$} (02)
 
         (s') edge [bend right=30]
              node [left] {$

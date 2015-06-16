@@ -72,8 +72,8 @@ Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X
 
 \begin{figure}[t]
   \centering
-  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
 
       \draw [fill=gray!10] (3.5, -1) ellipse (1.8 and 1.5);
       \node (text) at (3.5, -1) {$\method{mark}_\fun{f}(\method{rename}(G_\fun{f},i))$};

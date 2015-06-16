@@ -19,10 +19,10 @@ The formal definition is given below.
 
 \begin{figure}[t]
   \centering
-  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
 
-      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (0) at (-4, 0)  {$\ell$};
       \node[node] (1) at (-4, -2) {$\ell'$};
 
       \draw [fill=gray!10] (4, -1) ellipse (1.8 and 1.5);
@@ -38,13 +38,13 @@ The formal definition is given below.
         (arrow_s) edge [dotted]
                   node {} (arrow_e)
         (0) edge
-            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$} (1)
+            node {$\overline{\mathtt{x}} := \fun{g} (\overline{p})$} (1)
 
         (00) edge
              node {$\overline{\mathtt{u}}_i^\fun{g} := \overline{p}$} (10)
 
         (11) edge
-             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}_i^\fun{g}}$} (01) ;
+             node {$\overline{\mathtt{x}} := \overline{\mathtt{r}}_i^\fun{g}$} (01) ;
     \end{tikzpicture}
 
   \caption{Unwinding Function Calls}
@@ -81,21 +81,19 @@ E_i = \{(\ell_i,\ell'_i): (\ell,\ell') \in E\} \\
   \right.
 \end{array}
 \]
-
 Then, given a CFG $G^\fun{f}=\langle V, E,\cmd{cmd}^\fun{f},
 \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$,
-we use $\hat{E} =\{(\ell, \ell')\in E: \cmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\method{idx}(e)$ that maps a call edge $e$ to a unique index value.
+we use $\hat{E} =\{(\ell, \ell')\in E: \cmd{cmd}^\fun{f} (\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\}$ to denote the set of function call edges in $E$ and define a function $\method{idx}(e)$ that maps a call edge $e$ to a unique index.
 \hide{ % TODO
 The predicate below then can be used to represent a renamed CFG $\method{rename}(G^\fun{g},i)$ according to a function call edge $(\ell, \ell')$ in $G^\fun{f}$.
 \[
 \begin{split}
-{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\mathtt{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
+{UnwindCall}(\ell,\ell') \equiv (\ell,\ell')\in\hat{E} \wedge \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
   \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle
 \end{split}
 \]
 }
-Finally, we provide the formal definition of $\method{unwind}(G^\fun{f})$.
-\todo[inline]{The definition of \cmd{cmd} is not complete}
+Finally, we provide the definition of $\method{unwind}(G^\fun{f})$.
 \[
 \begin{array}{l}
 \method{unwind}(G^\fun{f}) = \langle V_u, E_u,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
@@ -110,7 +108,9 @@ Finally, we provide the formal definition of $\method{unwind}(G^\fun{f})$.
   \wedge \method{idx}(\ell, \ell')=i \wedge \method{rename}(G^\fun{g},i) =
 \langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
 \end{aligned}\\
-
+\end{array}
+\]
+\[
 \cmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
   \begin{array}{ll}
@@ -121,8 +121,6 @@ Finally, we provide the formal definition of $\method{unwind}(G^\fun{f})$.
   \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
-
-\end{array}
 \]
 
 \begin{proposition}

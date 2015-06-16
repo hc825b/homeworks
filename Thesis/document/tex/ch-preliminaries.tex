@@ -53,8 +53,9 @@ return values.
 \todo[inline]{Set restrictions on CFG to prevent arbitrary edges on graph
 since the behavior may be undefined.}
 
-A function $\fun{f}$ is represented as a \emph{control flow graph
-  (CFG)} $G^{\fun{f}} = \langle V, E, \cmd{cmd}^{\fun{f}},
+A program \prog{P} is simply a set of functions.
+Each function $\fun{f}$ in the program \prog{P} is represented as a
+\emph{control flow graph (CFG)} $G^{\fun{f}} = \langle V, E, \cmd{cmd}^{\fun{f}},
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}}, s,
 e \rangle$ where the nodes in $V$ are \emph{program locations}, $E
 \subseteq V \times V$ are \emph{edges}, each edge $(\ell, \ell') \in
@@ -78,9 +79,9 @@ figure. Loops can be modeled similarly.
 \begin{figure}
   \centering
   \begin{subfigure}[b]{.35\textwidth}
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at (0, 0) {$s$}; %[label=above:$\mathtt{main()}$]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
+      \node[node,label=above:$\fun{main()}$] (0) at (0, 0) {$s$};
       \node[node] (1) at (0, -1) {$1$};
       \node[node] (2) at (0, -2) {$2$};
       \node[node] (3) at (0, -3) {$3$};
@@ -105,10 +106,10 @@ figure. Loops can be modeled similarly.
     \label{figure:mccarthy91:main}
   \end{subfigure}
   ~
-  \begin{subfigure}[b]{.6\textwidth}
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw}]
-      \node[node] (0) at ( 0,  0) {$s$}; %[label=above:$\mathtt{mc91(n)}$]
+  \begin{subfigure}[b]{.62\textwidth}
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
+      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
+      \node[node,label=above:$\fun{mc91(n)}$] (0) at ( 0,  0) {$s$};
       \node[node] (1) at (-1, -2) {$1$};
       \node[node] (2) at ( 1, -0.8) {$2$};
       \node[node] (3) at ( 1, -2) {$3$};
