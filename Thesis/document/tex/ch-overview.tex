@@ -240,7 +240,7 @@ be a control flow graph that invokes $\fun{f}$.
 To unwind $\fun{f}$ in $G^{\fun{main}}_k$,
 we first construct a control flow graph $H^{\fun{f}}$ by
 replacing every $\mathtt{return}\ \overline{q}$ command in
-$\fun{f}$ with the assignment $\mathtt{\overline{r}}^{\fun{f}} :=
+$\fun{f}$ with the assignment $\overline{\mathtt{r}}^{\fun{f}} :=
 \overline{q}$. For each edge $(\ell,  
 \ell')$ labeled with the command $\overline{\mathtt{x}} :=
 \fun{f}(\overline{p})$ in $G^{\fun{main}}_k$, we remove

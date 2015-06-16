@@ -96,7 +96,7 @@ Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X
              node {$\overline{\mathtt{u}}_i^\fun{f} := \overline{p}$} (10)
 
         (11) edge 
-             node {$\overline{\mathtt{x}} := \mathtt{\overline{r}_i^\fun{f}}$} (01) ;
+             node {$\overline{\mathtt{x}} := \overline{\mathtt{r}}_i^\fun{f}$} (01) ;
     \end{tikzpicture}
 
   \caption{Updating a Summary}
@@ -104,25 +104,25 @@ Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X
 \end{figure}
 \begin{proposition}
 \label{propposition:invariant}
-Let $Q$ be a formula over all variables in $\underline{G}^{\fun{main}}_k$ except $\mathtt{\overline{r}}^\fun{f}$.
+Let $Q$ be a formula over all variables in $\underline{G}^{\fun{main}}_k$ except $\overline{\mathtt{r}}^\fun{f}$.
 We have $\assert{Q}\
-  \mathtt{\overline{r}}^\fun{f} := \fun{f}
+  \overline{\mathtt{r}}^\fun{f} := \fun{f}
   (\overline{\mathtt{u}}^\fun{f})\ \assert{Q}$.
 \end{proposition}
 The proposition holds because the only possible overlap of variables in $Q$ and
-in $\mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})$
+in $\overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})$
 are the formal parameters $\overline{\mathtt{u}}^\fun{f}$.
 However, we assume that values of formal parameters do not change in a function
 (see Section~\ref{ch:preliminaries});
 hence the values of all variables in $Q$ stay the same after the execution of
-the function call $\mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})$.
+the function call $\overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})$.
 
 \begin{proposition}
   \label{propposition:strengthen_postcondition}
   Given the CFG $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\cmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
-  If $\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}
+  If $\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
      (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ holds, then
-  $\assert{I_{s_i^\fun{f}}}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}
+  $\assert{I_{s_i^\fun{f}}}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
    (\overline{\mathtt{u}}^\fun{f})\ \assert{
      I_{e_i^\fun{f}}}$ for all $(s_i^\fun{f},e_i^\fun{f})\in V\times V$.
 \end{proposition}
@@ -131,14 +131,14 @@ For each pair $(s_i^\fun{f},e_i^\fun{f})\in V\times V$, we consider two cases:
 \item $I_{s_i^\fun{f}}$ contains some return variables of $\fun{f}$:\\
 In this case, the conjunct $\forall X_\fun{f}.I_{e_i^\fun{f}}$ is a part of $S[\fun{f}]$, we then have
 \begin{prooftree}
-  \AxiomC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}
+  \AxiomC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
        (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
   \RightLabel{Postcondition Weakening}
-    \UnaryInfC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\fun{f}. I_{e_i^\fun{f}}}$}
+    \UnaryInfC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\fun{f}. I_{e_i^\fun{f}}}$}
   \RightLabel{Postcondition Weakening}
-  \UnaryInfC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
+  \UnaryInfC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
   \RightLabel{Precondition Strengthening}
-    \UnaryInfC{$\assert{I_{s_i^\fun{f}}}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
+    \UnaryInfC{$\assert{I_{s_i^\fun{f}}}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{e_i^\fun{f}}}$}
 \end{prooftree}
 
 \item $I_{s_i^\fun{f}}$ does not contain any return variables of $\fun{f}$:\\
@@ -147,21 +147,21 @@ In this case, the conjunct $\forall X_\fun{f}.(I_{s_i^\fun{f}} \implies I_{e_i^\
  \AxiomC{}
  \LeftLabel{Prop.~\ref{propposition:invariant}}
  \UnaryInfC{$\assert{I_{s_k^\fun{f}}}\ 
-    \mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
+    \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
     \assert{I_{s_k^\fun{f}}}$}
-\AxiomC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f} := \fun{f}
+\AxiomC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
        (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ }
   %\RightLabel{Weakening
-\UnaryInfC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\fun{f}. (I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}})}$}
+\UnaryInfC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{\forall X_\fun{f}. (I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}})}$}
 %\RightLabel{Weakening}
-\UnaryInfC{$\assert{\TT}\ \mathtt{\overline{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}}}$}
+\UnaryInfC{$\assert{\TT}\ \overline{\mathtt{r}}^\fun{f}:=\fun{f}(\overline{\mathtt{u}}^\fun{f})\ \assert{I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}}}$}
 %\RightLabel{Strengthening}
  \UnaryInfC{$\assert{I_{s_k^\fun{f}}}\
-    \mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
+    \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
     \assert{I_{s_k^\fun{f}} \implies I_{e_k^\fun{f}}}$}
 
  \BinaryInfC{$\assert{I_{s_k^\fun{f}}}\ 
-    \mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
+    \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
     \assert{I_{e_k^\fun{f}}}$}
 \end{prooftree}
 \end{enumerate}

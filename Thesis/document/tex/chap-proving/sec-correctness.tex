@@ -14,7 +14,7 @@ $\Gamma (G^\fun{main}, \TT) = \{ \underline{I}_{\ell} \in \Pi (\underline{G}^{\f
 is in fact an inductive invariant for $G^\fun{main}$. 
 
 Let $\hat{E} = \{ (\ell, \ell') \in E : \cmd{cmd}^\fun{main} (\ell, \ell') =
-\overline{\mathtt{x}} := \mathtt{f} (\overline{p}) \}$. We have
+\overline{\mathtt{x}} := \fun{f} (\overline{p}) \}$. We have
 $\cmd{cmd}^\fun{main} (\ell, \ell') = \underline{\cmd{cmd}}_k^\fun{main} (\ell, \ell')$ for every
 $(\ell, \ell') \in E \setminus \hat{E}$. Thus $\assert{\underline{I}_{\ell}}\
 \cmd{cmd}^\fun{main} (\ell, \ell')\ \assert{\underline{I}_{\ell'}}$ for every $(\ell,
@@ -23,15 +23,15 @@ $(\ell, \ell') \in E \setminus \hat{E}$. Thus $\assert{\underline{I}_{\ell}}\
 \TT)$. It suffices to show that
 \begin{equation*}
   \assert{\underline{I}_{\ell}}\
-  \overline{\mathtt{x}} := \mathtt{f} (\overline{p})
+  \overline{\mathtt{x}} := \fun{f} (\overline{p})
   \ \assert{\underline{I}_{\ell'}}
   \hspace{0.5em}
   \text{or, equivalently,}
   \hspace{0.5em}
   \assert{\underline{I}_{\ell}}\ 
   \overline{\mathtt{u}}^\fun{f} := \overline{p};\
-  \mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f});\
-  \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}
+  \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f});\
+  \overline{\mathtt{x}} := \overline{\mathtt{r}}^\fun{f}
   \ \assert{\underline{I}_{\ell'}}
 \end{equation*}
 for every $(\ell, \ell') \in \hat{E}$. 
@@ -39,10 +39,10 @@ By the inductiveness of $\Pi (\underline{G}^{\fun{main}}_k, \TT)$, we have
 $\assert{\underline{I}_{\ell}}\ \overline{\mathtt{u}}^\fun{f} := \overline{p}\
 \assert{\underline{I}_{s_k^\fun{f}}}$ and
 $\assert{\underline{I}_{e_k^\fun{f}}}\ \overline{\mathtt{x}} :=
-\mathtt{\overline{r}}^\fun{f}\ \assert{\underline{I}_{\ell'}}$.
+\overline{\mathtt{r}}^\fun{f}\ \assert{\underline{I}_{\ell'}}$.
 Moreover,
 $\assert{\underline{I}_{s_k^\fun{f}}}\
-\mathtt{\overline{r}}^\fun{f} := \fun{f}
+\overline{\mathtt{r}}^\fun{f} := \fun{f}
 (\overline{\mathtt{u}}^\fun{f})\ \assert{\underline{I}_{e_k^\fun{f}}}$
 by Proposition~\ref{propposition:strengthen_postcondition} and \ref{proposition:check_summary}.
 Therefore
@@ -52,17 +52,17 @@ Therefore
     \assert{\underline{I}_{s_k^\fun{f}}}$}
 
   \AxiomC{$\assert{\underline{I}_{s_k^\fun{f}}}\
-    \mathtt{\overline{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
+    \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f})\
     \assert{\underline{I}_{e_k^\fun{f}}}$}
 
   \AxiomC{$\assert{\underline{I}_{e_k^\fun{f}}}\
-    \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}\
+    \overline{\mathtt{x}} := \overline{\mathtt{r}}^\fun{f}\
     \assert{\underline{I}_{\ell'}}$}
 
   \TrinaryInfC{$\assert{\underline{I}_{\ell}}\
     \overline{\mathtt{u}}^\fun{f} := \overline{p};\
-    \mathtt{\overline{r}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f});\
-    \overline{\mathtt{x}} := \mathtt{\overline{r}}^\fun{f}}\
+    \overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u}}^\fun{f});\
+    \overline{\mathtt{x}} := \overline{\mathtt{r}}^\fun{f}\
     \assert{\underline{I}_{\ell'}}$}
   \UnaryInfC{$\assert{\underline{I}_{\ell}}\ 
     \overline{\mathtt{x}} := \fun{f} (\overline{p})\
