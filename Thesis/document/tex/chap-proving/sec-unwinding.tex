@@ -4,8 +4,10 @@ As introduced in Chapter~\ref{ch:overview}, our algorithm produces more and more
 accurate under-approximations through unwinding the program.
 An important feature of unwinding is that it should keep the behavior of unwound
 program being the same as the original one.
-In this section, we introduce two unwinding methods accompanied with simple 
-proofs of the equivalence between the original and unwound programs.
+In this section, we introduce two function unwinding methods accompanied with
+simple proofs of the equivalence between the original and unwound functions.
+We also devise different strategies to produce unwound programs when using
+different function unwinding methods.
 
 \subsection{Function Inlining Method}\label{subsec:inlining}
 The function inlining method directly follows the concept of inline function in
@@ -97,7 +99,10 @@ Finally, we provide the definition of $\method{unwind}(G^\fun{f})$.
 \[
 \begin{array}{l}
 \method{unwind}(G^\fun{f}) = \langle V_u, E_u,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
-
+\end{array}
+\]
+\[
+\begin{array}{l}
 \begin{aligned}
  V_u = V\cup\bigcup\{V_i:(\ell,\ell')\in\hat{E} \wedge \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))\wedge\method{idx}(\ell, \ell')=i  \\
   \wedge \method{rename}(G^\fun{g},i)=\langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
@@ -108,9 +113,7 @@ Finally, we provide the definition of $\method{unwind}(G^\fun{f})$.
   \wedge \method{idx}(\ell, \ell')=i \wedge \method{rename}(G^\fun{g},i) =
 \langle V_i, E_i,\cmd{cmd}^\fun{g}_i, \overline{\texttt{u}}^\fun{g}_i, \overline{\texttt{r}}^\fun{g}_i,s_i,e_i\rangle \}
 \end{aligned}\\
-\end{array}
-\]
-\[
+
 \cmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
   \begin{array}{ll}
@@ -121,6 +124,7 @@ Finally, we provide the definition of $\method{unwind}(G^\fun{f})$.
   \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
+\end{array}
 \]
 
 \begin{proposition}
@@ -132,11 +136,30 @@ Finally, we provide the definition of $\method{unwind}(G^\fun{f})$.
  behavior via simple Hoare rule}
 Essentially, $G^\fun{f}$ and $\method{unwind}(G^\fun{f})$ represent the same
 function $\fun{f}$. The only difference is that the latter has more program
-variables after unwinding,`
+variables after unwinding,
 but this does not affect the states over program variables of $G^\fun{f}$
 before and after the function.
 
-\subsection{Alternative Unwinding Method}\label{subsec:new-unwinding}
+\subsubsection*{Unwinding Program}
+Considering the \method{unwind}, it transforms a single CFG into another
+single CFG with the same behavior but more program variables.
+Following our program, the program starts at $\fun{main}$ function.
+Therefore, to unwind the program in each iteration of 
+Algorithm~\ref{algorithm:overview},
+we can simply apply \method{unwind} on $G^\fun{main}$ function repeatedly.
+In other words,
+\[
+\begin{array}{l}
+\text{Initially, } \prog{P}_0 = \prog{P}
+    \therefore G^\fun{main}_0 = G^\fun{main} \\
+G^\fun{main}_k = \method{unwind}(G^\fun{main}_{k-1}) \\
+\prog{P}_k = \prog{P}_{k-1} 
+             \setminus \{G^\fun{main}_{k-1}\} \cup \{G^\fun{main}_k\}
+\end{array}
+\]
+
+
+\subsection{Function Duplicating Method}\label{subsec:duplicating}
 The previously mentioned method comes with an obvious drawback that it will
 cause exponential increase in size of the unwound program.
 Considering the McCarthy 91 function, the number of recursive calls in the
@@ -144,11 +167,12 @@ program doubles in the unwound function at each iteration of
 Algorithm~\ref{algorithm:overview},
 and the program size doubles at next iteration since every function call is
 inlined, i.e., transformed to a copy of the function body.
-Therefore, we devised an alternative method $\method{unwind}_\prog{P}(G^\fun{f}, k)$
-that creates extra functions in program \prog{P} instead of inlining function
-calls to prevent exponential growth.
-Note that the $\method{unwind}_\prog{P}(G^\fun{f}, k)$ preserves the behavior of
-original function $\fun{f}$ in the modified program \prog{P} after unwinding.
+Therefore, we devised another method $\method{unwind}_\prog{P}(G^\fun{f}, k)$
+that duplicates functions in program \prog{P} instead of inlining function calls
+to prevent exponential growth.
+Note that the $\method{unwind}_\prog{P}(G^\fun{f}, k)$ also preserves the 
+behavior of original function $\fun{f}$ in the modified program \prog{P} after
+unwinding.
 
 The procedure of the new method is simple.
 We give a function body $G^\fun{f}$ which contains multiple function call edges
@@ -161,6 +185,9 @@ The function $\fun{g}_k$ has exactly the same function body $G^\fun{g}$.
 Those calls to $\fun{g}$ are then replaced with calls to $\fun{g}_k$.
 Only one additional function body is introduced for multiple function
 calls.
+Notice that, since there are a modified version of $G^\fun{f}$ and many 
+duplicated functions $G^{\fun{g}_k}$, $\method{unwind}_\prog{P}$ returns a pair 
+of a function and a set of functions instead of one function.
 The formal definition is given as follows.
 
 \missingfigure{Demonstrate alternative unwinding}
@@ -172,8 +199,7 @@ we create a new function $\fun{g}_k$ with the body $G^{\fun{g}_k}$ which is
 exactly the same as $G^\fun{g}$.
 \[
   \method{duplicate}_\prog{P}(G^\fun{g}, k)
-    = \prog{P}\cup\{G^{\fun{g}_k}:\text{ $\fun{g}_k$ is a new function}\} \text{ where }
-    G^{\fun{g}_k} = G^\fun{g}
+    = G^{\fun{g}_k} \text{ where } \fun{g}_k \not\in \prog{P} \land G^{\fun{g}_k}=G^\fun{g}
 \]
 Then, to unwind a given CFG $G^\fun{f}$, we produce copies of the functions
 called by $\fun{f}$ and replace all call edge by calls to the duplication.
@@ -181,27 +207,33 @@ Formally, the definition of $\method{unwind}_\prog{P}(G^\fun{f})$ is as below.
 ~(Please refer to \S~\ref{subsec:inlining} for definitions of the symbols).
 \[
 \begin{array}{l}
-\method{unwind}_\prog{P}(G^\fun{f})
-  = \langle V, E,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle \text{ where} \\
-  
+\method{unwind}_\prog{P}(G^\fun{f}, k)
+  = (G^\fun{f}_k, DUP^\fun{f}_k) \text{ where} \\
+DUP^\fun{f}_k = \{G^{\fun{g}_k} :
+    \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
+    \land G^{\fun{g}_k} = \method{duplicate}_\prog{P}(G^\fun{g}, k)
+  \}\\
+G^\fun{f}_k = \langle V, E,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f},
+      \overline{\texttt{r}}^\fun{f},s,e \rangle \\
+{%\multicolumn{2}{l}{
 \cmd{cmd}_u^\fun{f} (\ell, \ell') =
 \left\{
   \begin{array}{ll}
   (\overline{\texttt{x}}:=\fun{g}_k(\overline{p})) &\text{if } 
     \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
-    \land \fun{g}_k \in \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
+    \land G^{\fun{g}_k} = \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
   \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
-\
+}
 \end{array}
 \]
-Notice that if two functions $\fun{fa}$ and $\fun{fb}$ both contain calls to $\fun{g}$
-and $\fun{fa}$ is unwound before $\fun{fb}$ with the same given $k$, 
-program $\fun{g}_k$ is not introduced again when $\fun{fb}$ is unwound.
-This also leads to less increase in program size.
+Notice that, if function $\fun{f}$ contain multiple calls to same function
+$\fun{g}$,
+the CFG $G^{\fun{g}_k}$ is not introduced multiple times by set union.
+This is the primary reason that leads to less increase in program size.
 
-\begin{proposition}
+\begin{proposition}\label{prop:unwinding-duplicate}
   Let $\fun{f}$ be a function without self or mutual recursion and 
   $G^\fun{f}$ be its control flow graph.
   $P$ and $Q$ are logic formulas with free variables over program variables of
@@ -218,12 +250,49 @@ Under the premise that $\fun{f}$ is a function without recursion,
 $\fun{g}_k$ won't introduce new recursion since it does not belongs to original
 program \prog{P}.
 Therefore, $\fun{g}_k$ and $\fun{g}$ simply behave the same because 
-$G^\fun{g}_k = G^\fun{g}$.
+$G^{\fun{g}_k} = G^\fun{g}$.
 Without the premise, $\fun{g}$ can directly or indirectly call $\fun{f}$,
 and introducing $\fun{g}_k$ complicates the mutual recursion further.
 Thus, proving the proposition without the premise is much harder.
 Since the stronger proposition is not necessary for our work,
 we don't provide further proof here.
+
+\subsubsection*{Unwinding Program}
+Unwinding the program with $\method{unwind}_\prog{P}$ is very different from
+the one with $\method{unwind}$ because we have to add duplication of functions
+into the program \prog{P}.
+Repeatedly applying $\method{unwind}_\prog{P}$ on $\fun{main}$ does not help
+this time since it only copies the functions called by $\fun{main}$ again
+and again.
+In our approach, we apply unwinding on $\fun{main} $in the first iteration,
+and on only those duplicated functions in following iterations.
+
+Formally, for every function $\fun{f}_{k-1}$ introduced in $(k-1)$-th iteration,
+we obtain functions that should be added in $k$-th iteration via applying
+$\method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k)$.
+That is, following the simpler representation
+$\method{unwind}_\prog{P}(G^\fun{f}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)$,
+\[
+\begin{array}{l}
+\text{Initially, } \prog{P}_0 = \prog{P}, GS_0 = \emptyset,DUPS_0 = \{G^\fun{main}\} \\
+GS_k = \bigcup\{G^\fun{f}_k : G^{\fun{f}_{k-1}} \in DUPS_{k-1}
+  \land \method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)
+  \} \\
+DUPS_k = \bigcup\{
+  DUP^\fun{f}_k : G^{\fun{f}_{k-1}} \in DUPS_{k-1}
+  \land \method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)
+  \} \\
+\prog{P}_k = (\prog{P}_{k-1} \setminus GS_{k-1}) \cup GS_k \cup DUPS_k\\
+\end{array}
+\]
+As defined above, $DUPS_k$ simply represents all those duplicated functions in
+$k$-th iteration.
+We intentionally only use functions in $DUPS_{k-1}$ for unwinding.
+This is crucial because these functions are guaranteed to be not involved in
+recursive calls and fulfill the premise in
+Proposition~\ref{prop:unwinding-duplicate}.
+As a result, the unwound program $\prog{P}_k$ could preserve the behavior of
+original program \prog{P}.
 
 \todo[inline]{
 Move following words to a better section
