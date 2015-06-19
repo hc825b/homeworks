@@ -1,20 +1,31 @@
 
-
 \section{Under-approximation}\label{sec:under-approximation}
+In this section, we first introduce how to under-approximate a given function
+$\fun{f}$ with $\underline{G}^\fun{f}=\method{under}(G^\fun{f})$.
+The produced CFG $\underline{G}^\fun{f}$ should not contain any recursive calls,
+and all computations in $\underline{G}^\fun{f}$ should be valid in original CFG
+$G^\fun{f}$.
+Further, we explain how we use \method{under} combined with two unwinding
+methods to derive under-approximation of the unwound program $\prog{P}_k$.
 
-Let $G^\fun{f} = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow graph.
-The control flow graph $\underline{G}^\fun{f} = \langle V, E,
-\underline{\cmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f}, \overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every function call in $G$ with $\mathtt{assume\ false}$
+
+\subsection{Approximating Functions}
+Let $G^\fun{f} = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\texttt{u}}^\fun{f},
+\overline{\texttt{r}}^\fun{f},s,e \rangle$ be a control flow graph.
+The control flow graph $\underline{G}^\fun{f} = \method{under}(G^\fun{f}) = 
+\langle V, E,\underline{\cmd{cmd}}^\fun{f}, \overline{\texttt{u}}^\fun{f},
+\overline{\texttt{r}}^\fun{f},s,e \rangle$ is obtained by replacing every
+function call in $G$ with $\mathtt{assume\ false}$
 (Figure~\ref{figure:under-approximation}).
 That is,
 \begin{equation*}
   \underline{\cmd{cmd}}^\fun{f} (\ell, \ell') =
   \left\{
     \begin{array}{ll}
-      \cmd{cmd}^\fun{f} (\ell, \ell') &
-      \text{if } \cmd{cmd}^\fun{f} (\ell, \ell')
-      \text{ does not contain function calls}\\
       \mathtt{assume\ false} &
+      \text{if } \cmd{cmd}^\fun{f} (\ell, \ell')
+      \text{ contains function calls}\\
+      \cmd{cmd}^\fun{f} (\ell, \ell') &
       \text{otherwise}
     \end{array}
   \right.
@@ -22,10 +33,11 @@ That is,
 
 \begin{figure}[t]
   \centering
-    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,node
-      distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
+    \begin{tikzpicture}[scale=1.2,->,>=stealth',shorten >=1pt,auto,
+      node distance=2cm,thick,
+      node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
 
-      \node[node] (0) at (-4, 0)  {$\ell$}; %[label=above:$\mathtt{main()}$]
+      \node[node] (0) at (-4, 0)  {$\ell$};
       \node[node] (1) at (-4, -2) {$\ell'$};
 
       \node[node] (00) at (0, 0)  {$\ell$};
@@ -37,7 +49,7 @@ That is,
         (arrow_s) edge [dotted]
                   node {} (arrow_e)
         (0) edge 
-            node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$} (1)
+            node {$\overline{\mathtt{x}} := \fun{g} (\overline{p})$} (1)
 
         (00) edge 
              node {$\mathtt{assume\ false}$} (01);
@@ -53,6 +65,19 @@ That is,
   G^\fun{f} \assert{Q}$, then 
   $\assert{P} \underline{G}^\fun{f} \assert{Q}$.
 \end{proposition}
-The above holds because the computation of $\underline{G}^\fun{f}$ under-approximates the computation of $G^\fun{f}$.
-If all computation of $G^\fun{f}$ from a state satisfying $P$ always ends with a state satisfying $Q$,
+The above holds because the computation of $\underline{G}^\fun{f}$ under-
+approximates the computation of $G^\fun{f}$.
+If all computation of $G^\fun{f}$ from a state satisfying $P$ always ends with
+a state satisfying $Q$,
 the same should also hold for the computation of $\underline{G}^\fun{f}$.
+
+
+\subsection{Approximating Programs from Function Inlining Method}
+Following our program model, we can under-approximate the program through simply
+computing $\underline{G}^\fun{main}$ in program $\prog{P}_k$.
+
+\todo[inline]{Prove that, in each iteration, the under-approximation is more
+accurate than previous one.}
+
+\subsection{Approximating Programs from Function Duplicating Method}
+
