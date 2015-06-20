@@ -73,8 +73,15 @@ the same should also hold for the computation of $\underline{G}^\fun{f}$.
 
 
 \subsection{Approximating Programs from Function Inlining Method}
-Following our program model, we can under-approximate the program through simply
-computing $\underline{G}^\fun{main}$ in program $\prog{P}_k$.
+Following how we do unwinding in \S~\ref{subsec:inlining}, we can under-
+approximate the program through simply computing under-approximation of
+$\fun{main}$ function as below.
+\[
+\prog{\underline{P}}_k = \{\underline{G}^\fun{main}_k\}
+\]
+$\underline{G}^\fun{main}_k$ doesn't contain any function call,
+so it is unnecessary to copy other functions from $\prog{P}_k$.
+Thus, the unwound program can only contains $\fun{main}$ for less memory usage.
 
 \todo[inline]{Prove that, in each iteration, the under-approximation is more
 accurate than previous one.}
