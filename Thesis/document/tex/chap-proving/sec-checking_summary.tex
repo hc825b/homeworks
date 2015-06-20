@@ -130,7 +130,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
 \begin{corollary}
   Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
   $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
-  parameters and return variables of each function. If $\method{BasicChecker}
+  parameters and return variables of each function. If $\method{BasicAnalyzer}
   (\tilde{G}^\fun{g}_{k,S})$ returns $\mathit{Pass}$ for every function
   $\fun{g}$ in \prog{P}, then $\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} :=
   \fun{f} (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$.
@@ -143,7 +143,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
   \KwOut{$\TT$ if all function summaries are valid; $\FF$ otherwise}
   \ForEach{function $G_k^\fun{f} \in \prog{P}_k$}
   {
-    \If{$\method{BasicChecker} (\tilde{G}_{k,S}^{\fun{f}}) \neq
+    \If{$\method{BasicAnalyzer} (\tilde{G}_{k,S}^{\fun{f}}) \neq
       \mathit{Pass}$}
     {
       \Return $\FF$

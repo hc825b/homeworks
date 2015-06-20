@@ -38,16 +38,16 @@ $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V\}$
 
   \ForEach{function $\fun{f}$ in the program $\prog{P}_k$}
   { 
-    $S[\fun{f}]:=\TT$\;
+    $S[\fun{f}]$ := $\TT$\;
     \ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
     {
       \If{$I_{s_i^\fun{f}}$ contains return variables of $\fun{f}$}
       {
-        $S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\fun{f}. I_{e_i^\fun{f}}$
+        $S[\fun{f}]$ := $S[\fun{f}]\wedge \forall X_\fun{f}. I_{e_i^\fun{f}}$
       }
       \Else
       {
-        $S[\fun{f}]:=S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$
+        $S[\fun{f}]$ := $S[\fun{f}]\wedge \forall X_\fun{f}. (I_{s_i^\fun{f}} \implies I_{e_i^\fun{f}})$
       }
     }
     

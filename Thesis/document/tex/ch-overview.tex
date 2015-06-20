@@ -32,28 +32,24 @@ reiterates~(Algorithm~\ref{algorithm:overview}).
 \begin{doublespace}
   \KwIn{A program $\prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\text{ is a function}\}$}
 
-  $k \leftarrow 0$\;
-  $\prog{P}_0 \leftarrow \prog{P}$\;
-  %\lForEach{function $\fun{f}$ such that  $G_\fun{f} \in \prog{P}$}
-  %{
-  %  $S[\fun{f}] \leftarrow \TT$\;
-  %}
-  \Repeat{$\textmd{complete?}$}
+  $k$ := $0$\;
+  $\prog{P}_0$ := $\prog{P}$\;
+  \Repeat{\textup{complete?}}
   {
-    $k \leftarrow k + 1$\;
-    $\prog{P}_{k} \leftarrow $ unwind every CFG in $\prog{P}_{k-1}$\;
-    \Switch{\method{BasicAnalyzer} ($\underline{G}^{\fun{main}}_k$)}
+    $k$ := $k + 1$\;
+    $\prog{P}_{k}$ := unwind every CFG in $\prog{P}_{k-1}$\;
+    \Switch{$\method{BasicAnalyzer}(\underline{G}^{\fun{main}}_k)$}
     {
       \Case{$\mathit{Pass(\Pi (\underline{G}^{\fun{main}}_k, \TT))}$:}
       {    
-        S := ComputeSummary($\prog{P}_k,$ $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
+        $S$ := ComputeSummary$(\prog{P}_k,$ $\Pi (\underline{G}^{\fun{main}}_k, \TT))$
       }
       \lCase{$\mathit{Error}$:}
       {
         \Return $\mathit{Error}$
       }
     }
-    $\textmd{complete?} \leftarrow \textmd{CheckSummary} (\prog{P}_k, S)$\;
+    complete? := CheckSummary$(\prog{P}_k, S)$\;
   }
   \Return $\mathit{Pass} (\Pi (\underline{G}^{\fun{main}}_k, \TT))$, $S$\;
 \end{doublespace}
