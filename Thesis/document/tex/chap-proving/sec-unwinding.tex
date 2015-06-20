@@ -208,7 +208,7 @@ Formally, the definition of $\method{unwind}_\prog{P}(G^\fun{f})$ is as below.
 \[
 \begin{array}{l}
 \method{unwind}_\prog{P}(G^\fun{f}, k)
-  = (G^\fun{f}_k, DUP^\fun{f}_k) \text{ where} \\
+  = \langle G^\fun{f}_k, DUP^\fun{f}_k) \rangle \text{ where} \\
 DUP^\fun{f}_k = \{G^{\fun{g}_k} :
     \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
     \land G^{\fun{g}_k} = \method{duplicate}_\prog{P}(G^\fun{g}, k)
@@ -264,35 +264,48 @@ into the program \prog{P}.
 Repeatedly applying $\method{unwind}_\prog{P}$ on $\fun{main}$ does not help
 this time since it only copies the functions called by $\fun{main}$ again
 and again.
-In our approach, we apply unwinding on $\fun{main} $in the first iteration,
-and on only those duplicated functions in following iterations.
+In our approach, we apply unwinding on $\fun{main}$ in the first iteration,
+and on only those duplications of functions in following iterations.
+This is crucial because the $\fun{main}$ function and the duplications are
+guaranteed to be not involved in recursive calls and fulfill the premise in
+Proposition~\ref{prop:unwinding-duplicate}.
 
-Formally, for every function $\fun{f}_{k-1}$ introduced in $(k-1)$-th iteration,
-we obtain functions that should be added in $k$-th iteration via applying
-$\method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k)$.
-That is, following the simpler representation
-$\method{unwind}_\prog{P}(G^\fun{f}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)$,
+Since there can be multiple functions being unwound in an iteration, we extend
+$\method{unwind}_\prog{P}$ to handle a set of functions.
+Formally, given a set of CFGs $S$,
+\[
+\begin{array}{l}
+\method{unwind}_\prog{P}(S, k) = \langle GS_k, DUPS_k \rangle \text{ where}\\
+GS_k = \{G^\fun{f}_k : G^\fun{f} \in S
+  \land \method{unwind}_\prog{P}(G^\fun{f}, k) 
+        = \langle G^\fun{f}_k, DUP^\fun{f}_k \rangle
+  \} \\
+  
+DUPS_k = \bigcup\{
+  DUP^\fun{f}_k : G^\fun{f} \in S
+  \land \method{unwind}_\prog{P}(G^\fun{f}, k) 
+        = \langle G^\fun{f}_k, DUP^\fun{f}_k \rangle
+  \} \\
+\end{array}
+\]
+
+Then, following the simpler representation, we unwind the program \prog{P}
+via applying $\method{unwind}_\prog{P}$ on duplications $DUPS$.
+That is,
 \[
 \begin{array}{l}
 \text{Initially, } \prog{P}_0 = \prog{P}, GS_0 = \emptyset,DUPS_0 = \{G^\fun{main}\} \\
-GS_k = \bigcup\{G^\fun{f}_k : G^{\fun{f}_{k-1}} \in DUPS_{k-1}
-  \land \method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)
-  \} \\
-DUPS_k = \bigcup\{
-  DUP^\fun{f}_k : G^{\fun{f}_{k-1}} \in DUPS_{k-1}
-  \land \method{unwind}_{\prog{P}_{k-1}}(G^{\fun{f}_{k-1}}, k) = (G^\fun{f}_k, DUP^\fun{f}_k)
-  \} \\
+\langle GS_k, DUPS_k \rangle = \method{unwind}_\prog{P}(DUPS_{k-1}, k)\\
 \prog{P}_k = (\prog{P}_{k-1} \setminus GS_{k-1}) \cup GS_k \cup DUPS_k\\
 \end{array}
 \]
-As defined above, $DUPS_k$ simply represents all those duplicated functions in
+As defined above, $DUPS_k$ represents all those duplications of functions in
 $k$-th iteration.
-We intentionally only use functions in $DUPS_{k-1}$ for unwinding.
-This is crucial because these functions are guaranteed to be not involved in
-recursive calls and fulfill the premise in
-Proposition~\ref{prop:unwinding-duplicate}.
+In $k$-th iteration, we only unwind functions in $DUPS_{k-1}$ because they are
+new functions and must not involve in any recursion.
 As a result, the unwound program $\prog{P}_k$ could preserve the behavior of
 original program \prog{P}.
+
 
 \todo[inline]{
 Move following words to a better section
