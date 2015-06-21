@@ -1,8 +1,9 @@
 
 \section{Checking Summaries}\label{sec:checking-summary}
 
-Here we explain how to handle the function $\textmd{CheckSummary} (\prog{P}_k, S[\bullet])$, where $\prog{P}_k$ is an unwound program and $S[\bullet]$ is an
-array of function summaries.
+Here we explain how $\textmd{CheckSummary} (\prog{P}_k, S[\bullet])$ is achieved,
+where $\prog{P}_k$ is an unwound program and $S[\bullet]$ is an array of
+function summaries.
 Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be a
 control flow graph for the function $\fun{f}$ in $\prog{P}_k$. In order to check whether the function
 summary $S[{\fun{f}}]$ for $\fun{f}$ specifies the relation
@@ -14,21 +15,20 @@ $\hat{G}^\fun{f}_{k,S} = \langle V, E, \hat{\cmd{cmd}}^\fun{f}, \overline{\matht
     \hat{\cmd{cmd}}^\fun{f} (\ell, \ell') & = &
     \left\{
       \begin{array}{ll}
-        \overline{\mathtt{x}} := 
-        \overline{\mathtt{nondet}};
+        \overline{\mathtt{x}} := \overline{\mathtt{nondet}}; & \\[-8pt]
+
         \mathtt{assume\ }S[{\fun{g}}][
-        \overline{\mathtt{u}}^\fun{g} \mapsto \overline{p},
-        \overline{\mathtt{r}}^\fun{g} \mapsto \overline{\mathtt{x}}]
-        &
-        \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') =
-        \overline{\mathtt{x}} := \fun{g} (\overline{p})\\
-		\overline{\mathtt{r}}^\fun{f} := \overline{q}
-        &
-        \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') = \mathtt{return\ }
-        \overline{q}\\
+          \overline{\mathtt{u}}^\fun{g} \mapsto \overline{p},
+          \overline{\mathtt{r}}^\fun{g} \mapsto \overline{\mathtt{x}}]
+        & \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') =
+          \overline{\mathtt{x}} := \fun{g} (\overline{p}) \\
+
+        \overline{\mathtt{r}}^\fun{f} := \overline{q}
+        & \text{ if } \cmd{cmd}^\fun{f} (\ell, \ell') =
+          \mathtt{return\ }\overline{q} \\
+
         \cmd{cmd}^\fun{f} (\ell, \ell')
-        &
-		\text{ otherwise}
+        & \text{ otherwise}
       \end{array}
     \right.
   \end{array}
@@ -127,6 +127,7 @@ above. Consider another control flow graph $\tilde{G}^\fun{f}_{k,S} =
   \end{array}
 \end{equation*}
 
+\pagebreak
 \begin{corollary}
   Let $G^\fun{f}_k = \langle V, E, \cmd{cmd}^\fun{f}, \overline{\mathtt{u}}^\fun{f}, \overline{\mathtt{r}}^\fun{f},s,e \rangle$ be the control flow graph for the function
   $\fun{f}$ and $S[\bullet]$ be an array of logic formulae over the formal
