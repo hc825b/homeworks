@@ -167,6 +167,51 @@ score                    & \multicolumn{2}{c|}{13}   & 12               & 9     
 
 In addition to the experiments, we also participated SV-COMP 2015 and compete
 with other teams under the \textbf{recursive} category.
+Our tool won the third place among 8 competitors.
+
+\begin{table}
+\caption{Scoring scheme in SV-COMP 2015.\label{table:scoring-scheme-15}}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Points & Program Correctness & Reported Result \\\hline
+0      & TRUE or FALSE & UNKNOWN (due to timeout or exceptions) \\
++1     & FALSE         & FALSE \\
+-6     & TRUE          & FALSE \\
++2     & TRUE          & TRUE \\
+-12    & FALSE         & TRUE \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\begin{table}[p]
+\caption{Competition results of
+  \textbf{recursive} category of the 2015 Competition on Software
+  Verification.\label{table:competition}}
+\resizebox{\textwidth}{!}
+{
+\begin{tabular}{|c|cc|c|c|c|c|}
+\hline
+\multirow{2}{*}{Results} & \multicolumn{2}{c|}{\multirow{2}{*}{Our Tool}} & \textsc{Ultimate} & \textsc{Ultimate} & \multirow{2}{*}{\textsc{SMACK}} & \multirow{2}{*}{\textsc{CPAchecker}} \\ 
+& & & \textsc{Automizer} & \textsc{Kojak} & & \\
+\hline\hline
+correct          & \multicolumn{2}{c|}{12}   & 16  & 8  & 23 & 11 \\
+false negative   & \multicolumn{2}{c|}{0}    & 0   & 0  & 1  & 0 \\
+false positive   & \multicolumn{2}{c|}{0}    & 0   & 0  & 0  & 0 \\
+unknown          & \multicolumn{2}{c|}{12}   & 8   & 16 & 0  & 13 \\
+\hline\hline
+score            & \multicolumn{2}{c|}{\textbf{18}}   & \textbf{25}   & 10  & \textbf{27} & 16 \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{fig/competition-result}
+  \caption{svg image}
+\end{figure}
 
 
 %%% Local Variables: 
