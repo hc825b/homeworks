@@ -220,8 +220,8 @@ G^\fun{f}_k = \langle V, E,\cmd{cmd}_u^\fun{f}, \overline{\texttt{u}}^\fun{f},
 \left\{
   \begin{array}{ll}
   (\overline{\texttt{x}}:=\fun{g}_k(\overline{p})) &\text{if } 
-    \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p}))
-    \land G^{\fun{g}_k} = \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
+    \cmd{cmd}^\fun{f}(\ell,\ell')=(\overline{\texttt{x}}:=\fun{g}(\overline{p})) \\
+    & \land\ G^{\fun{g}_k} = \method{duplicate}_\prog{P}(G^\fun{g}, k)\\
   \cmd{cmd}^\fun{f}(\ell,\ell') &\text{otherwise}
   \end{array}
 \right.
@@ -270,8 +270,10 @@ This is crucial because the $\fun{main}$ function and the duplications are
 guaranteed to be not involved in recursive calls and fulfill the premise in
 Proposition~\ref{prop:unwinding-duplicate}.
 
-Since there can be multiple functions being unwound in an iteration, we extend
-$\method{unwind}_\prog{P}$ to handle a set of functions.
+Since there are multiple functions being unwound in an iteration,
+we extend $\method{unwind}_\prog{P}$ to handle a set of functions by merging
+all results into a set.
+The extended method therefore returns a pair of sets of functions.
 Formally, given a set of CFGs $S$,
 \[
 \begin{array}{l}
