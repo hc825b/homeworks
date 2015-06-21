@@ -2,26 +2,62 @@
 \section{Computing Summaries}\label{sec:computing-summary}
 \todo[inline]{Rewrite marking function}
 In order to help extract summaries from the inductive invariant,
-$\method{unwind}(G^\fun{f})$ annotates in $K^\fun{f}$ the outermost pair of the
-entry and exit locations ${s_i}$ and ${e_i}$ of each unwound function $\fun{g}$
-with an additional superscript $\fun{g}$, i.e., $s_i^\fun{g}$ and $e_i^\fun{g}$.
-The function $\method{mark}_\fun{f}(G^\fun{g})$ returns a CFG that is identical
-to $G^\fun{g}$, except that, for the case that no location with superscript
-$\fun{g}$ appears in $V$ (the locations of $G^\fun{f}$), it annotates the entry
-and exit locations, $s_k$ and $e_k$, of the returned CFG with superscript
-$\fun{g}$, i.e., $s_k^\fun{g}$ and $e_k^\fun{g}$.
-That is,
-\[
-\method{mark}_\fun{f}(\langle
-V, E,\cmd{cmd}^\fun{g}, \overline{\texttt{u}}^\fun{g}, \overline{\texttt{r}}^\fun{g},s,e \rangle) =
-\langle V, E,\cmd{cmd}^\fun{g}, \overline{\texttt{u}}^\fun{g}, \overline{\texttt{r}}^\fun{g},s,e \rangle
-\]
-Note that, for each unwinding of function call,
-we mark only the outermost pair of its entry and exit locations.
+MarkLocs$(\prog{P}_k)$ annotates in $\prog{P}_k$ the \emph{outermost} pair of
+the entry and exit locations ${s_i}$ and ${e_i}$ of each unwound function call
+to $\fun{f}$ with an additional superscript $\fun{f}$, i.e., $s_i^\fun{f}$ and
+$e_i^\fun{f}$.
+Outermost is defined by \emph{dominance} relation over program locations(nodes).
+A location $\ell$ \emph{strictly dominates} $\ell'$~($\ell$ \emph{dom} $\ell'$)
+if and only if every execution path from $s$ to $\ell'$ must go through $\ell$.
+Similarly, $\ell$ \emph{post-dominates} $\ell'$~($\ell$ \emph{post-dom} $\ell'$)
+if and only if every execution path from $\ell'$ to $e$ must go through $\ell$.
+We can thereby define that $\langle s, e \rangle$ \emph{encloses}
+$\langle s', e' \rangle$ if only if $s$ \emph{dom} $s'$ and $e$ \emph{post-dom}
+$e'$,
+and we can then find outermost pair with this definition that this pair is not
+enclosed by any other pair through Algorithm~\ref{algorithm:mark-locations}.
+Note that MarkLocs$(\prog{P}_k)$ is designed to handle unwound programs from
+both unwinding methods,
+and it does not provide any output but modify program $\prog{P}_k$ directly.
 
-\missingfigure{Mark the program locations to extract invariants}
+\begin{algorithm}
+\begin{doublespace}
+  \KwIn{$\prog{{P}}_k$: a program}
+  \If{$\prog{{P}}_k$ is from $\method{unwind}$}
+  {
+    \ForEach{$s_i, e_i \in V$ of ${G}^\fun{main}$}
+    {
+      $\fun{f}$ := $\method{getFunction}(i)$;
 
-Let the CFG for the $\fun{main}$ function $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\cmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
+      \If{$\neg(\exists j. \fun{f} = \method{getFunction}(j)
+           \land s_j$ dom $s_i \land e_j$ post-dom $e_i)$}
+      {
+        Change $s_i, e_i$ to $s^\fun{f}_i, e^\fun{f}_i$;
+      }
+    }
+    \Return;
+  }
+  \If{$\prog{{P}}_k$ is from $\method{unwind}_\prog{P}$}
+  {
+    \ForEach{function $G^{\fun{f}_i}$ in the program $\prog{{P}}_k$}
+    {
+      \If{$\neg(\exists j < i \land s^\fun{f}_j, e^\fun{f}_j \in V$ of $G^{\fun{f}_j})$}
+      {
+        Change $s_i, e_i$ to $s^\fun{f}_i, e^\fun{f}_i$;
+      }
+    }
+    \Return;
+  }
+\end{doublespace}
+  \caption{
+  $\textmd{MarkLocs}(\prog{P}_k)$}
+  \label{algorithm:mark-locations}
+\end{algorithm}
+
+Now, let the CFG for the $\fun{main}$ function $\underline{G}^{\fun{main}}_k =
+\langle V, E, \underline{\cmd{cmd}}^{\fun{main}},
+\overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e
+\rangle$.
 Function ComputeSummary($\prog{P}_k$, $\Pi (\underline{G}^{\fun{main}}_k, \TT)$)
 extracts summaries from the inductive invariant
 $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V\}$
@@ -36,10 +72,12 @@ $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V\}$
   }
   \KwOut{$S[\bullet]$: function summaries}
 
+  MarkLocs($\prog{P}_k$);
+
   \ForEach{function $\fun{f}$ in the program $\prog{P}_k$}
   { 
     $S[\fun{f}]$ := $\TT$\;
-    \ForEach{pair of locations $(s_i^\fun{f},e_i^\fun{f})\in V\times V$}
+    \ForEach{pair of locations $\langle s_i^\fun{f},e_i^\fun{f} \rangle \in V\times V$}
     {
       \If{$I_{s_i^\fun{f}}$ contains return variables of $\fun{f}$}
       {
@@ -52,7 +90,7 @@ $\Pi (\underline{G}^{\fun{main}}_k, \TT)= \{ I_\ell : \ell \in V\}$
     }
     
   }
- 
+
   \Return $S[\bullet]$\;
 \end{doublespace}
   \caption{
@@ -76,9 +114,7 @@ Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X
       distance=2cm,thick,node/.style={circle,draw,minimum width=0.8cm,inner sep=0}]
 
       \draw [fill=gray!10] (3.5, -1) ellipse (1.8 and 1.5);
-      \node (text) at (3.5, -1) {$\method{mark}_\fun{f}(\method{rename}(G_\fun{f},i))$};
-      \node[node] (00) at (0, 0)  {$\ell$};
-      \node[node] (01) at (0, -2) {$\ell'$};
+      \node (text) at (3.5, -1) {$\method{rename}(G_\fun{f},i)$};
       \node[node] (10) at (3.5, 0)  {$s_i^\fun{f}$};
       \node[node] (11) at (3.5, -2) {$e_i^\fun{f}$};
 
@@ -91,12 +127,7 @@ Otherwise, we update it to a less restricted version $S[\fun{f}]\wedge \forall X
       
       \path
         (arrow_s) edge [dotted]
-                  node {} (arrow_e)
-        (00) edge 
-             node {$\overline{\mathtt{u}}_i^\fun{f} := \overline{p}$} (10)
-
-        (11) edge 
-             node {$\overline{\mathtt{x}} := \overline{\mathtt{r}}_i^\fun{f}$} (01) ;
+                  node {} (arrow_e);
     \end{tikzpicture}
 
   \caption{Updating a Summary}
@@ -119,7 +150,9 @@ the function call $\overline{\mathtt{r}}^\fun{f} := \fun{f} (\overline{\mathtt{u
 
 \begin{proposition}
   \label{propposition:strengthen_postcondition}
-  Given the CFG $\underline{G}^{\fun{main}}_k = \langle V, E, \underline{\cmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}}, \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
+  Given CFG $\underline{G}^{\fun{main}}_k = \langle V, E,
+    \underline{\cmd{cmd}}^{\fun{main}}, \overline{\mathtt{u}}^{\fun{main}},
+    \overline{\mathtt{r}}^{\fun{main}},s,e \rangle$.
   If $\assert{\TT}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
      (\overline{\mathtt{u}}^\fun{f})\ \assert{S[\fun{f}]}$ holds, then
   $\assert{I_{s_i^\fun{f}}}\ \overline{\mathtt{r}}^\fun{f} := \fun{f}
