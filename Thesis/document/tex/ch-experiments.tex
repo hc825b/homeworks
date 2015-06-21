@@ -8,23 +8,26 @@
 \newcommand{\wrongmark}{\ensuremath{^!}}
 
 \chapter{Experiments}\label{ch:experiments}
-
-A prototype tool of our approach has been implemented with
-\textsc{CPAChecker} 1.2.11-svcomp14b\footnote{We use script/cpa.sh to
-  invoke \textsc{CPAChecker} and use the configuration file
-  available at \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.} as the underlying
-intraprocedural analyzer.
-In addition, because \textsc{CPAChecker} does not support universal quantifiers in the expression of an $\mathtt{assume}$ command, we used \textsc{Redlog}~\cite{redlog} for quantifier elimination.
+\todo[inline]{Update the data with SVCOMP15}
+A prototype of our approach is implemented with
+\textsc{CPAChecker} 1.2.11-svcomp14b\footnote{
+  We use script/cpa.sh to invoke \textsc{CPAChecker} and use the configuration
+  file available at
+  \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.
+}
+as the underlying \method{BasicAnalyzer}.
+In addition, because \textsc{CPAChecker} does not support universal quantifiers
+in the expression of an $\mathtt{assume}$ command,
+we used \textsc{Redlog}~\cite{redlog} for quantifier elimination.
 To evaluate our tool, we performed experiments with all the benchmarks
 from the \textbf{recursive} category in the 2014 Competition on
 Software Verification (SV-COMP 2014)~\cite{svcomp14} and followed the
 rules and the scoring scheme (shown in Table~\ref{table:scoring-scheme})
 of the competition.
-The experimental results show that our tool is quite competitive even
-compared with the winners of the competition.
-It is solid evidence that our approach not only extends program
-analyzers to handle recursion but also provides comparable
-effectiveness.
+The experimental results show that our tool is quite competitive even compared
+with the winners of the competition.
+It is solid evidence that our approach not only extends program analyzers to
+handle recursion but also provides comparable effectiveness.
 
 Our tool was compared with four participants of
 SV-COMP 2014, namely \textsc{Blast} 2.7.2\footnote{We use the
@@ -114,7 +117,7 @@ Points & Program Correctness & Reported Result \\\hline
 
 % ^*: the result is incorrect
 % ^?: the result is unknown
-\begin{table}
+\begin{table}[p]
 \caption{Experimental results of verifying programs in the
   \textbf{recursive} category of the 2014 Competition on Software
   Verification. (Time in sec.)\label{table:experiments}}
@@ -160,6 +163,11 @@ score                    & \multicolumn{2}{c|}{13}   & 12               & 9     
 \end{tabular}
 \end{center}
 \end{table}
+
+
+In addition to the experiments, we also participated SV-COMP 2015 and compete
+with other teams under the \textbf{recursive} category.
+
 
 %%% Local Variables: 
 %%% mode: latex
