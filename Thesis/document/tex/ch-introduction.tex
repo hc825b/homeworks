@@ -22,7 +22,12 @@ Notice that in order to simplify the implementation effort, we turned off import
 In~\cite{LalR08,LalR09}, a reduction technique for checking context-bounded concurrent programs to sequential analysis is developed. Numerous intraprocedural analysis techniques have been developed over the years. Many tools are in fact freely available (see, for instance, \textsc{Blast}~\cite{BeyerHJM07}, \textsc{CPAChecker}~\cite{BeyerK11}, and \textsc{UFO}~\cite{AlbarghouthiLGC12}). Interprocedural analysis techniques are also available (see~\cite{RepsHS95,BallR01,CousotCFMMMR05,CuoqKKPSY12,coverity,polyspace} for a hopelessly incomplete list). Recently, recursive analysis attracts new attention. The Competition on Software Verification adds a new category for recursive programs in 2014~\cite{svcomp14}. Among the participants, \textsc{CBMC}~\cite{ClarkeKL04}, \textsc{Ultimate Automizer}~\cite{HeizmannCDEHLNSP13}, and \textsc{Ultimiate Kojak}~\cite{ErmisNDHP14} are the top three tools for the recursive category. Our work is inspired by \textsc{Whale}~\cite{AlbarghouthiGC12}. Similar to \textsc{Whale}, we apply a Hoare logic proof rule for recursive calls. However, our technique works on control flow graphs and builds on an intraprocedural analysis tool. It is hence very lightweight and modular. Better intraprocedural analysis tools easily give better recursive analysis through our technique. \textsc{Whale}, on the other hand, analyzes by exploring abstract reachability graphs. Since \textsc{Whale} extends summary computation and covering relations for recursion, its implementation is more involved. Although \textsc{Whale} is able to analyze recursive program in theory, its implementation does not appear to support this feature.
 }
 \noindent
-\textbf{Organization:} Preliminaries are given in Chapter~\ref{ch:preliminaries}. We give an overview of our technique in Chapter~\ref{ch:overview}. Technical contributions are presented in Chapter~\ref{ch:proving-via-transformation}. Chapter~\ref{ch:experiments} reports experimental results. Chapter~\ref{ch:related} describes related works.
+\textbf{Organization:}
+Chapter~\ref{ch:related} describes related works.
+Preliminaries are given in Chapter~\ref{ch:preliminaries}.
+We give an overview of our technique in Chapter~\ref{ch:overview}.
+Technical contributions are presented in Chapter~\ref{ch:proving-via-transformation}.
+Chapter~\ref{ch:experiments} reports experimental results.
 Finally, some insights and improvements are discussed in Chapter~\ref{ch:conclusion}.
 
 \hide{

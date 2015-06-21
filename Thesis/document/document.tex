@@ -7,7 +7,7 @@
 \usepackage{mystyle}
 
 %% TODO remove this package after finishing editing
-\usepackage{todonotes}
+\usepackage[disable]{todonotes}
 
 % Type your personal information
 %% Chinese
@@ -35,7 +35,7 @@
 %\setGradMonthEN   {June} % You can un-comment and specify the date
 
 %% For partial compilation
-\includeonly{tex/ch-overview, ch-proving }
+%\includeonly{tex/ch-preliminaries, tex/ch-overview, ch-proving}
 
 \begin{document}
 \begin{CJK*}{UTF8}{bkai}
@@ -65,11 +65,11 @@
 \mainmatter
 \begin{doublespace}
 \include{tex/ch-introduction}
+\include{tex/ch-related}
 \include{tex/ch-preliminaries}
 \include{tex/ch-overview}
 \subincludefrom{tex/}{ch-proving}
 \include{tex/ch-experiments}
-\include{tex/ch-related}
 \include{tex/ch-conclusion}
 \end{doublespace}
 
