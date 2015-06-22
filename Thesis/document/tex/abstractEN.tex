@@ -1,17 +1,22 @@
 
 \chapter{Abstract}
 
-Recursion can complicate program analysis significantly. 
-Some program analyzers simply ignore recursion or even refuse
-to check recursive programs. In this paper, we propose an algorithm that uses
-a recursion-free program analyzer as a black box to check recursive
-programs. With extended program constructs for assumptions,
-assertions, and non-deterministic values, our algorithm computes
-function summaries from inductive invariants computed by the
-underlying program analyzer. Such function summaries enable our
-algorithm to check recursive programs. We implement a prototype using
-the recursion-free program analyzer \textsc{CPAChecker} and compare it
-with other program analyzers on the benchmarks in the 2014 Competition
-on Software Verification.
+Recursion can complicate program analysis significantly.
+Some program analyzers simply ignore recursion or even refuse to check recursive
+programs.
+In this paper, we propose an algorithm that uses a recursion-free program
+analyzer as a black box to check recursive programs.
+With extended program constructs for assumptions, assertions, and
+non-deterministic values,
+our algorithm computes function summaries from inductive invariants computed by
+the underlying program analyzer.
+Such function summaries enable our algorithm to check recursive programs.
+We implement a prototype named \textsc{CPArec} using the recursion-free program
+analyzer \textsc{CPAChecker}.
+Under the comparison with other program analyzers on the benchmarks in the 2014
+and 2015 Competitions on Software Verification,
+our tool shows competitive efficiency and effectiveness on verifying program
+with recursion.
 
-Key words: A, B, C, D, E, F, G
+Key words: CPArec, Program Analysis, Static Analysis, Recursion,
+Program Transformation
