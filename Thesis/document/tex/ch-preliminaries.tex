@@ -2,7 +2,7 @@
 \chapter{Preliminaries}\label{ch:preliminaries}
 
 
-\section{Programming Language}\label{sec:model}
+\section{Program Model}\label{sec:model}
 
 We consider a variant of the WHILE language from~\cite{NielsonHC99}:
 \begin{equation*}
@@ -137,7 +137,9 @@ figure. Loops can be modeled similarly.
   \label{figure:mccarthy91}
 \end{figure}
 
-%\todo{definitions of accessible variables, program states}
+\todo[inline]{definitions of accessible variables, program states}
+% \section{Inductive Invariants}\label{sec:semantics}
+
 Let $G^{\fun{f}} = \langle V, E ,\cmd{cmd}^{\fun{f}},
 \overline{\mathtt{u}}^{\fun{f}}, \overline{\mathtt{r}}^{\fun{f}},  s,
 e \rangle$ be a CFG. An \emph{inductive invariant} $\Pi (G^{\fun{f}},
@@ -157,9 +159,9 @@ precisely, assume that the function ${\fun{f}}$ starts from a state satisfying
 $I_0$. For every $\ell\in V$, $G^{\fun{f}}$ must arrive in a state
 satisfying $I_{\ell}$ when the computation reaches $\ell$. 
 
-\todo[inline]{A section about operational semantics?}
+\todo[inline]{More about operational semantics?}
 
-\section{Axiomatic Semantics and Hoare Logic}\label{sec:analysis}
+\section{Hoare Logic and Program Analysis}\label{sec:analysis}
 
 Let $T$ be a program fragment (it can be either a function represented as a CFG
 or a sequence of program commands).
