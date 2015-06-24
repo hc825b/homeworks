@@ -31,10 +31,11 @@
 \center
 \begin{tikzpicture}[
   x=1*\unit, y=1*\unit,
-  approx/.style={draw=black,pattern color=green, pattern=north east lines},
+  approx/.style={draw=black,pattern color=OliveGreen, pattern=north east lines},
   result_node/.style={draw, rounded rectangle, minimum width=20*\unit},
   analyzer/.style={inner sep=0, diamond, aspect=2, fill=black, text=white},
-  every edge/.style={draw, ->, >=latex', thick}
+  every edge/.style={draw, ->, >=latex', thick},
+  cross_out/.style = {red, pos=0.5, auto=false, cross out, -, draw, thick}
   ]
 
   \path[use as bounding box] (-66,-40) rectangle (66,40);
@@ -147,7 +148,7 @@
   \path<1>
     (creeper) edge (basic_analyzer.west);
   \path<2>
-    (poker) edge node [draw, cross out, red] {} (basic_analyzer.west);
+    (poker) edge node [draw, cross_out, red] {} (basic_analyzer.west);
   \path<1-2>
     (basic_analyzer.east) edge (error) edge (pass);
   \path<3->
@@ -224,8 +225,8 @@
 \uncover<+->{Extend a \textsc{BasicAnalyzer} through}
 
 \begin{itemize}
-  \item<+-> {Build\only<+->{ and Refine} under-approximation}
-  \item<+-> {Compute\only<+->{ and Check} function summaries for over-approximation}
+  \item<+-> {\alert{Build} and \alert{Refine} under-approximation}
+  \item<+-> {\alert{Compute} and \alert{Check} function summaries for over-approximation}
 \end{itemize}
 
 \uncover<+->{

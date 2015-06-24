@@ -57,7 +57,7 @@
        all recursive calls are summarized by their candidates
     \item Prove its function body is summarized by this candidate
   \end{itemize}
-  \item See \S 4.4 and references
+  \item See \S 5.4 and references
   \end{itemize}
 \end{frame}
 
@@ -166,7 +166,7 @@
   Valid function summary: {$
     \begin{array}{l}
       \mathtt{(m \leq 101\ and\ r^{mc91}=91)\ or} \\
-      \mathtt{(m>101\ and\ m-r^{mc91}=10)}
+      \mathtt{(m>101\ and\ r^{mc91}=m-10)}
     \end{array}
   $}
 \end{overlayarea}
@@ -199,7 +199,7 @@
               \begin{array}{l}
                 \mathtt{s := nondet;}\\
                 \mathtt{assume\ (m+11 \leq 101\ and\ s=91)\ or}\\
-                \mathtt{\ \ \ \ \ (m+11>101\ and\ m+11-s=10)}
+                \mathtt{\ \ \ \ \ (m+11>101\ and\ s=m+11-10)}
               \end{array}
             $} (3)
         (3) edge 
@@ -207,7 +207,7 @@
               \begin{array}{l}
                 \mathtt{t := nondet;}\\
                 \mathtt{assume\ (s \leq 101\ and\ t=91)\ or}\\
-                \mathtt{\ \ \ \ \ \ \ \ \ \ (s>101\ and\ s-t=10)}
+                \mathtt{\ \ \ \ \ \ \ \ \ \ (s>101\ and\ t=s-10)}
               \end{array}
             $} (4)
         (4) edge [bend left=30]
@@ -219,7 +219,7 @@
             node [right] (assert) {\footnotesize$
               \begin{array}{l}
                 \mathtt{assert\ (m \leq 101\ and\ r^{mc91}=91)\ or}\\
-                \mathtt{\ \ \ \ \ \ \ \ \ \ (m>101\ and\ m-r^{mc91}=10)}
+                \mathtt{\ \ \ \ \ \ \ \ \ \ (m>101\ and\ r^{mc91}=m-10)}
               \end{array}
             $} (e)
         ;
