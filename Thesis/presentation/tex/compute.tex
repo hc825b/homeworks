@@ -47,12 +47,46 @@
 \end{frame}
 
 
+\begin{frame}{Over-approximation of Recursive Call}
+  Over-approximate recursive function call
+  \begin{itemize}
+    \item Use $\mathtt{assume}\ S[\mathtt{g}]$
+          if $S[\mathtt{g}]$ summarizes the behavior of $\mathtt{g}$
+    \item<2-> Derive possible summaries from output of \textsc{BasicAnalyzer}
+  \end{itemize}
+
+  \begin{figure}
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node
+    distance=2cm,thick,node/.style={circle,draw}]
+
+    \node[node] (0) at (-4, 0)  {$\ell$};
+    \node[node] (1) at (-4, -2) {$\ell'$};
+
+    \node[node] (00) at (0, 0)  {$\ell$};
+    \node[node] (01) at (0, -2) {$\ell'$};
+    \node (arrow_s) at (-2.25, -1) {};
+    \node (arrow_e) at (-0.25, -1) {};
+
+    \path
+    (arrow_s) edge [dotted] node {} (arrow_e)
+    (0) edge
+      node {$\overline{\mathtt{x}} := \mathtt{g} (\overline{p})$}
+    (1)
+
+    (00) edge node {$\mathtt{assume}\ S[\mathtt{g}]$} (01);
+  \end{tikzpicture}
+  \end{figure}
+  \note {Block some of the execution paths to under-approximate computations}
+
+\end{frame}
+
 \begin{frame}{Desired Program Analyzer}
 
 \begin{overlayarea}{\textwidth}{.12\textheight}
   \textsc{BasicAnalyzer}
   \begin{itemize}
-  \item Provide \emph{inductive invariants} when program passed analysis
+  \item Provide \emph{\alert{inductive invariants}} when program passed analysis
   \end{itemize}
 \end{overlayarea}
   \begin{figure}
@@ -111,7 +145,7 @@
       }\only<2>{Possibly over-approximate original function call
       }\only<3>{$\mathtt{(\{true\}, \{r \geq 91 \ and\ r=n-10\})}$
       }\only<4>{$\mathtt{(\{true\}, \{{\color{BrickRed}r^{mc91}} \geq 91 \ and\ {\color{BrickRed}r^{mc91}}={\color{BrickRed}m}-10\})}$
-      }\only<5->{Summary: $\mathtt{true \implies r^{mc91} \geq 91 \ and\ r^{mc91}=m-10}$}
+      }\only<5->{Summary: $\mathtt{true \implies (r^{mc91} \geq 91 \ and\ r^{mc91}=m-10})$}
     }
   \end{itemize}
 \end{overlayarea}
@@ -213,7 +247,7 @@
   \item This method produces summary for one function call
   \item<2-> Function Summary Candidate:\\
             {\color{red}Conjunction} of summaries from all function calls
-  \item<2-> Details in \S 4.3.
+  \item<2-> Details in \S 5.3.
 \end{itemize}
 
 \uncover<3->{
