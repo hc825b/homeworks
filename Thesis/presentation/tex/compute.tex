@@ -108,7 +108,11 @@
 
       \path
         (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (1) edge 
             node [left] {\Ccancel[red]{$\color{OliveGreen}{\mathtt{r := mc91(n)}}$}} (2)
         (1) edge
@@ -188,7 +192,11 @@
 
       \path
         (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (2) edge
             node [left] {$
               \begin{array}{l}

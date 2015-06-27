@@ -95,7 +95,11 @@
 
       \path
         (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (1) edge 
             node [left] {$\mathtt{r := mc91(n)}$} (2)
         (2) edge 
@@ -192,7 +196,11 @@
 
       \path
         (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (1) edge 
             node [left]  {\only<2->{\Ccancel[red]}{\color{OliveGreen}$\mathtt{r := mc91(n)}$}} (2)
         (1) edge 
@@ -243,7 +251,11 @@
 
       \path
         (0) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (2) edge
             node [left] {$
               \begin{array}{l}
@@ -337,7 +349,11 @@
 
       \path
         (0s) edge 
-            node [left] {$\mathtt{assume\ n >= 0}$} (01)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (01)
         (01) edge [bend left=15]
             node [above=2pt] {$\mathtt{m_1 := n}$} (s)
         (02) edge 
@@ -456,7 +472,11 @@
 
       \path
         (0) edge
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (1) edge node [left]
           {\color{OliveGreen}{$\mathtt{r := \only<1>{mc91}\only<2->{mc91_1}(n)}$}} (2)
         (2) edge
@@ -529,7 +549,11 @@ Prevent exponential growth in program size
 
       \path
         (0) edge
-            node [left] {$\mathtt{assume\ n >= 0}$} (1)
+            node [left] {$
+              \begin{array}{r}
+                \mathtt{n = nondet}; \\
+                \mathtt{assume\ n >= 0}
+              \end{array}$} (1)
         (1) edge node [left]
           {$\mathtt{r := mc91_1(n)}$} (2)
         (2) edge
