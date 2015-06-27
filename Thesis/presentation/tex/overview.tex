@@ -60,6 +60,8 @@
     --($ (creeper) + (3, 0) $) --($ (creeper) + (-3, 0) $)
     --($ (creeper) + (-3, -3) $) --($ (creeper) + (-6, -3) $)--cycle;
 
+  \draw<2-> [approx, draw=none] % draw background
+    ($ (creeper) + (-10, -14) $) rectangle ($ (creeper) + (10, 14) $);
   \node<2-> [label=above:{Recursive program}] (poker) at (creeper) {\usebox{\pokerface}};
 
   \node<3-> (poker_over) at (-10, 20){\usebox{\pokerface}};
