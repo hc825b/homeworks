@@ -1,16 +1,40 @@
+@comment{
+
+inproceedings{
+  author    = {Paper Authors}
+  title     = {Paper Name},
+  booktitle = {Conference Full/Abbr Name},
+  series    = {},
+  volume    = {},
+  pages     = {},
+  year      = {YYYY},
+  address   = {Conference Venue},
+  url       = {},
+}
+
+OR
+
+inproceedings{
+  author    = {Paper Authors}
+  title     = {Paper Name},
+  booktitle = {Conference Full/Abbr Name},
+  pages     = {},
+  crossref  = {proceedings},
+}
+
+}
+
 @inproceedings{LalR08,
   author    = {Akash Lal and
                Thomas W. Reps},
-  title     = {Reducing Concurrent Analysis Under a Context Bound to Sequential Analysis},
-  booktitle = {Computer Aided Verification, 20th International Conference, {CAV}
-               2008, Princeton, NJ, USA, July 7-14, 2008, Proceedings},
+  title     = {Reducing Concurrent Analysis Under a Context Bound to Sequential
+               Analysis},
+  booktitle = {Proc. {CAV}'08},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {5123},
   pages     = {37--51},
   year      = {2008},
-  url       = {http://dx.doi.org/10.1007/978-3-540-70545-1_7},
-  doi       = {10.1007/978-3-540-70545-1_7},
-  timestamp = {Tue, 08 Jul 2008 14:46:07 +0200},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cav/LalR08},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
+  address   = {Princeton, NJ, USA},
 }
 
 @inproceedings{ClarkeJS05,
@@ -18,56 +42,48 @@
                Himanshu Jain and
                Nishant Sinha},
   title     = {Grand Challenge: Model Check Software},
-  booktitle = {Verification of Infinite-State Systems with Applications to Security,
-               Proceedings of the {NATO} Advanced Research Workshop "Verification
-               of Infinite State Systems with Applications to Security {VISSAS} 2005",
-               Timisoara, Romania, March 17-22, 2005},
+  booktitle = {Proc. the {NATO} Advanced Research Workshop on Verification of
+               Infinite State Systems with Applications to Security
+               ({VISSAS} 2005)},
+  series    = {{NATO} Security through Science Series {D:} Information and
+               Communication Security},
   pages     = {55--68},
   year      = {2005},
-  timestamp = {Thu, 07 Sep 2006 10:46:10 +0200},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/vissas/ClarkeJS05},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
+  address   = {Timi{\c{s}}oara, Rom{\^{a}}nia}
 }
 
 @inproceedings{BeyerK11,
-  title={{CPA}checker: A tool for configurable software verification},
-  author={Beyer, Dirk and Keremoglu, M Erkan},
-  booktitle={Computer Aided Verification},
-  pages={184--190},
-  year={2011},
-  organization={Springer}
-}
-@inproceedings{beyer2011cpachecker,
   author    = {Dirk Beyer and
                M. Erkan Keremoglu},
   title     = {{CPA}checker: {A} Tool for Configurable Software Verification},
-  booktitle = {Computer Aided Verification - 23rd International Conference, {CAV}
-               2011, Snowbird, UT, USA, July 14-20, 2011. Proceedings},
+  booktitle = {Proc. {CAV}'11},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {6806},
   pages     = {184--190},
   year      = {2011},
-  url       = {http://dx.doi.org/10.1007/978-3-642-22110-1_16},
-  doi       = {10.1007/978-3-642-22110-1_16},
-  timestamp = {Thu, 11 Dec 2014 17:22:43 +0100},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cav/BeyerK11},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
+  address   = {Snowbird, UT, USA}
 }
+
+@inproceedings{LoweMW14,
+  author    = {Stefan L{\"{o}}we and
+               Mikhail Mandrykin and
+               Philipp Wendler},
+  title     = {CPAchecker with Sequential Combination of Explicit-Value Analyses
+               and Predicate Analyses - (Competition Contribution)},
+  booktitle = {Proc. {TACAS}'14},
+  pages     = {392--394},
+  crossref  = {tacas2014},
+}
+
 @inproceedings{DanglLW15,
   author    = {Matthias Dangl and
                Stefan L{\"{o}}we and
                Philipp Wendler},
-  title     = {CPAchecker with Support for Recursive Programs and Floating-Point
-               Arithmetic - (Competition Contribution)},
-  booktitle = {Tools and Algorithms for the Construction and Analysis of Systems
-               - 21st International Conference, {TACAS} 2015, Held as Part of the
-               European Joint Conferences on Theory and Practice of Software, {ETAPS}
-               2015, London, UK, April 11-18, 2015. Proceedings},
+  title     = {{CPA}checker with Support for Recursive Programs and Floating-
+               Point Arithmetic - (Competition Contribution)},
+  booktitle = {Proc. {TACAS}'15},
   pages     = {423--425},
-  year      = {2015},
-  url       = {http://dx.doi.org/10.1007/978-3-662-46681-0_34},
-  doi       = {10.1007/978-3-662-46681-0_34},
-  timestamp = {Wed, 08 Apr 2015 11:31:07 +0200},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/tacas/DanglLW15},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
+  crossref  = {tacas2015},
 }
 
 @inproceedings{ErmisNDHP14,
@@ -77,15 +93,184 @@
                Jochen Hoenicke and
                Andreas Podelski},
   title     = {Ultimate Kojak - (Competition Contribution)},
-  booktitle = {Tools and Algorithms for the Construction and Analysis of Systems
-               - 20th International Conference, {TACAS} 2014, Held as Part of the
-               European Joint Conferences on Theory and Practice of Software, {ETAPS}
-               2014, Grenoble, France, April 5-13, 2014. Proceedings},
+  booktitle = {Proc. {TACAS}'14},
   pages     = {421--423},
-  year      = {2014},
-  url       = {http://dx.doi.org/10.1007/978-3-642-54862-8_36},
-  doi       = {10.1007/978-3-642-54862-8_36},
-  timestamp = {Sun, 23 Mar 2014 11:19:21 +0100},
-  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/tacas/ErmisNDHP14},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
+  crossref  = {tacas2014},
 }
+
+@inproceedings{BallR01,
+  author    = {Thomas Ball and
+               Sriram K. Rajamani},
+  title     = {The {SLAM} Toolkit},
+  booktitle = {Proc. {CAV}'01},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {2102},
+  pages     = {260-264},
+  year      = {2001},
+  address   = {Paris, France},
+}
+
+@inproceedings{AlbarghouthiGC12,
+  author    = {Aws Albarghouthi and
+               Arie Gurfinkel and
+               Marsha Chechik},
+  title     = {\textsc{Whale}: An Interpolation-Based Algorithm for Inter-procedural
+               Verification},
+  booktitle = {Proc. {VMCAI}'12},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7148},
+  pages     = {39-55},
+  year      = {2012},
+  address   = {Philadelphia, PA, USA},
+}
+
+@inproceedings{HeizmannCDEHLNSP13,
+  author    = {Matthias Heizmann and
+               J{\"u}rgen Christ and
+               Daniel Dietsch and
+               Evren Ermis and
+               Jochen Hoenicke and
+               Markus Lindenmann and
+               Alexander Nutz and
+               Christian Schilling and
+               Andreas Podelski},
+  title     = {Ultimate Automizer with {SMTI}nterpol - (Competition
+               Contribution)},
+  booktitle = {Proc. {TACAS}'13},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7795},
+  pages     = {641-643},
+  year      = {2013},
+  address   = {Rome, Italy},
+}
+
+@inproceedings{RepsHS95,
+  author    = {Thomas W. Reps and
+               Susan Horwitz and
+               Shmuel Sagiv},
+  title     = {Precise Interprocedural Dataflow Analysis via Graph Reachability},
+  booktitle = {Proc. {POPL}'95},
+  pages     = {49-61},
+  year      = {1995},
+  address   = {San Francisco, CA, USA},
+}
+
+@inproceedings{AlbarghouthiLGC12,
+  author    = {Aws Albarghouthi and
+               Yi Li and
+               Arie Gurfinkel and
+               Marsha Chechik},
+  title     = {\textsc{Ufo}: A Framework for Abstraction- and Interpolation-Based
+               Software Verification},
+  booktitle = {Proc. {CAV}'12},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7358},
+  pages     = {672-678},
+  year      = {2012},
+  address   = {Berkeley, CA, USA},
+}
+
+@inproceedings{ClarkeKL04,
+  author    = {Edmund M. Clarke and
+               Daniel Kroening and
+               Flavio Lerda},
+  title     = {A Tool for Checking {ANSI-C} Programs},
+  booktitle = {Proc. {TACAS}'04},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {2988},
+  pages     = {168-176},
+  year      = {2004},
+  address   = {Barcelona, Spain},
+}
+
+@inproceedings{CousotCFMMMR05,
+  author    = {Patrick Cousot and
+               Radhia Cousot and
+               J{\'{e}}r{\^{o}}me Feret and
+               Laurent Mauborgne and
+               Antoine Min{\'{e}} and
+               David Monniaux and
+               Xavier Rival},
+  title     = {The {ASTRE{\'{E}}} Analyzer},
+  booktitle = {Proc. {ESOP}'05},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {3444},
+  pages     = {21-30},
+  year      = {2005},
+  address   = {Edinburgh, UK},
+}
+
+@inproceedings{CuoqKKPSY12,
+  author    = {Pascal Cuoq and
+               Florent Kirchner and
+               Nikolai Kosmatov and
+               Virgile Prevosto and
+               Julien Signoles and
+               Boris Yakobowski},
+  title     = {{Frama-C} - A Software Analysis Perspective},
+  booktitle = {Proc. {SEFM}'12},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7504},
+  pages     = {233-247},
+  year      = {2012},
+  address   = {Thessaloniki, Greece},
+}
+
+@inproceedings{BallR00,
+  author    = {Thomas Ball and
+               Sriram K. Rajamani},
+  title     = {Bebop: A Symbolic Model Checker for Boolean Programs},
+  booktitle = {Proc. SPIN},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1885},
+  pages     = {113-130},
+  year      = {2000},
+  address   = {Stanford, CA, USA},
+}
+
+@inproceedings{Oheimb99,
+  author    = {David von Oheimb},
+  title     = {Hoare Logic for Mutual Recursion and Local Variables},
+  booktitle = {Proc. FSTTCS},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1738},
+  pages     = {168-180},
+  year      = {1999},
+  address   = {Chennai, India},
+}
+
+@inproceedings{svcomp14,
+  author    = {Dirk Beyer},
+  title     = {Status Report on Software Verification - (Competition Summary
+               {SV-COMP} 2014)},
+  booktitle = {Proc. {TACAS}'14},
+  pages     = {373--388},
+  crossref  = {tacas2014},
+  url       = {http://sv-comp.sosy-lab.org/2014/}
+}
+
+@inproceedings{svcomp15,
+  author    = {Dirk Beyer},
+  title     = {Software Verification and Verifiable Witnesses - (Report on
+               {SV-COMP} 2015)},
+  booktitle = {Proc. {TACAS}'15},
+  pages     = {401--416},
+  crossref  = {tacas2015},
+  url       = {http://sv-comp.sosy-lab.org/2015/},
+}
+
+@inproceedings{NeculaMRW02,
+  author    = {George C. Necula and
+               Scott McPeak and
+               Shree Prakash Rahul and
+               Westley Weimer},
+  title     = {{CIL:} Intermediate Language and Tools for Analysis and
+               Transformation of {C} Programs},
+  booktitle = {Proc. {CC}'02},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {2304},
+  pages     = {213--228},
+  year      = {2002},
+  address   = {Grenoble, France},
+}
+

@@ -4,6 +4,15 @@
 
 \usepackage[utf8]{inputenc}
 
+% Use biblatex instead of bibtex
+\usepackage[backend=bibtex, style=ieee]{biblatex}
+%% Add all bib source files
+\addbibresource{bib/articles.bib}
+\addbibresource{bib/books.bib}
+\addbibresource{bib/electronic.bib}
+\addbibresource{bib/inproceedings.bib}
+\addbibresource{bib/proceedings.bib}
+
 \usepackage{mystyle}
 
 %% TODO remove this package after finishing editing
@@ -85,9 +94,7 @@ tex/ch-conclusion
 \backmatter
 % Bibliography
 \begin{doublespace}
-\bibliographystyle{plain}
-\bibliography{bib/proceedings,bib/inproceedings,bib/articles,bib/books}
-\addcontentsline{toc}{chapter}{\bibname}
+\printbibliography
 \end{doublespace}
 
 \clearpage\end{CJK*}
