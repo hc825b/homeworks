@@ -5,8 +5,8 @@ Let \method{BasicAnalyzer} denote a recursion-free inductive program analyzer,
 and let a program $\prog{P}=\{G^{\fun{main}}\}\cup\{G^{\fun{f}} : \fun{f}\mbox{ is a function}\}$
 consist of the CFGs of the $\fun{main}$ function and functions that may be
 invoked (transitively) from $\fun{main}$.
-Since non-recursive functions can be replaced by their control flow graphs
-after proper variable renaming,
+Since functions without recursive calls can be replaced by their control flow
+graphs after proper variable renaming,
 we assume that \prog{P} only contains the $\fun{main}$ and recursive functions.
 If \prog{P} does not contain recursive functions,
 \method{BasicAnalyzer} is able to check \prog{P} by computing inductive invariants.

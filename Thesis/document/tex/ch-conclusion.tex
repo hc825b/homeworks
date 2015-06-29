@@ -5,9 +5,9 @@
 
 The number of unwindings is perhaps the most important factor in our
 recursive analysis technique (Table~\ref{table:experiments}). We find
-that \textsc{CPAChecker} performs poorly when many unwindings are
+that \textsc{CPAchecker} performs poorly when many unwindings are
 needed. We however do not enable the more efficient block encoding in
-\textsc{CPAChecker} for the ease of implementation. One can improve
+\textsc{CPAchecker} for the ease of implementation. One can improve
 the performance of our algorithm with the efficient but complicated
 block encoding. A bounded analyzer may also speed up the
 verification of bounded properties. 
@@ -20,5 +20,5 @@ parameters is obtained when \textmd{CheckSummary}
 (Algorithm~\ref{algorithm:check-summary}) returns $\FF$. If the
 valuation is not possible in the $\fun{main}$ function, one can use
 its inductive invariant to refine function summaries. We in 
-fact exploit error traces computed by \textsc{CPAChecker} in the
+fact exploit error traces computed by \textsc{CPAchecker} in the
 implementation. 

@@ -10,8 +10,8 @@
 \chapter{Experiments}\label{ch:experiments}
 \todo[inline]{Update the data with SVCOMP15}
 A prototype of our approach is implemented with
-\textsc{CPAChecker} 1.2.11-svcomp14b\footnote{
-  We use script/cpa.sh to invoke \textsc{CPAChecker} and use the configuration
+\textsc{CPAchecker} 1.2.11-svcomp14b\footnote{
+  We use script/cpa.sh to invoke \textsc{CPAchecker} and use the configuration
   file available at
   \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.
 }
@@ -19,11 +19,11 @@ as the underlying \method{BasicAnalyzer}.
 For all program transformations mentioned in
 Chapter~\ref{ch:proving-via-transformation},
 we benefit from the well-known front-end,
-C Intermediate Language~(\textsc{CIL})~\cite{cil}, to apply all required
+C Intermediate Language~(\textsc{CIL})~\cite{NeculaMRW02,cil}, to apply all required
 transformations on C programs.
-In addition, because \textsc{CPAChecker} does not support universal quantifiers
+In addition, because \textsc{CPAchecker} does not support universal quantifiers
 in the expression of an $\mathtt{assume}$ command,
-we used \textsc{Redlog}~\cite{redlog} for quantifier elimination.
+we used \textsc{Redlog}~\cite{Dolzmann97,redlog} for quantifier elimination.
 
 \todo[inline]{Separate implementation from experiments}
 
@@ -80,7 +80,7 @@ of 14, and the gap between the scores of CBMC and our tool becomes
 much smaller.
 Moreover, this gap may be narrowed if we turn on some important
 optimizations such as adjustment of block encoding provided in
-\textsc{CPAChecker}.
+\textsc{CPAchecker}.
 We chose to disable the optimizations in order to simplify the
 implementation of our prototype tool.
 
@@ -89,8 +89,8 @@ our tool can verify more programs and obtain a higher score.
 The scores of our tool and \textsc{Ultimate Automizer} are very close mainly
 because of a false positive produced by our tool.
 The false positive in fact came from a spurious error trace reported
-by \textsc{CPAChecker} because modulo operation is approximated in
-\textsc{CPAChecker}.
+by \textsc{CPAchecker} because modulo operation is approximated in
+\textsc{CPAchecker}.
 If this case is excluded, our tool can obtain a score of 16.
 
 % Besides the four participants of SV-COMP 2014, we also tried to
@@ -226,7 +226,7 @@ Points & Program Correctness & Reported Result \\\hline
 
 
 \begin{table}[p]
-\caption{Partial competition results of
+\caption{Partial competition results of the
   \textbf{recursive} category of the 2015 Competition on Software
   Verification.\label{table:competition}}
 \resizebox{\textwidth}{!}
