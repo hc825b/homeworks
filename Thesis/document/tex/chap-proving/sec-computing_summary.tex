@@ -11,14 +11,24 @@ A location $\ell$ \emph{strictly dominates} $\ell'$~($\ell$ \emph{dom} $\ell'$)
 if and only if every execution path from $s$ to $\ell'$ must go through $\ell$.
 Similarly, $\ell$ \emph{post-dominates} $\ell'$~($\ell$ \emph{post-dom} $\ell'$)
 if and only if every execution path from $\ell'$ to $e$ must go through $\ell$.
-We can thereby define that $\langle s, e \rangle$ \emph{encloses}
-$\langle s', e' \rangle$ if only if $s$ \emph{dom} $s'$ and $e$ \emph{post-dom}
-$e'$,
+We can thereby define that $\langle s_i, e_i \rangle$ \emph{encloses}
+$\langle s_j, e_j \rangle$ if only if $s_i$ \emph{dom} $s_j$ and $e_i$
+\emph{post-dom} $e_j$,
 and we can then find outermost pair with this definition that this pair is not
 enclosed by any other pair through Algorithm~\ref{algorithm:mark-locations}.
 Note that MarkLocs$(\prog{P}_k)$ is designed to handle unwound programs from
 both unwinding methods,
 and it does not provide any output but modify program $\prog{P}_k$ directly.
+
+\todo[inline]{
+The implementation marks different locations than those described above.
+Here we say it marks the entry and exit locations of unwound body.
+However, we actually use the locations before and after the function call.
+That is, the location before the formal parameters are assigned and the location
+after the receiving variable receives value from return variable.
+This is because the invariants may contain invariants with less variable to be
+quantified~(Actually this is observed from \textsc{CPAchecker}).
+}
 
 \begin{algorithm}
 \begin{doublespace}
