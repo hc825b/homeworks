@@ -153,7 +153,8 @@ in the figure. Loops can be modeled similarly.
   \label{figure:mccarthy91}
 \end{figure}
 
-\todo[inline]{definitions of accessible variables, program states}
+\todo[inline]{Extend the definition of inductive invariants to support
+interprocedural analysis}
 % \section{Inductive Invariants}\label{sec:semantics}
 
 Let $G^{\fun{f}} = \langle V, E ,\cmd{cmd}^{\fun{f}},
@@ -234,8 +235,8 @@ with $\cmd{cmd} (\ell, \ell') = \mathtt{assert} (B_{\ell})$,
 then all assertions in $G^{\fun{f}}$ are satisfied.
 \label{proposition:inductive-invariant}
 \end{proposition}
-A program analyzer checks assertions by computing inductive invariants is called
-an \emph{inductive} program analyzer.
+A program analyzer which checks assertions by computing inductive invariants is
+called an \emph{inductive} program analyzer.
 Note that an inductive program analyzer need not give any information when an
 assertion fails.
 Indeed, most inductive program analyzers simply report false positives when
