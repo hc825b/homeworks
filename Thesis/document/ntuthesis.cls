@@ -17,6 +17,7 @@
 \RequirePackage{datetime} % Show current month and year
 \RequirePackage{fp} % Simple calculations on years
 \RequirePackage{setspace} % Line spacing
+\RequirePackage{pdfpages} % To include official documents
 
 \pagestyle{plain} % Set header and footer style
 

@@ -15,7 +15,7 @@
 
 \usepackage{mystyle}
 
-%% TODO remove this package after finishing editing
+%% Disable this package after finishing editing
 \usepackage[disable]{todonotes}
 
 % Type your personal information
@@ -43,17 +43,6 @@
 %\setGradYearEN    {2015} % The date is generated using \today
 %\setGradMonthEN   {June} % You can un-comment and specify the date
 
-%% For partial compilation
-\includeonly{
-tex/abstractEN,
-tex/ch-introduction,
-tex/ch-related,
-tex/ch-preliminaries,
-tex/ch-overview,
-ch-proving,
-tex/ch-experiments,
-tex/ch-conclusion
-}
 
 \begin{document}
 \begin{CJK*}{UTF8}{bkai}
@@ -61,12 +50,18 @@ tex/ch-conclusion
 \frontmatter
 \maketitle   % Generate title page
 
-\begin{doublespace}
-%\include{tex/acknowledgements}
-\end{doublespace}
+% Dummy chapter for generating ToC
+\addcontentsline{toc}{chapter}{口試委員會審定書}
+\includepdf[pages={1},pagecommand={}]{official/approvalZH}
+\addcontentsline{toc}{chapter}{Oral Examination Approval Form}
+\includepdf[pages={1},pagecommand={}]{official/approvalEN}
 
 \begin{onehalfspace}
-%\include{tex/abstractZH}
+\include{tex/acknowledgements}
+\end{onehalfspace}
+
+\begin{onehalfspace}
+\include{tex/abstractZH}
 \end{onehalfspace}
 
 \begin{doublespace}
@@ -77,6 +72,7 @@ tex/ch-conclusion
 \tableofcontents
 \listoffigures
 \listoftables
+\todo[inline]{Add List of Symbols}
 \end{doublespace}
 
 
