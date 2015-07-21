@@ -50,7 +50,8 @@ required for describing data structure as well as semantic for the operations,
 and a \method{BasicAnalyzer} providing inductive invariants in such logic surely
 is necessary.
 Our primitive study reveals several difficulties on applying our approach with
-separation logic~\cite{Reynolds02} and the Thor analyzer~\cite{MagillTLT08}.
+separation logic~\cite{Reynolds02} and the \textsc{Thor}
+analyzer~\cite{MagillTLT08}.
 
 One major obstacle comes from \textmd{ComputeSummary} and \textmd{CheckSummary}.
 In our method, implication connective and universal quantification are used to
@@ -58,20 +59,23 @@ derive summary.
 These operators are intuitive in propositional and Presburger arithmetic logic.
 By contrast, there is no such operator on separation logic.
 Consequently, we tried to devise different methods for compute and check
-summaries in order to avoid the usage of the operators,
-and actually the summaries cannot be easily represented by one single formula.
+summaries in order to avoid the usage of the operators.
+A possible workaround for this problem is to use multiple formulae instead of
+one single formula to represent one function summary.
 
-Another problem arises from the expression allowed in \cmd{assume} and
-\cmd{assert} command.
+Another problem arises from the expression allowed in $\mathtt{assume}$ and
+$\mathtt{assert}$ command.
 Our program model does not introduce a separated \emph{assertion language} for
 specifying preconditions and postconditions,
 and this is to comply with the assertions in C language.
 The drawback of this choice is that the expressiveness and grammar of allowed
-boolean expression in program and the chosen logic are not necessarily
-consistent.
-In our study, we actually used the assertion language defined by Thor to
-annotate C programs,
-and much efforts are needed to understand the underlying analyzer,
+boolean expression in program is limited,
+and hence not necessarily consistent with the logic in \method{BasicAnalyzer}.
+To precisely describe a recursive data structure, we tried to introduce
+annotations recognized by \method{BasicAnalyzer} into C programs.
+In our study, we actually used the assertion language defined by \textsc{Thor}
+to annotate C programs,
+and much more efforts are needed to understand the underlying analyzer,
 not to mention the transformation on the formulae.
 
 Finally, reducing program features via program transformation techniques is the

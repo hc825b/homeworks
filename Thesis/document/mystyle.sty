@@ -5,7 +5,7 @@
 \RequirePackage{bussproofs} % For writing logic proof
 
 \RequirePackage{tikz} % For tikzpicture
-\usetikzlibrary{arrows,calc}
+\usetikzlibrary{arrows,shapes,calc}
 
 \RequirePackage{varwidth} % Adjust text to fit in tikz node
 
@@ -13,13 +13,17 @@
 \RequirePackage{subcaption} % For subfigure
 \captionsetup{compatibility=false}
 
+\RequirePackage[hang]{footmisc}
+
 \RequirePackage{hyperref} % For hyperlinks, especially website links
 
 \RequirePackage{import}% For project structure
 
 \RequirePackage{multirow}
 
-\RequirePackage[hang]{footmisc}
+
+\RequirePackage{listings} % For pretty printing source code
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
 
 % Some command aliases
 \newcommand{\hide}[1]{}%{#1}}

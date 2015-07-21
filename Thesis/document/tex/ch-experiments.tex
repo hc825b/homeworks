@@ -8,14 +8,59 @@
 \newcommand{\wrongmark}{\ensuremath{^!}}
 
 \chapter{Experiments}\label{ch:experiments}
-\todo[inline]{Update the data with SVCOMP15}
-A prototype of our approach is implemented with
-\textsc{CPAchecker} 1.2.11-svcomp14b\footnote{
-  We use script/cpa.sh to invoke \textsc{CPAchecker} and use the configuration
-  file available at
-  \url{https://github.com/fmlab-iis/transformer/blob/master/tool/verifier-conf/myCPA-PredAbstract-LIA.properties}.
-}
-as the underlying \method{BasicAnalyzer}.
+
+\section{Implementation}
+
+\begin{figure}[t]
+\begin{center}
+\begin{tikzpicture}[
+  node distance=1cm and 1.2cm, auto,>=latex', thick,
+  decision/.style = {diamond, aspect=2, draw, align=center},
+      data/.style = {draw,trapezium,trapezium left angle=70,
+                     trapezium right angle=-70,minimum height=0.6cm},
+     input/.style = {data, text width=18mm},
+    output/.style = {rounded corners, draw, text width=1.5cm, align=center,
+                     minimum height=0.7cm},
+]
+  % Nodes
+  \node[decision] (analyzer) {Analyzer};
+  \node[input, left=of analyzer] (rf_prog) {Intra-proc. Program};
+
+  \node[data, above=.5cm of analyzer,text width=20mm] (proof) {Summary Candidates};
+
+  \node[decision,above=.5cm of proof] (check) {Check};
+
+  \node[input] (rc_prog) at (rf_prog |- check) {Recursive Program};
+  \node[output, right=of analyzer] (unsafe) {FALSE};
+  \node[output] (safe) at (check -| unsafe) {TRUE};
+
+  % Edges
+  \path[->]
+    (rf_prog) edge (analyzer)
+    (analyzer) edge node[anchor=north,sloped]{Error} (unsafe);
+
+  \path[->]
+    (rc_prog) edge 
+      node[anchor=east]{Under-approx.}
+    (rf_prog);
+
+  \path[->]
+    (analyzer) edge node[anchor=west]{Pass, Compute Summaries} (proof);
+  \path[->]
+    (proof) edge (check)
+    (check) edge node[anchor=south,sloped]{Error, Refine} (rf_prog)
+    (check) edge node[anchor=south,sloped]{Pass} (safe);
+
+\end{tikzpicture}
+\end{center}
+\caption{The Execution Flow of \textsc{CPArec}}
+\label{fig:flow}
+\end{figure}
+
+A prototype of our approach, \textsc{CPArec}, is implemented with
+\textsc{CPAchecker} 1.2.11-svcomp14b as the underlying \method{BasicAnalyzer}.
+The overall software architecture and execution flow is illustrated in
+Figure~\ref{fig:flow}.
 For all program transformations mentioned in
 Chapter~\ref{ch:proving-via-transformation},
 we benefit from the well-known front-end,
@@ -25,7 +70,25 @@ In addition, because \textsc{CPAchecker} does not support universal quantifiers
 in the expression of an $\mathtt{assume}$ command,
 we used \textsc{Redlog}~\cite{Dolzmann97,redlog} for quantifier elimination.
 
-\todo[inline]{Separate implementation from experiments}
+\textsc{CPArec} is available at~\url{https://github.com/fmlab-iis/cparec}.
+The experiments in this paper is based on version v0.1-alpha.
+The simplest way to execute \textsc{CPArec} is to first download the binary from
+the web-site.
+To setup the environment in Ubuntu 12.04 64-bit, JAVA Runtime, Python 2.7,
+the Python Networkx package, and the Python PyGraphviz package are required.
+Run following commands to install above packages in Ubuntu 12.04 64-bit:
+\begin{lstlisting}[language=bash]
+  sudo apt-get install openjdk-7-jre
+  sudo apt-get install python python-networkx python-pygraphviz
+\end{lstlisting}
+To process a benchmark example \verb|program.c|, one should use the following script:
+\begin{lstlisting}[language=bash]
+  python <path_to_cparec>/cparec/main.py program.c
+\end{lstlisting}
+No further parameters are needed.
+\textsc{CPArec} will print the verification result to the console. 
+
+\section{Experiments}
 
 To evaluate our tool, we performed experiments with all the benchmarks
 from the \textbf{recursive} category in the 3rd Competition on
@@ -182,7 +245,7 @@ Therefore, the strategy of \textsc{CBMC} didn't do the trick this year.
 Table~\ref{table:competition} provides partial results containing the final
 scores for the top 5 tools.
 The data are quoted from the competition report\footnote{
-  Available at \url{http://sv-comp.sosy-lab.org/2015/results/} \\
+  Available at~\url{http://sv-comp.sosy-lab.org/2015/results/} \\
   Select \textbf{recursive} category for the complete table.
 }.
 Our tool, \textsc{CPArec}, won the Third place among all 9 competitors.
