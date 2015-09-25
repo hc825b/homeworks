@@ -1,0 +1,306 @@
+\documentclass[11pt]{homework}
+
+\usepackage[noend]{algorithm2e}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+% TODO: replace these with your information
+\newcommand{\hwname}{Chiao Hsieh}
+\newcommand{\hwemail}{chsieh16@illinois.edu}
+\newcommand{\hwtype}{Homework}
+\newcommand{\hwnum}{2}
+\newcommand{\hwclass}{CS 498 MP3: Logic}
+\newcommand{\hwlecture}{}
+\newcommand{\hwsection}{}
+
+\renewcommand{\questiontype}{Problem}
+
+\newcommand{\Nat}{\ensuremath{\mathbb{N}}}
+\renewcommand{\P}{\ensuremath{\text{P}}}
+\newcommand{\PSPACE}{\ensuremath{\text{PSPACE}}}
+\newcommand{\DSPACE}{\ensuremath{\text{DSPACE}}}
+\newcommand{\NP}{\ensuremath{\text{NP}}}
+\newcommand{\coNP}{\ensuremath{\text{co-NP}}}
+
+\begin{document}
+\maketitle
+
+% Your content
+
+\question
+ Recall that in class we saw that RE-complete problems are not recursive.
+ Are there problems in RE that are not RE-complete but nonetheless not recursive?
+ As we will show here, the answer is yes.
+\begin{enumerate}[label=(\alph*)]
+  \item
+    Recall that \(L_d = \{i|i\not\in L(M_i)\}\).
+    Prove that \(\overline{L_d}\) is RE-complete.
+    
+Ans.
+  
+We first prove that \(\overline{L_d} = \{i|i \in L(M_i)\}\) is RE by reduction to \(L_u\).
+From lecture slides, we know \(L_u = \{\langle i,w\rangle|w \in L(M_i)\}\) is RE,
+so there exists \(M_u\) which accepts \(L_u\).
+For \(M\), we simply transform the input \(i\) to \(\langle i,i\rangle\)
+and ask if \(M_u\) accepts the string.
+The transformation is apparently computable (linear time).
+Therefore, \(M\) can decide whether \(i \in \overline{L_d}\),
+so \(\overline{L_d}\) is RE.
+
+Now, we prove that \(\overline{L_d}\) is RE-hard by showing \(L_u \leq_m \overline{L_d}\) because \(L_u\) is proven to be RE-complete.
+
+For any membership query \(\langle i, w\rangle\) for \(L_u\),
+there exists a TM \(M_j\) which only checks if \(w \in L(M_i)\).
+\[
+  L(M_j) =
+  \begin{cases}
+    \Sigma^* & \text{if } M_i \text{ accepts } w\\
+    \emptyset & \text{otherwise}
+  \end{cases}
+\]
+Notice that \(j \in L(M_j) = \Sigma^*\) if \(\langle i, w\rangle \in L_u\), and \(j \not\in L(M_j) = \emptyset\) if \(\langle i, w\rangle \not\in L_u\).
+We proved that \(\langle i, w\rangle \in L_u \Leftrightarrow f(\langle i, w\rangle) = j \in \overline{L_d}\).
+
+The reduction function \(f(\langle i, w\rangle) = j\) is computable.
+An implementation of \(f\) to produce \(M_j\) is adding additional states into \(M_i\)
+that erase and write \(w\) to input tape,
+so the computation is linear to the length of \(w\).
+
+Therefore, we showed that \(L_u \leq_m \overline{L_d}\), and \(\overline{L_d}\) is RE-complete.
+
+\end{enumerate}
+
+Let us now define languages that are not RE in a very strong sense.
+A language \(L\) is said to be \emph{productive}
+if there is a computable function \(g\) such that whenever
+\(L(M_i) \subseteq L, g(i) \in L \setminus L(M_i)\).
+Informally, productive sets are non-RE languages for which you can always produce
+a witness for why it is not equal to a particular RE language.
+\begin{enumerate}[label=(\alph*), resume]
+  \item Prove that \(L_d\) is productive.
+
+Ans.
+
+We consider two case of \(i\) such that \(L(M_i) \subseteq L_d\).
+
+If \(i \in L_d\), then \(g(i) = i \in L \setminus L(M_i)\) because \(i \not\in L(M_i)\).
+
+If \(i \not\in L_d\), then we know that \(i \in L(M_i)\);
+it contradicts to our premise that \(L(M_i) \subseteq L_d\),
+so this case is impossible.
+
+Therefore, we can construct a computable function \(g(i) = i\), i.e., the identity function, to show that \(L_d\) is productive.
+\end{enumerate}
+
+Productive languages have the following two properties that you may assume without proof.
+
+\textbf{Fact 1} If \(A \leq_m B\) and \(A\) is productive then \(B\) is productive.
+
+\textbf{Fact 2} If \(A\) is productive then \(A\) contains an infinite RE subset.
+\begin{enumerate}[label=(\alph*), resume]
+    \item Using parts (a) and (b), and Fact 1 (above), 
+          prove that if \(L\) is RE-complete then \(\overline{L}\) is productive.
+
+Ans.
+
+We show that \(L_d \leq_m \overline{L}\) for any RE-complete \(L\) to prove the claim.
+
+If \(L\) is RE-complete, then there is a reduction \(f\) to show that \(\overline{L_d} \leq_m L\).
+Consider \(f\), we know that
+\[
+\begin{array}{rl}
+           & x \in \overline{L_d} \Leftrightarrow f(x) \in L \\
+\therefore & x \in L_d \Leftrightarrow f(x) \in \overline{L}
+\end{array}
+\]
+Thus, \(L_d \leq_m \overline{L}\).
+By (b) and \textbf{Fact 1}, \(L_d\) is productive, so is \(\overline{L}\).
+
+\end{enumerate}
+
+Recall that the function \(f:\Nat \times \Nat \mapsto \Nat\) defined as
+\[
+f((m,n)) = \frac{(m+n)(m+n+1)}{2} + m
+\]
+is a bijection.
+Using this function we can define a total order on \(\Nat \times \Nat\) as follows:
+\((m_1,n_1)\leq (m_2,n_2)\) iff \(f((m_1,n_1))\leq f((m_2,n_2))\).
+For any \(i \in \Nat\), define
+\[
+L_i =
+\begin{cases}
+\emptyset & \text{if } M_i \text{ does not accept any } j \geq 2i \\
+\{j\}     & (j,k) \text{ is the smallest pair s.t. } j \geq 2i \text{, and } M_i \text{ accepts } j \text{ in } k \text{ steps}
+\end{cases}
+\]
+Take \(L_* = \bigcup_{i\in\Nat} L_i\).
+
+\begin{enumerate}[label=(\alph*), resume]
+  \item Prove that \(L_*\) is RE.
+
+Ans.
+
+For any given \(w \in \Nat\), we can determine if \(w \in L_*\) through
+asking if \(\langle i,w\rangle \in L_u\) to know if \(w \in L_i\) for every \(i\) that \( 0\leq i \leq w/2\).
+However, we also have to devise the interleaving
+between membership queries of \(L_u\) because not all queries will halt.
+The detail is in Algorithm~\ref{alg:lstar}.
+
+\begin{algorithm}
+    \KwIn{\(w \in \Nat\)}
+    \KwOut{``yes'' or ``no''}
+    
+    smallest := 0
+    
+    \(S_M\) := \(\{M_i \mid 2i<=w\}\)
+
+  \While{\(S_M \neq \emptyset\)}{
+    \((j, k)\) := \(f^{-1}\)(smallest)
+
+    \ForEach{\(M_i \in S_M\)}{
+        \If{\(M_i\) accepts \(j\) in \(k\) steps}{
+            \If{j = w}{ \Return ``yes''}
+            \Else{\(S_M\) := \(S_M \setminus \{M_i\}\)}
+        }
+    }
+    smallest := smallest + 1
+  }
+  
+  \Return ``no''
+  
+   \caption{Check if \(w \in L_*\)}
+   \label{alg:lstar}
+\end{algorithm}
+
+The result is correct because the \((j,k)\) pairs is always the smallest,
+and the algorithm will accept and halt if any of \(M_i\) accepts \(w\) with the smallest pair.
+Otherwise, it continues until all \(M_i\) accept other \(j \neq w\) earlier and reject the input \(w\).
+
+  \item Prove that \(\overline{L_*}\) is infinite but \(\overline{L_*}\)
+        does not contain any infinite RE language.
+
+Ans.
+
+\(\overline{L_*}\) is infinite because, for any \(j \in \{0, 1, \dots, 2n-1\} \subset \Nat\), \(j \not\in L_i\) when \(i >= n > j/2\).
+Thereby, only at most \(n\) numbers could possibly belong to \(L_*\),
+and at at least \(n\) numbers belong to \(\overline{L_*}\).
+\(\therefore |\overline{L_*}| \geq \frac{|\Nat|}{2} = \aleph_0\) is infinite.
+ 
+To prove \(\overline{L_*}\) does not contain any infinite RE language,
+we assume there is an infinite RE language accepted by a TM \(M_i\) s.t. \(L(M_i) \subseteq \overline{L_*}\).
+Then, any integer \(j \in L(M_i)\) should not belong to \(L_*\).
+The only possible scene is that \(M_i\) rejects any \(j \geq 2i\),
+or otherwise there is always a smallest pair \((j, k)\) and makes \(j \in  L_i \subseteq L_*\).
+Consequently, \(0 <= j < 2i\) for all \(j \in L(M_i)\); \(L(M_i)\) must be finite.
+Contradiction.
+
+  \item Using Fact 2, and part (c),
+        conclude that \(L_*\) is neither recursive nor RE-complete.
+
+Ans.
+
+If \(L_*\) is recursive, then \(\overline{L_*}\) should be recursive,
+but \(\overline{L*}\) is not recursive because, by (e), it doesn't contain any infinite RE language including itself.
+
+If \(L_*\) is RE-complete, then \(\overline{L_*}\) should be productive by (c).
+However, from (e), we know there is no infinite RE language subset in \(\overline{L_*}\).
+By contrapositive of \textbf{Fact 2}, we know \(\overline{L_*}\) is not productive.
+
+We conclude that \(L_*\) is neither recursive nor RE-complete.
+\end{enumerate}
+
+\question
+
+\newcommand{\Lpad}{\ensuremath{L_{\text{pad}}}}
+
+Prove that if \(\DSPACE(n) \subseteq \P\)
+then \(\P = \PSPACE\).
+\emph{Hint:} Let \(L \subseteq \{0,1\}^* \) be recognized by Turing machine \(M\) in space \(n^k\).
+Define \(\Lpad = \{x\$^{|x|^k - |x|} | x \in L\}\).
+What can you say about space needed to solve \(\Lpad\)?
+
+Ans.
+
+From lecture slides, we already know that \(\P \subseteq \PSPACE\),
+so we only have to prove that,
+if \(\DSPACE(n) \subseteq \P\), then \(\PSPACE \subseteq \P\).
+
+Consider the reduction from a language \(L \in \DSPACE(n^k)\) to the \(\Lpad\) language,
+we can devise an algorithm to determine if some \(y \in \Lpad\) through
+\begin{enumerate}
+  \item Check if \(y \) is in the form \(x\$^{|x|^k - |x|}\)
+  
+  In this case, at most \(|y| = |x\$^{|x|^k - |x|}| = |x| + |x|^k - |x| = |x|^k\) space is required.
+  
+  \item Check if \(x \in L\) using the deterministic TM \(M\)
+  
+  In this case, \(O(|x|^k)\) is required.
+\end{enumerate}
+As a result, the space needed is \(|x|^k + O(|x|^k) = O(|y|)\).
+In other words, \(\Lpad \in \DSPACE(n)\), and we conclude that \(\Lpad \in \P\) from the hypothesis.
+
+By definition, \(\PSPACE = \bigcup_k \DSPACE(n^k)\).
+For every \(L \in \PSPACE\), there is a corresponding \(\Lpad\).
+Obviously, the reduction from \(L\) to \(\Lpad\) is a polynomial time computable function.
+Hence, \(L \leq_p \Lpad\), so \(L \in \P\) and \(\PSPACE \subseteq \P\).
+
+\question
+A strong non-deterministic TM is one that has three possible outcomes:
+``yes'', ``no'', and ``maybe''.
+We say that such a machine decides \(L\) iff the following holds:
+If \(x \in L\) then all computations end up with either ``yes'' or ``maybe'',
+and at least one ends up with ``yes''.
+If \(x \not\in L\) then all computations end up with ``no'' or ``maybe'',
+and at least one ends up with ``no''.
+A polynomial time strong nondeterministic TM is a strong nondeterministic TM,
+where every possible computation takes at most \(p(n)\) time,
+where \(n\) is the input length.
+Show that \(L\) is decided by a polynomial strong nondeterministic TM
+if and only if \(L \in \text{NP} \cap \text{co-NP}\).
+
+Ans.
+
+Given \(M\) is a polynomial strong nondeterministic TM, we prove
+\begin{itemize}
+\item \(\exists M. L = L(M) \implies L \in \text{NP} \cap \text{co-NP}\)
+
+Because there is at least one computation should end up with ``yes'',
+by definition, \(M\) terminates and answers ``yes'' in \(p(n)\) time
+for any string \(x \in L\) with length \(n\).
+Therefore, \(L\) is in NP.
+Similarly, \(M\) terminates and answers ``no'' in \(p(n)\) time
+for any string \(x \in \overline{L}\) with length \(n\).
+We can easily construct another TM \(\overline{M}\) that simply answer ``yes'' if \(M\) answers ``no''.
+\(\overline{M}\) decides \(x \in \overline{L}\) in polynomial time; thus,
+\(\overline{L} \in \text{NP}\) so \(L\) is also in co-NP.
+Hence, \(L \in \text{NP} \cap \text{co-NP}\)
+
+\item \(\exists M. L = L(M) \impliedby L \in \text{NP} \cap \text{co-NP}\)
+
+Since \(L \in \text{NP}\), if \(x \in L\),
+then there is a proof \(y\) of length at most \(p(n)\),
+and we can construct a deterministic TM \(M_{yes}\) verifies \(x\#y\).
+That is, \(L(M_\text{yes}) \in \text{P}\) and
+\[
+  L = \{x|\exists y. |x\#y| \leq p(n) \land x\#y \in L(M_\text{yes}) \}
+\] where \(\#\) is an alphabet never used before.
+Similarly, since \(L \in \text{co-NP}\),
+we have \(L(M_\text{no}) \in \text{P}\) and
+\[
+  \overline{L} = \{x|\exists z. |x\#z| \leq p(n) \land x\#z \in L(M_\text{no}) \}
+\]
+
+Here, our polynomial strong nondeterministic TM \(M\) will guess \(y\) and \(z\).
+If one \(x\#y\) is accepted by \(M_\text{yes}\) then answer ``yes'' otherwise answer ``maybe''.
+If one \(x\#z\) is accepted by \(M_\text{no}\) then answer ``no'' otherwise answer ``maybe''.
+Since both \(M_\text{yes}\) and \(M_\text{no}\) are deterministic polynomial time algorithm,
+all computations should halts in \(p(n)\).
+
+Moreover, there is no such case that \(M_\text{yes}\) and \(M_\text{no}\) both accept as the same time,
+because it is impossible that \(x \in L \land x \in \overline{L}\).
+
+Therefore, the constructed TM complies with the definition of polynomial strong nondeterministic TM.
+
+\end{itemize}
+
+\end{document}

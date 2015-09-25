@@ -1,0 +1,211 @@
+\documentclass[11pt]{homework}
+
+\usepackage{algorithm2e}
+
+% TODO: replace these with your information
+\newcommand{\hwname}{Chiao Hsieh}
+\newcommand{\hwemail}{chsieh16@illinois.edu}
+\newcommand{\hwtype}{Homework}
+\newcommand{\hwnum}{1}
+\newcommand{\hwclass}{CS 498 MP3: Logic}
+\newcommand{\hwlecture}{}
+\newcommand{\hwsection}{}
+
+\renewcommand{\questiontype}{Problem}
+
+\begin{document}
+\maketitle
+
+% Your content
+
+\question
+For the Frege proof system introduced in lecture 2, prove the Deduction Theorem
+(without assuming the completeness theorem).
+That is, if \(\Gamma \cup \{A\} \vdash B\) then \(\Gamma \vdash A \to B\).
+\textit{Hint:} Let \(B_1, B_2,\dots, B_m\) be a proof from \(\Gamma \cup \{A\}\).
+Show by induction on \(i\) that \(\Gamma \vdash A \to B_i\).
+
+\begin{induction}
+\basecase
+For the base case, we need to show that if \(\Gamma \cup \{A\} \vdash B_1\) then \(\Gamma \vdash A \to B_1\).
+Since there are only three possible ways in Frege system to derive a new formula in a single step, we only have to discuss the three cases
+\begin{itemize}
+  \item \(B_i\) is in the hypothesis, i.e., \(\Gamma \vdash B_i\) \\
+        (The case \(B_i = A\) is skipped since \(\vdash A \to A\) is proven during the class)
+
+  \item \(B_i\) is an axiom, i.e., \(\vdash B_i\)
+  \item \(B_i\) is derive from \(B_j\) and \(B_k\) where \(j, k < i\) via
+        Modus Ponens
+\end{itemize}
+
+Clearly the 3rd case is not applicable for \(i = 1\),
+so we only provide proof for 1st and 2nd case.
+Following Frege system, we can derive
+\begin{align}
+& \Gamma \vdash B_1                 && Hypothesis\ or\ Axiom\\
+& \Gamma \vdash B_1 \to (A \to B_1) && Axiom\ 1  \\
+& \Gamma \vdash A \to B_1           && Modus\ Ponens\ of\ (1) \ and\ (2)
+\end{align}
+\setcounter{equation}{0}
+Hence, \(\Gamma \vdash A \to B_1\)
+
+\indstep
+For the inductive step, we starts from the assumption that 
+if \(\Gamma \cup \{A\} \vdash B_i\) then \(\Gamma \vdash A \to B_i\)
+for every \(i < m\).
+We need to discuss the three cases. For 1st and 2nd case, we can derive in the
+same way except \(B_1\) is replaced with \(B_m\).
+Therefore, we only discuss the case that \(\Gamma \cup \{A\} \vdash B_m\) is derived from Modus Ponens of \(\Gamma \cup \{A\} \vdash B_j\) and \(\Gamma \cup \{A\} \vdash B_k\) for some \(j, k < m\).
+W.l.o.g, we can say \(B_k\) is of the form \(B_j \to B_m\) so that we can apply Modus Ponens.
+Following Frege system,
+\begin{align}
+& \Gamma \vdash A \to B_j           && Inductive\ Hypothesis\ on\ B_j\\
+& \Gamma \vdash A \to (B_j \to B_m) && Inductive\ Hypothesis\ on\ B_k\\
+& \Gamma \vdash (A \to (B_j \to B_m)) \to ((A \to B_j) \to (A \to B_m))
+   && Axiom\ 2 \\
+& \Gamma \vdash (A \to B_j) \to (A \to B_m)
+   && Modus\ Ponens\ of\ (2) \ and\ (3) \\
+& \Gamma \vdash A \to B_m           && Modus\ Ponens\ of\ (1) \ and\ (4)
+\end{align}
+By induction, if \(\Gamma \cup \{A\} \vdash B\), then \(\Gamma \vdash A \to B\).
+
+\end{induction}
+
+\question
+The Davis-Putnam proof showing the completeness of resolution, outlines an 
+algorithm to determine satisfiability of a set of clauses.
+Use the Davis-Putnam algorithm to determine if the following sets of clauses are
+satisfiable.
+Outline all the steps of the algorithm in each case.
+
+\begin{algorithm}
+  \KwIn{A finite set of clauses \(\Gamma\) over \(n\) varibles \(v_1,\dots,v_n\)}
+  \KwOut{SAT or UNSAT}
+  \(\Gamma_0 := \Gamma\)
+  
+  k := 0
+
+  \ForEach{\(v_i\)}{
+    \If{both \(v_i\) and \(\neg v_i\) appear in \(\Gamma_k\)}{
+      \(\Gamma_{k+1}\) := Resolve \(v_i\) in \(\Gamma_k\)
+      
+      \If{empty clause \( \in \Gamma_{k+1}\)}{
+        \Return{UNSAT}
+      }
+      k := k + 1
+    }
+  }
+  \Return{SAT}
+\end{algorithm}
+
+\begin{enumerate}
+  \item
+  \(\Gamma = \{ \{a,b,c\}, \{b,\neg c,\neg f\}, \{\neg b, e\} \}\)
+
+  Variable \(a\) is skipped because it appears only in positive phase. \\
+  Derive \(\Gamma_1\) by resolving \(b\) in \(\Gamma\)
+\[
+  \begin{array}{rcl}
+    \Gamma_1^b &=& \emptyset \\
+    \Gamma_2^b &=& \{\{a,b,c\}, \{b,\neg c,\neg f\}\} \\
+    \Gamma_3^b &=& \{\{\neg b, e\}\} \\
+      
+    \Gamma_1 = \Gamma^b &=& 
+      \emptyset \cup \{\{a,c,e\}, \{\neg c,\neg f, e\}\}
+  \end{array}
+\]
+
+  Derive \(\Gamma_2\) by resolving \(c\) in \(\Gamma_1\)
+  \[
+  \begin{array}{rcl}
+  \Gamma_1^c &=& \emptyset \\
+  \Gamma_2^c &=& \{\{a,c,e\}\} \\
+  \Gamma_3^c &=& \{\{\neg c, \neg f, e\}\} \\
+
+  \Gamma_2 = \Gamma^c &=& 
+    \emptyset \cup \{\{a,e,\neg f\}\}
+  \end{array}
+  \]
+  No other variable appears in both phase. The loop is finished.
+  The result is satisfiable.
+
+
+  \item
+  \(\Gamma = \{ \{a,b\}, \{a,\neg b\}, \{\neg a, c\}, \{\neg a,\neg c\} \}\)
+    Derive \(\Gamma_1\) by resolving \(a\) in \(\Gamma\)
+    \[
+    \begin{array}{rcl}
+    \Gamma_1^a &=& \emptyset \\
+    \Gamma_2^a &=& \{\{a,b\}, \{a,\neg b\}\} \\
+    \Gamma_3^a &=& \{\{\neg a, c\}, \{\neg a,\neg c\}\} \\
+    
+    \Gamma_1 = \Gamma^a &=& 
+    \emptyset \cup \{\{b,c\}, \{b, \neg c\}, \{\neg b, c\}, \{\neg b,\neg c\}\}
+    \end{array}
+    \]
+    
+    Derive \(\Gamma_2\) by resolving \(b\) in \(\Gamma_1\)
+    \[
+    \begin{array}{rcl}
+    \Gamma_1^c &=& \emptyset \\
+    \Gamma_2^c &=& \{\{b,c\}, \{b, \neg c\}\} \\
+    \Gamma_3^c &=& \{\{\neg b, c\}, \{\neg b,\neg c\}\} \\
+    
+    \Gamma_2 = \Gamma^c &=& 
+      \emptyset \cup \{\{c\}, \{c, \neg c\}\} \\
+               &=& \{\{c\}\} \\
+    \end{array}
+    \]
+    No other variable appears in both phase. The loop is finished.
+    The result is satisfiable.
+
+\end{enumerate}
+
+\question
+A positive clause is a clause \(C\) all of whose literals are positive.
+A resolution step is said to be positive if one of the hypothesis is a positive
+clause.
+Show that positive resolutions are sufficient to refute any
+set of clauses.
+In other words, if \(\Gamma\) is unsatisfiable then \(\Gamma\) has a resolution
+refutation all of whose resolution steps are positive.
+
+We prove this by induction on the number of variables in an unsatisfiable formula \(\Gamma\).
+
+\begin{induction}
+\basecase
+\(\Gamma\) doesn't contain any variable and is unsatisfiable. Therefore, \(\Gamma\) must be \(\{\emptyset\}\) and there is nothing to prove.
+
+\indstep
+Our inductive hypothesis is that, for any unsatisfiable formula, there is a positive refutation if the number of variables is less then \(n\).
+We want to show that there is also a positive refutation for a unsatisfiable
+formula \(\Gamma\) which contains \(n\) variables.
+
+Take any variable \(p\) appears in \(\Gamma\), we can compute \(\Gamma^p_\top\) and  \(\Gamma^p_\bot\) as shown below (borrowing the notations in the slides).
+\[
+\begin{array}{lcl}
+\Gamma^p_\top &=& \Gamma^p_1 \cup \{B| B \cup \{p\} \in \Gamma^p_2 \} \\
+\Gamma^p_\bot &=& \Gamma^p_1 \cup \{C| C \cup \{\neg p\} \in \Gamma^p_3\}
+\end{array}
+\]
+Both \(\Gamma^p_\top\) and \(\Gamma^p_\bot\) must be unsatisfiable because \(\Gamma\) is unsatisfiable. The reason is straight forward because, if there is a satisfiable assignment \(v\) for \(\Gamma^p_\top\)(\(\Gamma^p_\bot\)), we can construct a satisfiable assignment for \(\Gamma^p\) by setting \(v(p) = \top(\bot)\).
+The number of variables in both of them must less than \(n\) since \(p\) is removed.
+Thus, there exists a positive refutation for both \(\Gamma^p_\top\) and \(\Gamma^p_\bot\).
+
+Now, we prove that for any unsatisfiable \(\Gamma\), \(\Gamma^p_\bot\) can be derived from \(\Gamma\) with only positive resolution steps.
+
+By definition, \(\Gamma^p_1 \subseteq \Gamma\); hence, no resolution step is needed to derive clauses in \(\Gamma^p_1\). 
+Then, consider each clause \(C\) in \(\Gamma^p_\bot\), resolution step to derive \(C\) is to resolve each clause in \(\Gamma^p_3\) with \(\{p\}\), and this step is positive resolution since clause \(\{p\}\) is positive.
+
+Finally, clause \(\{p\}\) is derivable from \(\Gamma\) with positive resolution.
+Since, by inductive hypothesis, there are positive resolution steps from \(\Gamma^p_\top\) to empty clause, these steps can apply on \(\Gamma^p_1 \cup \Gamma^p_2\) with some mapping from \(B\) to original clause \(B \cup \{p\}\).
+The result must be either empty clause or \(\{p\}\) because all other variables are resolved and no occurrence of \(\neg p\).
+
+Thereby, a positive refutation for \(\Gamma\) must exist.
+First, we can derive clause \(\{p\}\) from \(\Gamma^p_1 \cup \Gamma^p_2\),
+then derive \(\Gamma^p_\bot\) with \(\{p\}\) and \(\Gamma^p_3\),
+and finally derive empty clause from \(\Gamma^p_\bot\) under inductive hypothesis.
+
+\end{induction}
+
+\end{document}
