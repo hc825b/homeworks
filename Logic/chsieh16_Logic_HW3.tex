@@ -1,0 +1,136 @@
+\documentclass[11pt]{homework}
+
+\usepackage[noend]{algorithm2e}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+% TODO: replace these with your information
+\newcommand{\hwname}{Chiao Hsieh}
+\newcommand{\hwemail}{chsieh16@illinois.edu}
+\newcommand{\hwtype}{Homework}
+\newcommand{\hwnum}{3}
+\newcommand{\hwclass}{CS 498 MP3: Logic}
+\newcommand{\hwlecture}{}
+\newcommand{\hwsection}{}
+
+\renewcommand{\questiontype}{Problem}
+
+\begin{document}
+\maketitle
+
+% Your content
+
+\question
+ Recall that we showed that Th(\((\mathbb{N},0,1,+)\)) is decidable. 
+ Show that the theory continues to be decidable when we add the following predicates.
+
+\begin{enumerate}
+  \item \(<\), a binary predicate, such that \(< ij\) is true iff \(i < j\)
+  \item even, a unary predicate, such that even(\(i\)) iff \(i\) is even
+  \item power2, a unary predicate,
+        such that power2(\(i\)) iff \(i\) is a power of 2,
+        or there is a \(j\) that \(i = 2^j\)
+\end{enumerate}
+
+Ans.
+
+We follow the encoding in the lecture slides to map any given formula 
+\(\phi (x_1, x_2,\dotsc,x_n)\) in Presburger Arithmetic to a MSO formula
+\(\phi'(X_1, X_2,\dotsc,X_n)\).
+
+The construction of \(\phi'\) by structural induction for logic connectives
+is still valid even if new predicates are introduced into the theory.
+Therefore, we only have to consider how to build a corresponding MSO formula for
+each new predicate introduced.
+To simplify the notations used in MSO logic,
+we further use the predicate \((x \prec y)\) to denote position \(x\) is
+before position \(y\).
+The predicate can be defined in terms of \(S\) similar to MSO logic on words,
+so we omit the definition here.
+
+\begin{enumerate}
+    \item \(<\), a binary predicate, such that \(< ij\) is true iff \(i < j\)
+
+      To compare two binary encoded natural numbers \(X_i\) and \(X_j\),
+      the systematic way is to find the most significant bit that differs in two numbers.
+      If \(i < j\), then there must be a \(k\)-th bit that is 1 in \(j\) and is 0 in \(i\).
+      That is, \(k \in X_j \land k \not\in X_i\).
+      Besides, all bits more significant than \(k\)-th bit should match.
+\[
+    < ij \mapsto \exists k(\neg X_i(k) \land X_j(k) \land 
+    \forall k'(k \prec k' \to (X_i(k') \leftrightarrow X_j(k'))) )
+\]
+
+    \item even, a unary predicate, such that even(\(i\)) iff \(i\) is even
+      
+      To check if a binary encoding \(X_i\) is even,
+      we simply check if the 0th bit is 1. That is, \(0 \not\in X_i\).
+\[
+	\text{even}(i) \mapsto \neg X_i(0)
+\]
+
+    \item power2, a unary predicate,
+    such that power2(\(i\)) iff \(i\) is a power of 2,
+    or there is a \(j\) that \(i = 2^j\)
+    
+      To check if \(i\) is the number of \(2^j\),
+      we actually only need to check if only one bit is 1.
+      That is, \(X_i\) contains only one element.
+\[
+	\text{power2}(i) \mapsto \exists j( X_i(j) \land \forall k(X_i(k) \to k=j))
+\]
+
+\end{enumerate}
+
+\question
+Recall that in the translation from automata to MSO presented in class,
+the sentence constructed existential quantifies \(n\) set variables,
+where \(n\) is the number of states in the automaton.
+The set \(X_i\) encodes all positions where the automaton is in state \(i\).  
+The number of existentially quantified set variables in the translation can,
+however, be reduced to \(\lceil \log n \rceil\) using the following idea.
+In the new translation, a position \(p\) will be in set \(X_i\)
+if the automaton is in state \(s\) at position \(p\),
+and in the binary representation of \(s\),
+the \(i\)-th bit is 1.
+So, for example, suppose the automaton has 4 states 1, 2, 3, 4 encoded by strings 00, 01, 10, 11, respectively.
+Then \(p \in X_1\) will mean that, at position \(p\),
+the automaton is either in state 3 or 4 (the two states with 1 in position 1).
+This problem requires you to carry out this idea on the following example.
+
+Consider the machine with states \{1, 2, 3, 4\}
+with 1 as the initial state and 2 as the only final state.
+The transitions of the machine are as follows:
+\(\delta(1,b)=2\), \(\delta(2,a)=3\), \(\delta(3,a)=3\), \(\delta(3,b)=4\),
+and \(\delta(4,b)=1\).
+Construct an equivalent MSO sentence that has only 2 quantifiers for set variables.
+
+Ans.
+
+
+\question
+There are many ways to define real numbers.
+One way is to use \emph{Dedekind cuts}.
+Intuitively, every real number \(a \in \mathbb{R}\) can be expressed as a partition of rational numbers \((S,T)\),
+where \(S = \{s \in \mathbb{Q} \mid s \leq a\}\) and \(T = \{t \in \mathbb{Q} \mid t > a\}\);
+since \(T = \mathbb{Q}\setminus S\),
+we can think of the cut as just a single set \(S\).
+Conversely, for any set \(S\) that is downward closed
+(i.e., \(x < y\) and \(y \in S\) implies \(x \in S\))
+corresponds to the (unique) real number \(r\) that is the supremum of \(S\).
+For example, \(\sqrt{2}\) is represented by the set 
+\(S = \{s \in \mathbb{Q} \mid s^2 \leq 2 \lor s < 0\}\).
+Observe that \(\sqrt{2} \not\in S\) but \(\sqrt{2} = \text{sup}(S)\)
+
+Assume that Dedekind cuts are a faithful representation of all real numbers (which they are).
+Using Dedekind cuts, show how to interpret first-order logic formulas over reals,
+i.e., over \((\mathbb{R}, +, <, =, 0, 1)\),
+into the monadic second-order theory over the rational numbers
+\((\mathbb{Q}, +, <, =, 0, 1)\).
+In other words, come up with a uniform way to map sentences FOL sentences \(\psi\)
+over reals with addition to an MSOL sentence \(\psi'\) over rationals with addition,
+such that \(\psi\) holds over reals iff \(\psi'\) holds over rationals.
+
+Ans.
+
+\end{document}
