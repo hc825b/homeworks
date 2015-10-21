@@ -35,10 +35,10 @@
 Ans.
 
 We follow the encoding in the lecture slides to map any given formula 
-\(\phi (x_1, x_2,\dotsc,x_n)\) in Presburger Arithmetic to a MSO formula
-\(\phi'(X_1, X_2,\dotsc,X_n)\).
+\(\varphi (x_1, x_2,\dotsc,x_n)\) in Presburger Arithmetic to a MSO formula
+\(\varphi'(X_1, X_2,\dotsc,X_n)\).
 
-The construction of \(\phi'\) by structural induction for logic connectives
+The construction of \(\varphi'\) by structural induction for logic connectives
 is still valid even if new predicates are introduced into the theory.
 Therefore, we only have to consider how to build a corresponding MSO formula for
 each new predicate introduced.
@@ -57,8 +57,12 @@ so we omit the definition here.
       That is, \(k \in X_j \land k \not\in X_i\).
       Besides, all bits more significant than \(k\)-th bit should match.
 \[
-    < ij \mapsto \exists k(\neg X_i(k) \land X_j(k) \land 
-    \forall k'(k \prec k' \to (X_i(k') \leftrightarrow X_j(k'))) )
+\begin{array}{rcl}
+	< i0 & \mapsto & \neg (0 = 0) \\
+	< 0i & \mapsto & \exists k(X_i k)                                                                                            \\
+	< ij & \mapsto & \exists k(\neg X_i k \land X_j k \land 
+    \forall k'(k \prec k' \to (X_i k' \leftrightarrow X_j k')) )
+\end{array}
 \]
 
     \item even, a unary predicate, such that even(\(i\)) iff \(i\) is even
@@ -66,7 +70,10 @@ so we omit the definition here.
       To check if a binary encoding \(X_i\) is even,
       we simply check if the 0th bit is 1. That is, \(0 \not\in X_i\).
 \[
-	\text{even}(i) \mapsto \neg X_i(0)
+\begin{array}{rcl}
+	\text{even}(0) & \mapsto & 0 = 0       \\
+	\text{even}(i) & \mapsto & \neg X_i(0)
+\end{array}
 \]
 
     \item power2, a unary predicate,
@@ -77,7 +84,10 @@ so we omit the definition here.
       we actually only need to check if only one bit is 1.
       That is, \(X_i\) contains only one element.
 \[
-	\text{power2}(i) \mapsto \exists j( X_i(j) \land \forall k(X_i(k) \to k=j))
+\begin{array}{rcl}
+	\text{power2}(0) & \mapsto & \neg(0 = 0) \\
+	\text{power2}(i) & \mapsto & \exists j( X_i(j) \land \forall k(X_i k \to k=j))
+\end{array}
 \]
 
 \end{enumerate}
@@ -107,6 +117,38 @@ Construct an equivalent MSO sentence that has only 2 quantifiers for set variabl
 
 Ans.
 
+We follow the step in slides to construct the formula.
+\[
+\begin{array}{rl}
+	\varphi = \exists X_1 \exists X_0
+       & \text{exactly one state in each position}                \\
+ \land & \forall x (first(x) \to (\neg X_1(x) \land \neg X_0(x))) \\
+ \land & \forall x \forall y ( S x y \to \text{State at \(y\) follows from State at \(x\) by transition}) \\
+ \land & \forall x (last(x) \to \text{Final state is reached from state at \(x\)})
+\end{array}
+\]
+
+\textbf{Exactly one state in each position}
+
+Since either \(p \in X_i\) or \(p \notin X_i\) for every \(X_i\),
+the binary string and the state is uniquely defined for any given position \(p\).
+Hence, this is trivially true.
+
+\textbf{State at \(y\) follows from State at \(x\) by transition}
+\[
+\begin{array}{rlcl}
+	     & (\neg X_1 x \land \neg X_0 x \land Q_b \land \neg X_1 x \land X_0 x) & \cdots & \delta(1,b)=2 \\
+	\lor & (\neg X_1 x \land X_0 x \land Q_a \land X_1 x \land \neg X_0 x) & \cdots & \delta(2,a)=3 \\
+	\lor & (X_1 x \land \neg X_0 x \land Q_a \land X_1 x \land \neg X_0 x) & \cdots & \delta(3,a)=3 \\
+	\lor & (X_1 x \land \neg X_0 x \land Q_b \land X_1 x \land X_0 x) & \cdots & \delta(3,b)=4 \\
+    \lor & (X_1 x \land X_0 x \land Q_b \land \neg X_1 x \land \neg X_0 x) & \cdots & \delta(4,b)=1 \\
+\end{array}
+\]
+
+\textbf{Final state is reached from state at \(x\)}
+\[
+(\neg X_1 x \land \neg X_0 x \land Q_b)\ \cdots\ \delta(1, b) = 2
+\]
 
 \question
 There are many ways to define real numbers.
@@ -120,17 +162,55 @@ Conversely, for any set \(S\) that is downward closed
 corresponds to the (unique) real number \(r\) that is the supremum of \(S\).
 For example, \(\sqrt{2}\) is represented by the set 
 \(S = \{s \in \mathbb{Q} \mid s^2 \leq 2 \lor s < 0\}\).
-Observe that \(\sqrt{2} \not\in S\) but \(\sqrt{2} = \text{sup}(S)\)
+Observe that \(\sqrt{2} \not\in S\) but \(\sqrt{2} = \sup(S)\)
 
 Assume that Dedekind cuts are a faithful representation of all real numbers (which they are).
 Using Dedekind cuts, show how to interpret first-order logic formulas over reals,
 i.e., over \((\mathbb{R}, +, <, =, 0, 1)\),
 into the monadic second-order theory over the rational numbers
 \((\mathbb{Q}, +, <, =, 0, 1)\).
-In other words, come up with a uniform way to map sentences FOL sentences \(\psi\)
-over reals with addition to an MSOL sentence \(\psi'\) over rationals with addition,
-such that \(\psi\) holds over reals iff \(\psi'\) holds over rationals.
+In other words, come up with a uniform way to map sentences FOL sentences \(\varphi\)
+over reals with addition to an MSOL sentence \(\varphi'\) over rationals with addition,
+such that \(\varphi\) holds over reals iff \(\varphi'\) holds over rationals.
 
 Ans.
 
+In order to map a given formula \(\varphi (x_1, x_2,\dotsc,x_n)\) in FOL over real numbers to a \(\varphi'(X_1, X_2,\dotsc,X_n)\) in MSOL over rational numbers,
+we consider following bijective function \(\sup^{-1} : \mathbb{R} \mapsto \mathcal D\) 
+where \(\mathcal D \subset \mathcal P(\mathbb{Q})\) is the set of all downward closed sets.
+Based on the bijective function,
+we constructs \(\varphi'\) from \(\varphi\) such that
+\[
+(\mathbb{R}, +, <, =, 0, 1) \models \varphi[\alpha] \iff
+(\mathbb{Q}, +, <, =, 0, 1) \models \varphi'[[X_i \mapsto {\sup}^{-1} (\alpha(x_i))]_{i=1}^{n}]
+\]
+Since every set \(X_i\) in our model is assumed to be downward closed,
+we need following axioms for every variable \(X_i\) in \(\varphi'\) we construct.
+\[
+DownwardClosed(X_i) := \forall x y((X_i y \land x < y) \to X_i x)
+\]
+\[
+\varphi' := \bigwedge_{i=1}^n DownwardClosed(X_i) \land \varphi''
+\]
+where \(\varphi''\) can be constructed \(\varphi'\) by structural induction.
+Below are constructions for predicate \(=\), \(<\), and \(+\) in FOL.
+Induction on logical connectives is the same as those on the slides.
+\[
+\begin{array}{rclcl}
+	        \varphi &         & \varphi''                                &  \\
+	          0 = 0 & \mapsto & 0 = 0                                    &  \\
+	          0 = 1 & \mapsto & 0 = 1                                    &  \\
+	          1 = 1 & \mapsto & 1 = 1                                    &  \\
+	        0 = x_i & \mapsto & \forall y (X_i y \to (y < 0 \lor y = 0)) & \cdots & X_i = \{y \in \mathbb{Q} \mid y \leq 0\} \\
+	        1 = x_i & \mapsto & \forall y (X_i y \to (y < 1 \lor y = 1)) &  \\
+	      x_i = x_j & \mapsto & \forall y (X_i y \leftrightarrow X_j y)  & \cdots & X_i = X_j \\
+	        0 < x_i & \mapsto & \exists y (X_i y \land 0 < y)            &  \\
+	        1 < x_i & \mapsto & \exists y (X_i y \land 1 < y)            &  \\
+	        x_i < 0 & \mapsto & \forall y (X_i y \to y < 0)              &  \\
+	        x_i < 1 & \mapsto & \forall y (X_i y \to y < 1)              &  \\
+	      x_i < x_j & \mapsto & \exists y (\neg X_i y \land X_j y)       & \cdots & y \notin X_i \land y \in X_j \\
+	x_i + x_j = x_k & \mapsto & \multicolumn{3}{l}{\forall y_i y_j ((X_i y_i \land X_j y_j) \to \exists y_k(X_k y_k \land y_i + y_j = y_k))}       \\
+	                &         & \multicolumn{3}{l}{\land\ \forall y_k (X_k y_k \to \exists y_i y_j (X_i y_i \land X_j y_j \land y_i + y_j = y_k))}
+\end{array}
+\]
 \end{document}
