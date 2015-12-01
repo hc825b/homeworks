@@ -1,0 +1,421 @@
+\documentclass[10pt]{homework}
+
+\usepackage[noend]{algorithm2e}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{qtree}
+\usepackage{subcaption}
+
+% TODO: replace these with your information
+\newcommand{\hwname}{Chiao Hsieh}
+\newcommand{\hwemail}{chsieh16@illinois.edu}
+\newcommand{\hwtype}{Homework}
+\newcommand{\hwnum}{4}
+\newcommand{\hwclass}{CS 498 MP3: Logic}
+\newcommand{\hwlecture}{}
+\newcommand{\hwsection}{}
+
+\renewcommand{\questiontype}{Problem}
+
+\begin{document}
+\maketitle
+
+% Your content
+
+\question
+Let an \emph{almost deterministic top down tree automaton} be defined like a top
+down deterministic tree automaton,
+except that it can have a set of initial states \(Q_0\) (instead of a single
+initial state).
+Like for top down NTA, an accepting run can begin with any of the states in
+\(Q_0\).
+Show that there is a regular tree language that cannot be recognized by an
+almost deterministic top down tree automaton.
+
+Ans.
+
+Given an almost deterministic top down tree automaton \(A = (Q, \Sigma, \delta, Q_0)\)
+with \(Q \supseteq Q_0 = \{q_1,\dots,q_n\}\),
+we can find a set of top down DTA \(\{A_1, \dots, A_n\}\) 
+where \(A_i = (Q, \Sigma, \delta, \{q_i\})\) such that
+\[
+L(A) = \bigcup_{i=1}^n L(A_i)
+\]
+The proof is straight-forward since any tree accepted by \(A\) will produce
+an accepting run starting from one of the initial states, \(q_i\).
+The accepting run is also valid for automaton \(A_i\),
+so the tree should be accepted by \(A_i\) as well.
+The other direction can be proved similarly.
+According to the above observation, we can conclude that the language of
+a top-down almost DTA must be the language union of a finite set of top-down DTA.
+
+Therefore, we want to come up with a regular tree language that cannot be represented as
+the language union of a finite set of top-down DTA.
+We consider following regular tree language \(L(N)\).
+Any tree accepted is in following form that the right side of the tree 
+are recurring `\(r\)'s and stop with a \(\bot\),
+and the left child of every `\(r\)' would be `\(f\)'.
+The subtree of `\(f\)' can be either \(f(a, b)\) or \(f(b, a)\).
+\begin{figure*}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+\Tree [.\(r\) \qroof{\ \hspace{0.5cm}\ }.\(f\)
+         [.\(r\) \qroof{\ \hspace{0.5cm}\ }.\(f\)
+            [.{\(\underset{r}{\ddots}\)} \qroof{\ \hspace{0.5cm}\ }.\(f\) {\(\bot\)} ]
+         ]
+      ] 
+\end{subfigure}
+\begin{subfigure}{.2\textwidth}
+\Tree [.\(f\) \(a\) \(b\) ] \hfill \textbf{or} \hfill \Tree [.\(f\) \(b\) \(a\) ]
+\end{subfigure}
+\end{figure*}
+
+Formally, the language is defined by a top down NTA
+\(N = (Q, \Sigma, \delta, Q_0)\) where
+\[
+\begin{array}{rcl}
+	       Q & = & \{q_r, q_f, q_a, q_b\}                                                                \\
+	  \Sigma & = & \Sigma_0 \cup \Sigma_2 \text{ where } \Sigma_0 = \{a, b, \bot\}, \Sigma_2 =  \{r, f\} \\
+	  \delta & = & \delta_0 \cup \delta_2                                                                \\
+	\delta_0 & = & \{(q_a, a), (q_b, b), (q_r, \bot)\}                                                   \\
+	\delta_2 & = & \{(q_r, r, q_f, q_r), (q_f, f, q_a, q_b), (q_f, f, q_b, q_a)\}                        \\
+	     Q_0 & = & \{q_r\}
+\end{array}
+\]
+
+Here we prove by contradiction that this language cannot be accepted by any top down almost DTA.
+Assuming that we can find a set of top down DTA, \(\{A_1,\dots,A_n\}\),
+such that \(L(N) = \bigcup_{k=1}^n L(A_k)\),
+we consider following \(n+1\) trees in \(L(N)\).
+Each tree consists of \(n+1\) `\(r\)'s with exactly one `\(r\)' whose left subtree is
+\(f(a,b)\) and the rest \(n\) left subtrees of other `\(r\)'s are \(f(b,a)\).
+Let \(t_i\) denote the tree that the `\(r\)' of depth \(i\) is with \(f(a,b)\) as left subtree.
+Therefore, there are \(n+1\) trees, \(\{t_0,\dots,t_n\}\).
+
+Note that if we take any 2 trees \(t_i\) and \(t_j\) with \(i<j\),
+they differ at the left subtree of \(i\)-th `\(r\)' but are the same for all
+nodes with depth \(\leq i+1\) (including `\(f\)').
+If a top down DTA \(A_k= (Q, \{a,b,\bot,f,r\}, \delta, \{q_0\})\) accepts both \(t_i\) and \(t_j\),
+there must be 3 states \(q_f, q_1, q_2 \in Q\) such that \(q_0\) will reach \(q_f\)
+with exactly same sequence of transitions for both \(t_i\) and \(t_j\), and
+\[
+\begin{array}{ll}
+\delta(q_f, f) = (q_1, q_2) \\
+\delta(q_1, a) = 1;\quad \delta(q_2, b) = 1 & \cdots \text{ for accepting } t_i\\
+\delta(q_1, b) = 1;\quad \delta(q_2, a) = 1 & \cdots \text{ for accepting } t_j\\
+\end{array}
+\]
+In this case, \(A_k\) will also accept another tree that the left subtree of
+\(i\)-th `\(r\)' is \(f(a,a)\).
+Apparently, this tree is not in \(L(N)\) because no subtree for any tree is \(f(a,a)\),
+so \(t_i\) and \(t_j\) must not be accepted by one top down DTA at the same time.
+
+Hence, the \(n+1\) trees must be accepted by \(n+1\) top down DTAs separately.
+However, there are only \(n\) top down DTAs available.
+As a result, we proved by contradiction that there is no top down almost DTA
+with finite initial states whose language is \(L(N)\).
+
+
+\question
+Prove that any two-terminal series-parallel graph \(G = (V, E, s, t, I)\) has a
+tree decomposition of width at most 2.
+Hint:
+Use induction (on the construction of \(G\)) to show the following stronger
+observation: \(G\) has a tree decomposition of width 2, where the label of the
+root contains \(\{s, t\}\).
+
+Ans.
+
+By definition, a two-terminal series-parallel graph (TTSPG) must be a series or
+parallel composition of 2 TTSPGs;
+hence we prove the claim by induction on the composition.
+
+\begin{induction}
+\basecase
+The base case \(G_0\) is a graph with single edge connecting source and sink.
+That is, \(G_0 = (V_0, E_0, s, t, I_0)\) where \(V_0 = \{s, t\}\),
+\(E_0 = \{A\}\), and \(I_0 = \{(s, A, t), (t, A, s)\}\).
+
+For \(G_0\), we can easily derive a tree decomposition
+\[
+\begin{array}{l}
+\tau(G_0) = (V_{\tau(G_0)}, E_{\tau(G_0)}, L_{\tau(G_0)}) \text{ where} \\
+V_{\tau(G_0)} = \{v\} \\
+E_{\tau(G_0)} = \emptyset \\
+L_{\tau(G_0)}(v) = \{s, t\}\\
+\end{array}
+\]
+The tree decomposition is of width less than 2,
+and the label of root node contains both \(s\) and \(t\).
+
+\indstep
+Given a TTSPG \(G\) that is a series-parallel composition of two TTSPGs 
+\(G_1 = (V_1, E_1, s_1, t_1, I_1)\) and \(G_2 = (V_2, E_2, s_2, t_2, I_2)\).
+In general, \(V_1\) and \(V_2\) are disjoint.
+By induction hypothesis, we assume that there are 2 tree decompositions of width 2,
+\(\tau(G_1) = (V_{\tau(G_1)}, E_{\tau(G_1)}, L_{\tau(G_1)})\)
+and \(\tau(G_2) = (V_{\tau(G_2)}, E_{\tau(G_2)}, L_{\tau(G_2)})\).
+Also the root label of them contains source and sink nodes of their graphs.
+Formally, let \(r_1 \in V_{\tau(G_1)}\) be the root node of \(\tau(G_1)\).
+We hypothesize that \(s_1 \in L_{\tau(G_1)}(r_1)\) and \(t_1 \in L_{\tau(G_1)}(r_1)\).
+Same for \(r_2\) and \(\tau(G_2)\).
+
+\textbf{Series Composition}
+
+If \(G\) is the series composition of \(G_1\) and \(G_2\),
+then we construct the tree decomposition \(\tau(G)\) by 
+
+\[
+\begin{array}{l}
+	\tau(G) = (V_{\tau(G)}, E_{\tau(G)}, L_{\tau(G)}) \text{ where}                                                \\
+	V_{\tau(G)} = V_{\tau(G_1)} \cup V_{\tau(G_2)} \cup \{r\}, r \notin V_{\tau(G_1)} \land r \notin V_{\tau(G_2)} \\
+	E_{\tau(G)} = E_{\tau(G_1)} \cup V_{\tau(G_2)} \cup \{(r, r_1), (r_1, r), (r, r_2), (r_2, r)\}                 \\
+	L_{\tau(G)}(v) = \left\{
+\begin{array}{ll}
+	\{s_1, t_1, t_2\}                                 & \text{if } v = r                                                \\
+	L_{\tau(G_1)}(v)                                  & \text{if } v \in V_{\tau(G_1)}                                   \\
+	L_{\tau(G_2)}(v)                                  & \text{if } v \in V_{\tau(G_2)}\land s_2 \notin L_{\tau(G_2)}(v) \\
+	(L_{\tau(G_2)}(v) \setminus \{s_2\}) \cup \{t_1\} & \text{otherwise}
+\end{array}\right.  \\
+\end{array}
+\]
+
+The label of new root node \(r\) clearly contains the source \(s_1\) and sink
+node \(t_2\) of the composed graph \(G\).
+The width of the constructed \(\tau(G)\) is at most 2 by observing \(L_{\tau(G)}\).
+For the root node case, there are only 3 elements.
+For other cases, the number of elements in any label from \(L_{\tau(G_1)}\) or
+\(L_{\tau(G_2)}\) must be less than or equal to 3 by induction hypothesis.
+Thus, we know the tree width of \(\tau(G)\) is 2 because we only replace one node
+ with another node and don't change the number of nodes in the label.
+
+For node coverage and edge coverage, since by hypothesis all nodes and edges in
+\(G_1\) must be covered in \(L_{\tau(G_1)}\), and so are nodes and edges in \(G_2\).
+We only consider the new edges connecting with \(t_1\) due to \(s_2\) merged into \(t_1\).
+These edges are covered by the 4th case of \(L_{\tau(G)}\).
+Because any edge from/to \(s_2\) in \(I_2\) is covered by some labels in \(L_{\tau(G_2)}\),
+replacing \(s_2\) with \(t_1\) on all labels in \(L_{\tau(G_2)}\) can guarantee to cover
+all the new edges.
+
+Finally, we argue that the coherence is preserved.
+The coherence between nodes in \(V_{\tau(G_1)}\) trivially holds because of inductive hypothesis on \(\tau(G_1)\),
+so does the coherence in \(V_{\tau(G_2)}\).
+Thus, we only have to consider any 2 nodes \(v_1 \in V_{\tau(G_1)}\) and
+\(v_2 \in V_{\tau(G_2)}\) where \(t_1 \in L_{\tau(G)}(v_1)\cap L_{\tau(G)}(v_2)\).
+Note that no node other than \(t_1\) can satisfy the above condition since, by definition,
+\(L_{\tau(G)}(v_1) \subseteq V_1\), \(L_{\tau(G)}(v_2) \subseteq (V_2 \setminus \{s_2\})\cup\{t_1\}\),
+and \(V_1 \cap V_2 = \emptyset\).
+\(\therefore L_{\tau(G)}(v_1)\cap L_{\tau(G)}(v_2) \subseteq V_1 \cap ((V_2 \setminus \{s_2\})\cup\{t_1\}) = \{t_1\}\)
+
+Now considering the path connecting \(v_1\) and \(v_2\),
+we know the path passes through \(r_1\), \(r\), and \(r_2\) by the tree construction.
+Because \(t_1 \in L_{\tau(G)}(v_1) \cap L_{\tau(G)}(r_1)\),
+by coherence in \(\tau(G_1)\), every node \(u\) on the path from \(v_1\) to \(r_1\) satisfies \(t_1 \in L_{\tau(G)}(u)\).
+The same goes for every node on the path from \(v_2\) to \(r_2\).
+\(r_1\) and \(r_2\) are connected by \(r\) where \(t_1 \in L_{\tau(G)}(r)\) as well.
+Therefore, we show that every node on the path connecting any \(v_1\) and \(v_2\)
+satisfies the coherence.
+
+\textbf{Parallel Composition}
+
+For parallel composition, we construct following tree decomposition.
+\[
+\begin{array}{l}
+\tau(G) = (V_{\tau(G)}, E_{\tau(G)}, L_{\tau(G)}) \text{ where}                                                \\
+V_{\tau(G)} = V_{\tau(G_1)} \cup V_{\tau(G_2)} \cup \{r\}, r \notin V_{\tau(G_1)} \land r \notin V_{\tau(G_2)} \\
+E_{\tau(G)} = E_{\tau(G_1)} \cup V_{\tau(G_2)} \cup \{(r, r_1), (r_1, r), (r, r_2), (r_2, r)\}                 \\
+L_{\tau(G)}(v) = \left\{
+\begin{array}{ll}
+	\{s_1, t_1\}                                      & \text{if } v = r                                                \\
+	L_{\tau(G_1)}(v)                                  & \text{if } v \in V_{\tau(G_1)}                                   \\
+	L_{\tau(G_2)}(v)                                  & \text{if } v \in V_{\tau(G_2)} \land s_2 \notin L_{\tau(G_2)}(v) \land t_2 \notin L_{\tau(G_2)}(v)\\
+	(L_{\tau(G_2)}(v) \setminus \{s_2\}) \cup \{s_1\} & \text{if } v \in V_{\tau(G_2)} \land s_2 \in    L_{\tau(G_2)}(v) \land t_2 \notin L_{\tau(G_2)}(v)\\
+	(L_{\tau(G_2)}(v) \setminus \{t_2\}) \cup \{t_1\} & \text{if } v \in V_{\tau(G_2)} \land s_2 \notin L_{\tau(G_2)}(v) \land t_2 \in    L_{\tau(G_2)}(v)\\
+    (L_{\tau(G_2)}(v) \setminus \{s_2, t_2\}) \cup \{s_1, t_1\} & \text{otherwise}
+\end{array}\right.  \\
+\end{array}
+\]
+
+The source \(s_1\) and sink node \(t_1\) of the composed graph \(G\) are in the
+label of new root node \(r\).
+The width of the constructed \(\tau(G)\) is also at most 2 if we analyze
+\(L_{\tau(G)}\) case by case.
+For each case we remove and add the same number of nodes on each label;
+therefore the width of \(\tau(G)\) will be the same as the width of either
+\(\tau(G_1)\) or \(\tau(G_2)\).
+By induction hypothesis, we know the width is at most 2.
+
+The node and edge coverage also holds based on the same reasoning provided for
+series composition.
+The new edges connected form nodes in \(V_2\) to \(s_1\) and \(t_1\) are covered
+by labels where \(s_2\) and \(t_2\) were replaced.
+
+Finally, the coherence holds as well.
+It is similar to the reasoning for series composition.
+We have to consider any 2 nodes \(v_1 \in V_{\tau(G_1)}\) and \(v_2 \in V_{\tau(G_2)}\)
+where there is a node \(n \in L_{\tau(G)}(v_1)\cap L_{\tau(G)}(v_2)\).
+Note that, by definition, \(L_{\tau(G)}(v_1) \subseteq V_1\), 
+\(L_{\tau(G)}(v_2) \subseteq (V_2 \setminus \{s_2, t_2\})\cup\{s_1, t_1\}\),
+and \(V_1 \cap V_2 = \emptyset\).
+Therefore, \(L_{\tau(G)}(v_1)\cap L_{\tau(G)}(v_2) \subseteq \{s_1, t_1\}\).
+Either \(n = s_1\) or \(n = t_1\).
+
+For both cases, we know \(n \in L_{\tau(G)}(r_1)\) because of induction hypothesis,
+and \(n \in L_{\tau(G)}(r_2)\) because \(s_2\) and \(t_2\) in \(L_{\tau(G_2)}(r_2)\)
+are replaced by \(s_1\) and \(t_1\).
+Since the path connecting \(r_1\) and \(v_1\) must satisfy coherence,
+so does the path connecting \(r_2\) and \(v_2\)
+we know that the path passing through \(v_1, r_1, r, r_2, v_2\) must satisfy coherence
+because \(s_1\) and \(t_1\) are also in \(L_{\tau(G)}(r)\).
+
+\end{induction}
+We conclude that the provided tree construction derived from a TTSPG is indeed
+a tree decomposition,
+i.e., it satisfies node coverage, edge coverage, and coherence.
+Also we show that the width of the constructed tree decomposition is at most 2.
+Thereby, we prove that the provided construction can produce tree decomposition
+of width 2 for any TTSPG inductively.
+
+\question
+
+A \emph{pushdown automaton} \(P\) (without inputs and final states) is a tuple
+\((Q, q_0, \Gamma, \bot, \delta)\), where \(Q\) is a finite set of states,
+\(q_0 \in Q\) is the initial state, \(\Gamma\) is the finite stack alphabet,
+\(\bot \notin \Gamma\)  is the initial stack symbol,
+and \(\delta = \delta_\mathtt{push} \cup \delta_\mathtt{pop} \cup \delta_\mathtt{nochg}\) is the transition relation.
+\(\delta_\mathtt{push} \subseteq Q \times \Gamma \times Q\) are the push 
+transitions: \((q_1, \gamma, q_2) \in \delta_\mathtt{push}\) means that the automaton can go from \(q_1\) to \(q_2\) by pushing \(\gamma\) onto the stack 
+(independent of what is on top of the stack).
+\(\delta_\mathtt{pop} \subseteq Q \times \Gamma \times Q\) are the pop transitions:
+\((q_1, \gamma, q_2) \in \delta_\mathtt{pop}\) means that the automaton can go from \(q_1\) to \(q_2\) if \(\gamma\) is on top of the stack, and the result of taking the transition is to pop \(\gamma\) from the stack.
+\(\delta_\mathtt{nochg} \subseteq Q \times Q\) are the no stack change transitions:
+\((q_1, q_2) \in \delta_\mathtt{nochg}\) means that the automaton can go from \(q_1\) to \(q_2\) without changing the stack (independent of what is on top of the stack).
+
+The graph of a pushdown automaton, \(P\), is the (infinite) graph \(G(P) = (V, E)\) where \(V = \bot \Gamma^* Q\) and \(E\) is defined as follows.
+\((\bot \gamma^1_1 \gamma^1_2 \cdots \gamma^1_n q_1, \bot \gamma^2_1 \gamma^2_2 \cdots \gamma^2_m q_2) \in E \) if one of the following 3 conditions hold.
+Either \((q_1, \gamma, q_2) \in \delta_\mathtt{push}\) and \(m = n + 1\)
+with \(\gamma^2_m = \gamma\) and \(\gamma^2_i = \gamma^1_i\) for \(i \leq n\),
+or \((q_1, \gamma, q_2) \in \delta_\mathtt{pop}\) and \(m = n - 1\)
+with \(\gamma^1_n = \gamma\) and \(\gamma^2_i = \gamma^1_i\) for \(i \leq n-1\).
+Or \((q_1, q_2) \in \delta_\mathtt{nochg}\) and \(m = n\)
+with \(\gamma^2_i = \gamma^1_i\) for \(i \leq n\)
+
+The \emph{infinite \(n\)-ary tree} \(\mathcal{T}\) is the infinite tree where every node has exactly \(n\) children.
+It can be viewed as a first order structure over the signature \(\tau = \{S_1, S_2, \dots, S_n\}\) where \(S_i\) is the \(i\)th child relation.
+In other words, as a first order structure \(\mathcal{T} = (T, \{S_i^\mathcal{T}\}_{i=1}^n)\), where \(T\) is the set of nodes,
+and \((u,v) \in S_i^\mathcal{T}\) iff \(v\) is the \(i\)th child of \(u\).
+
+Consider a pushdown automaton \(P\) with \(\Gamma = \{1,2,\dots,k\}\) and
+\(Q = \{k+1,k+2,\dots, n\}\).
+Prove that for every MSO sentence \(\varphi\) (over signature \(\tau_G = \{E\}\))
+there is an MSO sentence \(\varphi^*\) (over signature \(\tau_n\)) such that
+\[
+G(P) \models \varphi \qquad \text{iff} \qquad \mathcal{T} \models \varphi^*
+\]
+
+\emph{Hint:} Use the idea of interpretations.
+For a vertex \(v = \bot\gamma_1\gamma_2\dots\gamma_m q\) of \(G(P)\),
+let \(t(v)\) be the node of \(\mathcal{T}\) reached by following the path 
+\(\gamma_1\gamma_2\dots\gamma_m q\) from the root.
+And for a set of vertices \(U\) of \(G(P)\), let \(t(U) = \{t(v) \mid v\in U\}\)
+The translation to \(\varphi^*\) can be done inductively,
+maintaining the following invariant
+\begin{multline*}
+\qquad G(P) \models \varphi(x_1,\dots,x_s,X_1,\dots,X_t)[x_i \to v_i, X_i \to U_i] \\
+\text{ iff }
+\mathcal{T} \models \varphi^*(x_1,\dots,x_s,X_1,\dots,X_t)[x_i \to t(v_i), X_i \to t(U_i)] \qquad
+\end{multline*}
+
+In doing this construction, it might be useful to first define a formula Vert(\(x\))
+such that, for a node \(n_1\) of \(\mathcal{T}\), Vert(\(n_1\)) holds iff
+\(n_1 = t(v)\) for some \(v\) of \(G(P)\), i.e.,
+\(n_1\) is reached by following a path of the form \(\gamma_1\gamma_2\dots\gamma_m q\),
+where \(\gamma_i \in \{1,\dots,k\}\) and \(q  \in \{k + 1, \dots, n\}\).
+
+\bigskip
+Ans.
+
+\newcommand{\Child}{\ensuremath{\text{Child}}}
+\newcommand{\ChildG}{\ensuremath{\text{Child}_{\Gamma}}}
+\newcommand{\ChildQ}{\ensuremath{\text{Child}_Q}}
+
+
+Following the construction by \(t\) in the hint, we try to define Vert(\(x\)).
+To simplify notations, we first define Child(\(x, x_{par}\)) predicate to denote if \(x\) is
+a child of \(x_{par}\), and define \(\text{Child}_{\Gamma}/\text{Child}_{Q}\)
+to denote a child with index in \([1..k]/[k+1...n]\).
+\[
+\Child(x, x_{par}) := \bigvee_{i=1}^n S_i~x_{par}~x ; \quad
+\ChildG(x, x_{par}) := \bigvee_{i=1}^k S_i~x_{par}~x ; \quad
+\ChildQ(x, x_{par}) := \bigvee_{i=k+1}^n S_i~x_{par}~x
+\]
+With Child(\(x, x_{par}\)), we further define root(\(x\)) to denote \(x\) is the root node
+and Descend(\(x, x_{anc}\)) to denote \(x\) is a descendant of \(x_{anc}\).
+For simplicity, we allow that \(x\) is a descendant of \(x\) itself.
+\[
+\text{root}(x) := \neg \exists x_{par}(\text{Child}(x, x_{par}))
+\]
+\[
+\text{Descend}(x, x_{anc}) := \forall P ((P~x\land \forall z z_{par}(P~z \land \Child(z, z_{par}) \to P~z_{par})) \to P~x_{anc})
+\]
+Now we define Vert(\(x\)). Since every \( v \in V = \bot \Gamma^* Q\), we know \(x = t(v)\) must be some
+\(i\)-th child of another node \(x_{par}\) where \(i > k\),
+and every ancestor \(y\) of \(x_{par}\) must be some \(j\)-th child of its parent \(y_{par}\)
+where \(j \leq k\), or \(y\) is the root node. Therefore,
+\[
+\begin{aligned}
+	\text{Vert}(x) :=~& \exists x_{par}(\ChildQ(x, x_{par}) \land                                                                                             \\
+	                  & \forall y (\text{Descend}(x_{par}, y) \to (\text{root}(y) \lor \forall y_{par}(\Child(y, y_{par}) \to \ChildG(y, y_{par}))))
+\end{aligned}
+\]
+
+With Vert(\(x\)) predicate, we translate \(\varphi(x_1,\dots,x_s,X_1,\dots,X_t)\) to 
+\(\varphi^*(x_1,\dots,x_s,X_1,\dots,X_t)\) with
+\[
+  \varphi^*(x_1,\dots,x_s,X_1,\dots,X_t) = 
+     \bigwedge_{i=1}^s \text{Vert}(x_i) \land \bigwedge_{i=1}^t \forall y(X_i y \to \text{Vert}(y)) \land \psi^*
+\]
+to ensure that each \(x_i\) and \(X_i\) maps to a vertex in the graph of pushdown automaton.
+Also \(\psi^*\) is inductively translated from \(\varphi\) with following cases.
+\[
+\begin{array}{lcl}
+	\varphi                   &         & \psi^*                                                     \\
+	\textbf{Base Cases:}      &  \\
+	\bot                      & \mapsto & \bot                                                       \\
+	x = y                     & \mapsto & x = y                                                      \\
+	E x y                     & \mapsto & \text{Edge}(x, y)                                          \\
+	X x                       & \mapsto & X x                                                        \\
+	\textbf{Inductive Cases:} &  \\
+	\varphi_1 \to \varphi_2   & \mapsto & \psi^*_1 \to \psi^*_2                                      \\
+	\exists x \varphi         & \mapsto & \exists x(\text{Vert}(x) \land \psi^*)                     \\
+	\exists X \varphi         & \mapsto & \exists X (\forall y(X y \to \text{Vert}(y)) \land \psi^*)
+\end{array}
+\]
+Before we talk about the predicate Edge(\(x, y\)), we first discuss the usage of Vert\((x)\).
+Note that Vert\((x)\) is only used like axioms for free and quantified variables.
+This is because, if Vert\((x)\) is used in an arbitrary formula \(\varphi\),
+negation of \(\varphi\) (using \(\varphi \to \bot\)) will likely break the Vert\((x)\) constraint.
+Therefore, we introduce these Vert\((x_i)\) constraints outside the inductive construction
+for free variables and at quantifiers for bounded variables.
+As a result, Vert\((x)\) would not be broken by negation since it is never a sub-formula of negation,
+or it is already evaluated to \textbf{true} or \textbf{false} due to quantifications.
+
+Now we discuss how to translate an edge predicate.
+From the given pushdown automaton \(P\), we already have the sets of transitions
+\(\delta_\mathtt{push}\), \(\delta_\mathtt{pop}\), and \(\delta_\mathtt{nochg}\).
+The transitions are defined on states \(q \in Q\) and alphabets \(\gamma \in \Gamma\).
+For simplicity of our notations, we directly assume that any \(\gamma\) is also
+a number in \(\{1,\dots, k\}\) and \(q\) is a number in \(\{k+1,\dots, n\}\).
+The definition of Edge\((x, y)\) is given below.
+Note that every transition is known and the number of transitions is finite.
+The formula can be expanded to a large disjunction of conjuncts.
+
+\[
+\begin{array}{lll}
+	\text{Edge}(x,y) = & \exists w \exists \alpha( \bigvee\limits_{(q_i, \gamma, q_j) \in \delta_\mathtt{push}} (S_{q_i} w x \land (S_\gamma w \alpha \land S_{q_j} \alpha y))\\
+	                   & \lor \bigvee\limits_{(q_i, \gamma, q_j) \in \delta_\mathtt{pop}} ((S_\gamma w \alpha \land S_{q_i} \alpha x) \land S_{q_j} w y)\\
+	                   & \lor \bigvee\limits_{(q_i, q_j) \in \delta_\mathtt{nochg}} (S_{q_i} w x \land S_{q_j} w y) )\\
+\end{array}
+\]
+
+\end{document}
