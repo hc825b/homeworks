@@ -1,0 +1,88 @@
+\documentclass[11pt]{homework}
+
+\usepackage{bussproofs}
+\usepackage{courier}
+\def\defaultHypSeparation{\hskip 0.1in}
+
+% TODO: replace these with your information
+\newcommand{\hwname}{Chiao Hsieh}
+\newcommand{\hwemail}{chsieh16@illinois.edu}
+\newcommand{\hwtype}{Homework}
+\newcommand{\hwnum}{1}
+\newcommand{\hwclass}{CS 422: Programming Language Design}
+\newcommand{\hwlecture}{}
+\newcommand{\hwsection}{}
+
+\renewcommand{\questiontype}{Problem}
+\newcommand{\TT}{\ensuremath{\mathtt{true}}}
+\newcommand{\FF}{\ensuremath{\mathtt{false}}}
+
+\begin{document}
+\maketitle
+
+% Your content
+
+\question
+Give a Natural Semantics in derivation in SIMPL1 for
+
+\newcommand{\BigCmd}[3]{\ensuremath{(\mathtt{\text{#1}}, \langle #2 \rangle)\Downarrow \langle \mathtt{#3} \rangle}}
+\newcommand{\BigExpr}[3]{\ensuremath{(\mathtt{\text{#1}}, \langle #2 \rangle)\Downarrow #3 }}
+\newcommand{\Map}[2]{\ensuremath{\mathtt{#1}\mapsto\mathtt{#2}}}
+
+\begin{center}
+    \BigCmd{while 0 < y do y := 0 - y od}{\Map{y}{2}}{\Map{y}{-2}}
+\end{center}
+
+Ans.
+
+{\scriptsize
+
+\begin{prooftree}
+            \AxiomC{\BigExpr{0}{\Map{y}{2}}{0}}\noLine
+            \UnaryInfC{\BigExpr{y}{\Map{y}{2}}{2}}\noLine
+            \UnaryInfC{\(0 < 2 = \TT\)}
+        \UnaryInfC{\BigExpr{0 < y}{\Map{y}{2}}{\TT}}
+            \AxiomC{\BigExpr{0}{\Map{y}{2}}{0}}\noLine
+            \UnaryInfC{\BigExpr{y}{\Map{y}{2}}{2}}\noLine
+            \UnaryInfC{\(0 - 2 = -2\)}
+        \UnaryInfC{\BigExpr{0 - y}{\Map{y}{2}}{-2}}
+    \UnaryInfC{\BigCmd{y := 0 - y}{\Map{y}{2}}{\Map{y}{-2}}}
+            \AxiomC{\BigExpr{0}{\Map{y}{-2}}{0}}\noLine
+            \UnaryInfC{\BigExpr{y}{\Map{y}{-2}}{-2}}\noLine
+            \UnaryInfC{\(0 < -2 = \FF\)}
+        \UnaryInfC{\BigExpr{0 < y}{\Map{y}{-2}}{\FF}}
+    \UnaryInfC{\BigCmd{while 0 < y do y := 0 - y od}{\Map{y}{-2}}{\Map{y}{-2}}}
+\TrinaryInfC{\BigCmd{while 0 < y do y := 0 - y od}{\Map{y}{2}}{\Map{y}{-2}}}
+\end{prooftree}
+
+}
+
+\question
+Give a type derivation in SIMPL1 for the typing judgment
+
+\newcommand{\TypChk}[3]{\ensuremath{\{#1\} \vdash \mathtt{\text{#2}} : \texttt{#3}}}
+\newcommand{\Int}{\texttt{int}}
+\newcommand{\Cmd}{\texttt{cmd}}
+\newcommand{\Bool}{\texttt{bool}}
+\newcommand{\TypInt}[1]{\ensuremath{\mathtt{#1}:\Int}}
+
+\[
+    \TypChk{\TypInt{y}}{while 0 < y do y := 0 - y od}{\Cmd}
+\]
+
+Ans.
+
+{
+    \begin{prooftree}
+        \AxiomC{\TypChk{\TypInt{y}}{0}{\Int}}
+        \AxiomC{\TypChk{\TypInt{y}}{y}{\Int}}
+    \BinaryInfC{\TypChk{\TypInt{y}}{0 < y}{\Bool}}
+            \AxiomC{\TypChk{\TypInt{y}}{0}{\Int}}
+            \AxiomC{\TypChk{\TypInt{y}}{y}{\Int}}
+        \BinaryInfC{\TypChk{\TypInt{y}}{0 - y}{\Int}}
+    \UnaryInfC{\TypChk{\TypInt{y}}{y := 0 - y}{\Cmd}}
+\BinaryInfC{\TypChk{\TypInt{y}}{while 0 < y do y := 0 - y od}{\Cmd}}
+    \end{prooftree}
+}
+
+\end{document}
