@@ -1,0 +1,261 @@
+\documentclass[11pt]{article}
+
+% This is a package for drawing figures
+% it is a part of standard latex 2e distribution
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{fullpage}
+
+
+\usepackage{palatino}
+\RequirePackage{ifthen}
+\usepackage{latexsym}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{xspace}
+\RequirePackage{graphics}
+\usepackage{xcolor}
+
+
+
+
+\RequirePackage{textcomp}
+\usepackage{keyval}
+%\usepackage{listings}
+\usepackage{xspace}
+\usepackage{mathrsfs,paralist, amsmath,amssymb,url,listings,mathrsfs}
+%\usepackage{pvs}
+%\usepackage{supertabular,alltt,latexsym}
+%\usepackage{multicol,multirow,epsfig}
+%\usepackage[dvips, usenames]{color}
+\usepackage{framed}
+\usepackage{lipsum}
+%\usepackage[dvipsnames]{color}
+
+% copyright notice
+
+
+\definecolor{reddish}{rgb}{1,.8,0.8}
+\definecolor{blueish}{rgb}{0.8,.8,1}
+\definecolor{greenish}{rgb}{.8,1,0.8}
+\definecolor{yellowish}{rgb}{1,1,.20}
+
+
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+  pdftitle={Lecture notes for Modeling and Verification of Real-time and Hybrid Systems},
+  pdfauthor={Sayan Mitra},
+  colorlinks=true,
+  citecolor={blue},
+  linkcolor = {blue},
+  pagecolor={blue},
+  backref={true},
+  bookmarks=true,
+  bookmarksopen=false,
+  bookmarksnumbered=true
+}
+
+%\newcommand{\remove}[1]{}
+
+\input{prelude1}
+
+
+\newcommand{\handout}[6]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS  Verification } \hfill #2 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+       \hbox to 5.78in { {\Large \hfill #6  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\smallheader}[4]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS System Verification } \hfill #2 }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Lecture #1}}
+
+\newcommand{\homework}[2]{\smallheader{#1}{Spring 2016}{Homework #1}{#2}}
+\newcommand{\solution}[2]{\smallheader{#1}{Spring 2016}{Solutions for Homework #1}{#2}}
+
+
+\newcommand{\interestingfact}[1]{
+	\noindent
+	\begin{center}
+	\colorbox{yellowish}{
+	\parbox{11.5cm}{{\bf Factoid.} #1}
+	}
+	\end{center}
+	\vspace*{4mm}
+}
+%\definecolor{MyGray}{rgb}{0.96,0.97,0.98}
+\makeatletter\newenvironment{color1box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{reddish}{\usebox{\@tempboxa}}
+}\makeatother
+
+
+\makeatletter\newenvironment{color3box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{blueish}{\usebox{\@tempboxa}}
+}\makeatother
+
+% 1-inch margins, from fullpage.sty by H.Partl, Version 2, Dec. 15, 1988.
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+%\renewcommand{\baselinestretch}{1.25}
+
+\begin{document}
+
+
+\homework{1 on Discrete Models and Computation--- Due on February $12^{th}$, 2016}{Chiao Hsieh}
+
+\paragraph{Problem 1 (Synchronous Dijkstra).}
+The model of Dijkstra's token ring algorithm we presented in the lecture was asynchronous in the sense that each transition modeled the state-update of a single process. 
+\begin{enumerate}[(a)]
+\item Consider an initial state of the system with multiple tokens and write down two different executions of starting from that initial state.
+States can be specified in terms of predicates on the state variables, e.g., $x[0] = 0 \wedge ..$. 
+
+Ans.
+
+An initial state with tokens on all $N$ processes (with $N>=3$) can be expressed as following predicate.
+\[
+x[0] = 0 \land \bigwedge_{i=1}^{N-2} x[i] = i \land x[N-1] = 0
+\]
+
+If we consider only 3 processes ($N=3$), the state will be
+\(x[0] = 0 \land x[1] = 1 \land x[2] = 0\),
+and all three processes satisfy the precondition to make the update.
+
+\begin{itemize}
+    \item Process $p_0$ updates first: $x[0] := (x[2] + 1) \mod k $ \\
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 1 \land x[1] = 1 \land x[2] = 0$
+    \item Process $p_1$ updates first: $x[1] := x[0]$ \\
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 0 \land x[1] = 0 \land x[2] = 0$
+    \item Process $p_2$ updates first: $x[2] := x[1]$\\
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 0 \land x[1] = 1 \land x[2] = 1$
+\end{itemize}
+
+\item Write the specification of a synchronous version of the same algorithm in which all the processes in the ring update their state simultaneously.
+
+Ans.
+
+
+
+\item Write the execution(s) of the synchronous model from the initial state in Part~(a).
+\end{enumerate}
+
+\paragraph{Problem 2 (LCR algorithm for Leader election).}
+In this problem, you will create a model of a leader election algorithm in a unidirectional ring. Here is the informal description of the protocol:
+
+Each process sends its identifier to its successor around the ring. When a process receives an incoming identifier, it compares that identifier to its own. If the incoming identifier is greater than its own, it keeps passing the identifier; if it is less than its own, it discards the incoming identifier; if it is equal to its own the process declares itself as the leader. 
+
+\begin{enumerate}[(a)]
+\item Write the model of the system with $n$ processes in the ring using the HIOA language. To get you started, the set of variables is: 
+\begin{itemize}
+\item $\mathit{send}$: The identifier to send or {\em null\/},
+\item $\mathit{status}$: Takes values in $\{ \mathit{unknown},\mathit{leader}\}$ to indicate that the leader has been elected or not. 
+\end{itemize}
+
+\item Write an execution of the system in which status of at least one process is eventually set to $\mathit{leader\/}$. 
+\item Write two properties that you think might be invariants of this system.
+\end{enumerate}
+
+
+\paragraph{Problem 3 (Multiplication).} 
+Consider the following decision problem $\mathsf{Mult}$: Given binary
+numbers $m,n,$ and $i$, determine if the $i$th bit of the binary
+representation of $m\times n$ is $1$. As a language we could define
+this as
+\[
+\mathsf{Mult} = \{(m,n,i)\: |\: \mbox{$i$th bit of $m\times n$ is $1$}\}
+\]
+Prove that $\mbox{Mult} \in \mbox{L}$ by giving the pseudo-code of an
+algorithm and analyzing its memory requirements in terms of the number
+of (additional, non-input) bits it stores.
+
+\paragraph{Problem 4 (2SAT).}
+Recall the following definitions for Boolean formulas. A variable $x$
+or its negation $\neg x$ are called \emph{literals}. A \emph{clause}
+is a disjunction of literals. A \emph{conjunctive normal form} (CNF)
+formula is a conjunction of clauses. Note that because of de Morgan's
+laws and distributivity of conjunction and disjunction, every Boolean
+formula can be rewritten into an equivalent formula in CNF. A formula
+$\varphi$ is said to be \emph{satisfiable} if there is a truth
+assignment ${\bf a}$ to the variables such that $\varphi$ evaluates to
+true under assignment ${\bf a}$.
+
+A \emph{2CNF} formula is a CNF formula such that every clause has {\bf
+  exactly} 2 literals. Let $\varphi$ be a 2CNF formula over variables
+$X$. Associated with $\varphi$, we can define a directed graph $G =
+(V,E)$, called the \emph{implication graph}, as follows. The vertices
+of $G$ are the set of all literals over $X$. For literals
+$\ell_1,\ell_2$, there is an edge $(\ell_1,\ell_2)$ in $G$ iff $(\neg
+\ell_1 \vee \ell_2)$ is a clause in $\varphi$; here, we assume that
+$\neg \neg x = x$.
+\begin{enumerate}
+\item Prove that $\varphi$ is unsatisfiable if and only if there is a
+  variable $x$ such that there is a directed path from $x$ to $\neg x$
+  in $G$
+\item Based on the previous part, what can you say about the
+  complexity of checking if a 2CNF formula is unsatisfiable? 
+\end{enumerate}
+
+\paragraph{Bonus Problem 5 (Invariant Checking of Boolean Automata).}
+Consider an automaton ${\cal A} = (X,\Theta,A,{\cal D})$, where all
+variables $x \in X$ have $\mathrm{type}(x)$ Boolean, $\Theta$ is given
+by a Boolean predicate over $X$, and for each action $a \in A$, ${\cal
+  D}$ has precondition/effect pair (as predicates over $X$) that
+describe the transition on action $a$. Let $I$ be a predicate over $X$
+as well. Let $\mathsf{Unsafe}$ be the decision problem of checking if
+$I$ is {\bf not} an invariant of ${\cal A}$.
+\begin{enumerate}
+\item Prove that $\mathsf{Unsafe}$ is in $\mbox{PSPACE}$ by giving the
+  pseudo-code of an algorithm. \emph{Hint:} Recall that since
+  $\mbox{NPSPACE} = \mbox{PSPACE}$, your algorithm can be
+  non-deterministic.
+\item Prove that $\mathsf{Unsafe}$ is $\mbox{PSPACE}$-hard as
+  follows. Let $L \in \mbox{PSPACE}$. Without loss of generality,
+  assume that $M$ is 1-worktape Turing machine that solves $L$ using
+  at most $p(n)$ worktape cells on an input of length $n$; here $p(n)$
+  is assumed to be a polynomial. Show that $L \leq_{{\mbox L}}
+  \mathsf{Unsafe}$. 
+\end{enumerate}
+
+
+
+%\paragraph($A \leq_L B, B \in C$}
+
+
+\bibliography{sayan1}
+\bibliographystyle{plain}
+\end{document}
