@@ -1,12 +1,12 @@
 ### Project Goal
 
-Our project goal is failure condition inference for self-adaptive applications.
+Our project goal is to infer failure condition for self-adaptive applications.
 Self-adaptative applications continually sense their environments and make
 adaptation according to their predefined logics, and forms a reaction loop.
 Typically, developers write assertions or failure condtions over sensor
-values to describe the danger zone where the application will crash and
-hard to recover, and the assertions are checked at each reaction loop iteration.
-In this context, we want to infer another condition over sensor value that implies the
+values checked at each reaction loop iteration. The assertions often describe
+the danger zone where the application crashes and is hard to recover.
+In this context, we want to infer another condition over sensor value impling the
 violation of the assertions developers provided, but requires less iterations of
 the loop to trigger.
 Intuitively, the infered condition can be used to refine the predefined logic to
