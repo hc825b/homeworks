@@ -1,0 +1,213 @@
+\documentclass[11pt]{article}
+
+% This is a package for drawing figures
+% it is a part of standard latex 2e distribution
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{fullpage}
+
+
+\usepackage{palatino}
+\RequirePackage{ifthen}
+\usepackage{latexsym}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{xspace}
+\RequirePackage{graphics}
+\usepackage{xcolor}
+
+
+
+
+\RequirePackage{textcomp}
+\usepackage{keyval}
+%\usepackage{listings}
+\usepackage{xspace}
+\usepackage{mathrsfs,paralist, amsmath,amssymb,url,listings,mathrsfs}
+%\usepackage{pvs}
+%\usepackage{supertabular,alltt,latexsym}
+%\usepackage{multicol,multirow,epsfig}
+%\usepackage[dvips, usenames]{color}
+\usepackage{framed}
+\usepackage{lipsum}
+%\usepackage[dvipsnames]{color}
+
+% copyright notice
+
+
+\definecolor{reddish}{rgb}{1,.8,0.8}
+\definecolor{blueish}{rgb}{0.8,.8,1}
+\definecolor{greenish}{rgb}{.8,1,0.8}
+\definecolor{yellowish}{rgb}{1,1,.20}
+
+
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+  pdftitle={Lecture notes for Modeling and Verification of Real-time and Hybrid Systems},
+  pdfauthor={Sayan Mitra},
+  colorlinks=true,
+  citecolor={blue},
+  linkcolor = {blue},
+  pagecolor={blue},
+  backref={true},
+  bookmarks=true,
+  bookmarksopen=false,
+  bookmarksnumbered=true
+}
+
+%\newcommand{\remove}[1]{}
+
+\input{prelude1}
+
+
+\newcommand{\handout}[6]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS  Verification } \hfill #2 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+       \hbox to 5.78in { {\Large \hfill #6  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\smallheader}[4]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS System Verification } \hfill #2 }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Lecture #1}}
+
+\newcommand{\homework}[2]{\smallheader{#1}{Spring 2016}{Homework #1}{#2}}
+\newcommand{\solution}[2]{\smallheader{#1}{Spring 2016}{Solutions for Homework #1}{#2}}
+
+
+\newcommand{\interestingfact}[1]{
+	\noindent
+	\begin{center}
+	\colorbox{yellowish}{
+	\parbox{11.5cm}{{\bf Factoid.} #1}
+	}
+	\end{center}
+	\vspace*{4mm}
+}
+%\definecolor{MyGray}{rgb}{0.96,0.97,0.98}
+\makeatletter\newenvironment{color1box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{reddish}{\usebox{\@tempboxa}}
+}\makeatother
+
+
+\makeatletter\newenvironment{color3box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{blueish}{\usebox{\@tempboxa}}
+}\makeatother
+
+% 1-inch margins, from fullpage.sty by H.Partl, Version 2, Dec. 15, 1988.
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+%\renewcommand{\baselinestretch}{1.25}
+
+\newcommand{\st}{\mathsf{state}}
+\newcommand{\cntr}{\mathsf{counter}}
+\newcommand{\execcm}{\Longrightarrow}
+
+
+
+\begin{document}
+
+
+\homework{3 PVS and Abstractions--- Due on March  $29^{th}$, 2016}{Chiao Hsieh}
+
+
+\paragraph{Problem 1 (20 points).}
+Consider a linear dynamical system $\dot{x} = Ax$, where $x \in \reals^n$ and $A$ is a $n \times n$ matrix. 
+
+\begin{enumerate}[(a)]
+\item Define the corresponding time-abstract automaton (discrete transition system),
+
+Ans.
+
+Let $\A = (X, \Theta, D)$ be the time-abstract automaton for the linear dynamical system defined by $\dot{x} = Ax$.
+
+
+
+\item Suppose the set of initial states $\Theta$ is a convex polytope, that is, a set described by a set of linear inequalities.
+For any time $t \geq 0$, show that the states reached by the system at time $t$,  $\mathit{Reach}(t)$, is also a  polytope. 
+\end{enumerate}
+
+ 
+ \paragraph{Problem 2 (20 points).} 
+ Consider the billiard system with a single ball $\A$ and the satellite system $\B$ from HW2. Show that under appropriate assumptions, and variable and action naming, $\B$ is an I/O abstraction for $\A$. There some flexibility in how you set-up the problem. To make it interesting you should assume that both the velocity components of the billiard ball are non-zero ($v_x, v_y \neq 0$). The relevant part of the descriptions of the two systems are given below:
+ 
+ \paragraph{Satellites}
+ Consider two satellites orbiting the earth on circular orbits with (constant) angular speeds $\omega_1$ and $\omega_2$.  Write a hybrid automaton model of the position of the satellite-pair in the $[0,2\pi]^2$ space. When one of the satellites hit $0$ or $2\pi$ its position has to be reset.
+ % Model this using an ouput action called $\act{jump}$.  
+ 
+ \paragraph{Billiards}
+ Consider a idealized billiard table of length $a$ and width $b$ and a ball rolling on the table with constant velocity $\vec{v} = (v_x, v_y)$. The table has no pockets, no friction, and it's boundary bounces the balls perfectly. Wall bounces are modeled by an output action called $\act{jump}$. 
+ 
+ Ans.
+ 
+Let automaton of billiard system $\A = (\{v_x, v_y\}, \Theta_1, \{\act{jump}\}, D_1, \T_1)$ where
+\[
+\begin{array}{rcl}
+	\Theta_1 & = & (v_x \neq 0 \land v_y \neq 0) \\
+	     D_1 & = & ()                            \\
+	    \T_1 & = & 
+\end{array}
+\]
+
+$\B = (\{\omega_1, \omega_2\}, \Theta_2, \{\act{jump}\}, D_2, \T_2 \})$
+\[
+\Theta_2 = (\omega_1 \neq 0 \land \omega_2 \neq 0)
+\]
+ 
+ \paragraph{Problem 3. (30 points)} In this problem, you will model the $n$-process distributed token ring system (from last problem set) in PVS  and prove its key invariant. 
+
+\paragraph{Recall the system description.} Consider $n$ processes $0, \ldots, n-1$ connected in a directed ring. 
+We say process $i+1 \mod n$ is the successor of process $i$. Each process $i$, has a value $v_i$ which can be an element of the set $\{0, \ldots, k\}$ for some $k > n$. Each process behaves as follows: Process $i$, $i \neq 0$, is said to have a token iff $v_i \neq v_{i- 1}$. Process $0$ has a token iff $v_0 = v_{n-1}$. Each process has a real-valued period parameter  $\Delta_i > 0$. 
+Exactly every $\Delta_i$ time, process $i$ performs the following action if it has the token: 
+if $i = 0$ then $v_i := (v_i + 1) \mod n$, otherwise $v_i := v_{i- 1}$. 
+
+\paragraph{Part (a)} 
+A partially complete PVS specification of the system is provided from the homeworks page. This specification, albeit not correct, should parse and typecheck in PVS. Complete the specification with appropriate expressions in the lines marked ``Fill in''.
+
+\paragraph{Part (b)} Check for type correctness. Are there any unproved TCCS ? Prove them. You may have to use basic lemmas on modular arithmetic from \texttt{prelude.pvs}.
+
+\paragraph{Part (c)} The predicate {\em two\_val\/} implies that there is at most one token in the system. Prove invariance of {\em two\_val\/} using the PVS prover. This is broken down into two lemmas in the supplied theory. Partial proof are provided to get you started.
+
+
+
+%\paragraph($A \leq_L B, B \in C$}
+
+
+%\bibliography{sayan1}
+%\bibliographystyle{plain}
+\end{document}
