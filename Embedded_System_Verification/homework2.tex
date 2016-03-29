@@ -1,0 +1,467 @@
+\documentclass[11pt]{article}
+
+% This is a package for drawing figures
+% it is a part of standard latex 2e distribution
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{fullpage}
+
+
+\usepackage{palatino}
+\RequirePackage{ifthen}
+\usepackage{latexsym}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{xspace}
+\RequirePackage{graphics}
+\usepackage{xcolor}
+\definecolor{OliveGreen}{rgb}{0,0.6,0}
+
+
+
+\RequirePackage{textcomp}
+\usepackage{keyval}
+%\usepackage{listings}
+\usepackage{xspace}
+\usepackage{mathrsfs,paralist, amsmath,amssymb,url,listings,mathrsfs}
+%\usepackage{pvs}
+%\usepackage{supertabular,alltt,latexsym}
+%\usepackage{multicol,multirow,epsfig}
+%\usepackage[dvips, usenames]{color}
+\usepackage{framed}
+\usepackage{lipsum}
+%\usepackage[dvipsnames]{color}
+\usepackage{multicol}
+% copyright notice
+
+
+\definecolor{reddish}{rgb}{1,.8,0.8}
+\definecolor{blueish}{rgb}{0.8,.8,1}
+\definecolor{greenish}{rgb}{.8,1,0.8}
+\definecolor{yellowish}{rgb}{1,1,.20}
+
+
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+  pdftitle={Lecture notes for Modeling and Verification of Real-time and Hybrid Systems},
+  pdfauthor={Sayan Mitra},
+  colorlinks=true,
+  citecolor={blue},
+  linkcolor = {blue},
+  pagecolor={blue},
+  backref={true},
+  bookmarks=true,
+  bookmarksopen=false,
+  bookmarksnumbered=true
+}
+
+%\newcommand{\remove}[1]{}
+
+\input{prelude1}
+
+
+\newcommand{\handout}[6]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS  Verification } \hfill #2 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+       \hbox to 5.78in { {\Large \hfill #6  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\smallheader}[4]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded and CPS System Verification } \hfill #2 }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Lecture #1}}
+
+\newcommand{\homework}[2]{\smallheader{#1}{Spring 2016}{Homework #1}{#2}}
+\newcommand{\solution}[2]{\smallheader{#1}{Spring 2016}{Solutions for Homework #1}{#2}}
+
+
+\newcommand{\interestingfact}[1]{
+	\noindent
+	\begin{center}
+	\colorbox{yellowish}{
+	\parbox{11.5cm}{{\bf Factoid.} #1}
+	}
+	\end{center}
+	\vspace*{4mm}
+}
+%\definecolor{MyGray}{rgb}{0.96,0.97,0.98}
+\makeatletter\newenvironment{color1box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{reddish}{\usebox{\@tempboxa}}
+}\makeatother
+
+
+\makeatletter\newenvironment{color3box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{blueish}{\usebox{\@tempboxa}}
+}\makeatother
+
+% 1-inch margins, from fullpage.sty by H.Partl, Version 2, Dec. 15, 1988.
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+%\renewcommand{\baselinestretch}{1.25}
+
+\begin{document}
+
+
+\homework{2 on Hybrid Models and Computation--- Due on March $2^{nd}$, 2016}{Chiao Hsieh}
+
+
+\paragraph{Problem 1 (10 points).}
+Give an example where the composition $\A = \A_1 \| \A_2$ of two compatible hybrid input/output automata $\A_1$ and $\A_2$ is not a hybrid input/output automaton. Recall, an HIOA has to satisfy the input action and input trajectory enabled conditions. 
+
+Give a sufficient condition under which $\A = \A_1 \| \A_2$ is a hybrid I/O automaton.
+
+Ans.
+
+Followings are the example automata $\A_1$ and $\A_2$,
+both automata consist of no actions and discrete transitions as follows.
+
+\begin{multicols}{2}
+\begin{lstlisting}[language=ioaLang, mathescape=true]
+automaton $\A_1$()
+    variables
+        input    $u_1:\Real$;
+        output   $y_1:\Real$;
+        internal $x_1:\Real = 0$;
+
+    trajectories
+        evolve $x_1 = u_1$; $y_1 = x_1$
+        invariant $true$
+\end{lstlisting}
+\vfill\columnbreak
+\begin{lstlisting}[language=ioaLang, mathescape=true]
+automaton $\A_2$()
+    variables
+        input    $y_1:\Real$, $u_2:\Real$;
+        output   $u_1:\Real$;
+        internal $x_2:\Real = 0$;
+
+    trajectories
+        evolve $x_2 = y_1 + 1$; $u_1 = x_2$
+        invariant $true$
+\end{lstlisting}
+\end{multicols}
+
+Apparently, $\A_1$ and $\A_2$ are compatible.
+However, the composition $\A_1 \| \A_2$ does not satisfy the input trajectory enabled condition.
+Since both automata have no actions and discrete transitions,
+satisfying input trajectory enabled condition~(\emph{E2}) requires that 
+\[
+    \forall \vx \in val(X), \forall v \in Traj(U), \exists \tau \in \T,(\tau.\fstate = \vx \land \tau \restrrange U = v)
+\]
+In  $\A_1 \| \A_2$, $X = \{x_1, x_2\}$ and $U = (\{u_1\} \cup \{y_1, u_2\}) \setminus (\{y_1\} \cup \{u_1\}) = \{u_2\}$.
+We pick $(x_1,x_2)=(0,0) \in val(X)$ as a counterexample violating E2.
+If there is a trajectory $\tau \in \T$ with $\tau.\fstate = (0,0)$, then $y_1 = 0$ from $\A_1$ but $y_1 - 1$ from $\A_2$.
+Hence, no $\tau$ can satisfy E2. We conclude that $\A_1 \| \A_2$ is not an HIOA.
+
+A sufficient condition for which $\A_1 \| \A_2$ be a HIOA is that  $U_1 \cap Y_2 = \emptyset$.
+That is the output variables of $\A_1$ are not used by $\A_2$,
+or generally there is no loop in the composition.
+More sufficient conditions can be found at Section 6.3 in~\cite{Lynch2003105}.
+
+\newpage
+
+\paragraph{Problem 2 (10 points).}
+Consider the composed hybrid automaton $\A = \A_1 \| \A_2$ and 
+an alternating sequence $\alpha = \tau_0, a_1, \ldots \tau_n$ where each $a_i$ is an action of $\A$ and each $\tau_i$ is a trajectory of the variables of $A$. 
+Note that $\alpha$ may not be an execution of $\A$. 
+Show that if $\alpha \lceil (A_i, V_i)$ is an execution of $\A_i$ for each $i \in \{1, 2\}$, 
+then $\alpha$ is indeed an execution of $\A$.
+%
+Here $\alpha \lceil (A_i, V_i)$ denotes the restriction of $\alpha$ to the set of actions $A_i$ and the set of variables $V_i$.
+
+Ans.
+
+Let $\alpha \lceil (A_i, V_i) = \tau_0^i a_1^i, \ldots \tau_{m_i}^i$
+with last trajectory $\tau_{m_i}^i$.
+If $\alpha \lceil (A_i, V_i)$ is an execution of $\A_i$ for each $i \in \{1, 2\}$,
+then following holds by definition.
+\begin{align}
+&\forall j, \tau_j^i \in \T_i \land a_j^i \in A_i \land \tau_j^i.\lstate \arrow{a_{j+1}^i} \tau_{j+1}^{i}.\fstate \label{eqn:p1}\\
+&\tau_0^i.\fstate \in \Theta_i \label{eqn:p2}
+\end{align}
+And we have to prove $\alpha = \tau_0, a_1, \ldots \tau_n$ satisfies the above two conditions.
+By definition of $\alpha \lceil (A_i, V_i)$ at Section 3.3.4 in~\cite{Lynch2003105},
+we can prove (\ref{eqn:p1}) by induction on the sequence.
+
+\textbf{Base:}\\
+The base case is $\alpha = \tau_0$ without actions.
+We know that $\tau_0 \restrrange V_i$ should be a prefix of $\tau_0^i$.
+That is, $\tau_0 \restrrange V_i \in \T_i$ and
+\[
+\because \forall i, \tau_0 \restrrange V_i \in \T_i \qquad \therefore \tau_0 \in \T
+\]
+Property~(\ref{eqn:p1}) holds for base case because of no actions.
+
+\textbf{Induction:}\\
+Let $\alpha = \alpha' a_j \tau_j$ for a transition $a_{j}, \tau_{j}$.
+By induction hypothesis, $\alpha'$ satisfies property (\ref{eqn:p1}).
+Also from definition of composition, $\tau_j\restrrange V_i \in \T_i$.
+
+If the action $a_j \in A_i$, there must be the last discrete transition $\tau_{m_i-1}^i, a_j, \tau_{m_i}^i$ in $\alpha \lceil (A_i, V_i)$.
+Therefore, we know $\alpha'\lceil (A_i, V_i).\lstate = \tau_{m_i-1}^i.\lstate$ and $\tau_{j} \restrrange V_i.\fstate = \tau_{m_i}^i.\fstate$.
+Because property (\ref{eqn:p1}) holds for $\alpha \lceil (A_i, V_i)$,
+\begin{equation*}
+\because \tau_{m_i-1}^i.\lstate \arrow{a_{j}} \tau_{m_i}^i.\fstate \quad
+\therefore \alpha'\lceil (A_i, V_i).\lstate \arrow{a_{j}} \tau_{j} \restrrange V_i.\fstate \\
+\end{equation*}
+If the action $a_{j} \notin A_i$,
+the last trajectory $\tau'$ of $\alpha'\lceil (A_i, V_i)$ will concatenate with $\tau_j \restrrange V_i$ to form
+the last trajectory of $\alpha\lceil (A_i, V_i)$.
+Formally, $\tau_{m_i}^i = \tau'\concat (\tau_j\restrrange V_i)$.
+By definition of concatenation,
+\begin{align*}
+    \because &\alpha'\lceil (A_i, V_i).\lstate = \tau'.\lstate = \tau_j\restrrange V_i.\fstate \nonumber \\
+    \therefore& \alpha'\lceil (A_i, V_i).\lstate \arrow{a_{j}} \tau_j \restrrange V_i.\fstate
+\end{align*}
+Now we know no matter $a_{j} \in A_i$ or not,
+the last action $a_j$ and trajectory $\tau_j$ of $\alpha$ alway satisfies $\alpha'.\lstate \arrow{a_{j}} \tau_{j}.\fstate$.
+Also from induction hypothesis, every trajectory and action in $\alpha'$ satisfies (\ref{eqn:p1}).
+We conclude that $\alpha$ alway follows property (\ref{eqn:p1}) by induction.
+
+Finally, for property (\ref{eqn:p2}), since $\tau_0 \restrrange V_i$ should be a prefix of $\tau_0^i$,
+$\tau_0\restrrange V_i.\fstate = \tau_0^i.\fstate \in \Theta_i$ and
+\[
+  \because \forall i, \tau_0\restrrange V_i.\fstate = \tau_0^i.\fstate \in \Theta_i \quad \therefore \tau_0.\fstate \in \Theta
+\]
+
+\newpage
+
+\paragraph{Problem 3. (20 points).}
+Consider an idealized billiard table of length $a$ and width $b$. This table has no pockets, its surface has no friction, and it's boundary bounces the balls perfectly. Write a hybrid automaton model of the position of {\bf two\/} balls on this table. The balls have some initial velocities. The balls bounce from the walls when their position is at the boundary. They collide whenever $|x_1 - x_2| \leq \epsilon$ and $|y_1 - y_2| \leq \epsilon$ and their velocity vectors are pointing towards each other. Here  $\epsilon$ is some constant. 
+Whenever a bounce occurs, the appropriate velocity changes sign.
+Whenever a collision occurs, the balls exchange their velocity vectors. Make all the variables {\bf internal\/}. Wall bounces are modeled by an output action called $\act{bounce}$ and collision are modeled by an output action $\act{collision}$.
+
+Ans.
+\begin{lstlisting}[language=ioaLang, mathescape=true]
+automaton BilliardTable($a$:Real, $b$:Real, $\epsilon$:Real)
+    variables
+        internal $x_1$:Real, $y_1$:Real, $x_2$:Real, $y_2$:Real 
+                         initially $\forall i \in [1, 2], 0 \leq x_i \leq a \land 0 \leq y_i \leq b$,
+                 $vx_1$:Real, $vy_1$:Real, $vx_2$:Real, $vy_2$:Real
+                         initially $\forall i \in [1, 2], 0 < vx_i \land 0 < vy_i$
+    signature
+        output bounce(i:[1, 2])
+        output collision
+    transitions
+        output bounce(i:[1, 2])
+        pre $x_i= 0 \lor x_i= a \lor y_i= 0 \lor y_i= b$
+        eff if ($x_i=0 \lor x_i=a$) then
+                $vx_i := -vx_i$;
+            fi
+            if ($y_i=0 \lor y_i=b$) then
+                $vy_i := -vy_i$;
+            fi
+
+        output collision
+        pre $|x_1 - x_2| \leq \epsilon \land |y_1 - y_2| \leq \epsilon \land is\_colliding$
+        eff swap($vx_1, vx_2$)
+            swap($vy_1, vy_2$)
+
+    trajectories
+        evolve d$(x_i) = vx_i$; d$(y_i) = vy_i$; d$(vx_i) = 0$; d$(vy_i) = 0$;
+        invariant $0 \leq x_i \leq a \land 0 \leq y_i \leq b$
+\end{lstlisting}
+
+The $is\_colliding$ predicate captures the condition when the velocity vectors of both balls pointing toward each other.
+\[
+is\_colliding := \frac{x_1 - x_2}{vx_1 - vx_2}<0 \land \frac{y_1 - y_2}{vy_1 - vy_2}<0 \land \frac{vy_1}{vx_1} = \frac{vy_2}{vx_2}
+\]
+\newpage
+
+\paragraph{Part b.} State conservation of momentum as an invariant property of the automaton. Is this an inductive invariant?
+
+Ans.
+
+Conservation of momentum will not hold since the direction of velocity will change when the border bounces the ball.
+Instead, we discuss conservation of kinetic energy.
+
+Since we assume two balls have the same mass, the conservation of energy is then simplified as
+\[
+    CE := \left({vx_1^2 + vy_1^2} + {vx_2^2 + vy_2^2}\right) = E_0
+\]
+where $E_0$ is the initial energy ${vx_1^2(t_0) + vy_1^2(t_0)} + {vx_2^2(t_0) + vy_2^2(t_0)}$.
+The conservation of energy trivially contains initial states,
+and it holds for both \texttt{bounce} and \texttt{collision} transitions.
+Further, since $d(vx_i) = 0$ and $d(vy_i) = 0$ for trajectories,
+the velocities remain the same in any trajectory;
+hence it holds for any trajectory $\tau$ that $\tau.\fstate \in CE \implies \tau.\lstate \in CE$.
+
+Conservation of kinetic energy is an inductive invariant for the automaton.
+
+\paragraph{Part c.} Prove an inductive invariant (using the theorem in lecture 9) which implies conservation of momentum.
+
+Ans.
+
+Let $S$ be $vx_1^2 + vx_2^2 = EX_0 \land vy_1^2 + vy_2^2 = EY_0$
+where $EX_0$ is ${vx_1^2(t_0) + vx_2^2(t_0)}$ the initial energy along x-axis.
+Similarly, $EY_0$ is ${vy_1^2(t_0) + vy_2^2(t_0)}$.
+It's obvious $S \implies CE$.
+
+To prove $S$ is an inductive invariant, we first check if $\Theta \subseteq S$,
+and it trivially holds when we substitute $vx_i, vy_i$ with $vx_i(t_0), vy_i(t_0)$.
+
+Further, we compute $Post_\A(S) = \bigcup_{a\in A} Post\_Trans(S, a) \cup Post\_Traj(S)$.
+From our automaton, we derive the post states for each discrete transition.
+\[
+\begin{array}{rcl}
+Post\_Trans(S, \texttt{bounce(1)})&=& (-vx_1)^2 + vx_2^2 = EX_0 \land (-vy_1)^2 + vy_2^2 = EY_0\\
+Post\_Trans(S, \texttt{bounce(2)})&=& vx_1^2 + (-vx_2)^2 = EX_0 \land vy_1^2 + (-vy_2)^2 = EY_0\\
+Post\_Trans(S, \texttt{collision})&=& vx_2^2 + vx_1^2 = EX_0 \land vy_2^2 + vy_1^2 = EY_0\\
+\end{array}
+\]
+Apparently, each set of post states is essentially the same as $S$.
+
+Finally for trajectories,
+\[
+Post\_Traj(S) = \{ v' \mid \exists \tau \in \T, \tau.\fstate \in S \land \tau.\lstate = v'\}
+\]
+Since $\frac{d(vx_i)}{dt} =0$ and $\frac{d(vy_i)}{dt} = 0$, $Post\_Traj(S)$ is also the same set as $S$.
+Therefore, we prove that $Post_\A(S) \subseteq S$ and $S$ is an inductive invariant.
+
+\newpage
+
+\paragraph{Problem 4 (30 points).}
+Consider two satellites orbiting the earth on circular orbits with (constant) angular speeds $\omega_1$ and $\omega_2$. 
+Write a hybrid automaton model of the position of the satellite-pair in the $[0,2\pi]^2$ space. When one of the satellites hit $0$ or $2\pi$ its position has to be reset. Model this using an output action called $\act{jump}$.
+
+Ans.
+
+\begin{lstlisting}[language=ioaLang, mathescape=true]
+automaton Satelite($\omega_1$:Real, $\omega_2$:Real)
+    type indices:enumeration [1, 2]
+    variables internal $pos$:[indices $\to$ Real] initially $\forall i \in [1,2], 0\leq pos[i]\leq 2\pi$;
+    signature
+        output jump(i:indices)
+    transitions
+        output jump(i:indices)
+        pre $pos[i] \leq 0 \lor pos[i] \geq 2\pi$
+        eff if $pos[i] \leq 0$ then
+                $pos[i] := pos[i] + 2\pi$
+            else if $pos[i] \geq 2\pi$ then
+                $pos[i] := pos[i] - 2\pi$
+            fi
+    trajectories
+        evolve d$(pos[1]) = \omega_1$; d$(pos[2]) = \omega_2$
+        invariant $\forall i \in [1,2], 0 \leq pos[i] \leq 2\pi$
+\end{lstlisting}
+
+The automaton will repeatedly jump if $\omega_i = 0$ and $pos[i] = 0$;
+
+%\paragraph{Part b}
+%Consider the model of a {\bf single\/} ball in the billard table of Problem 3.
+%For appropriate choices of $\omega_1, \omega_2$, and the initial position of the satellites, show that this hybrid automaton strongly simulates the  hybrid automaton modeling the single ball in the billiard table.  Write down the forward simulation relation. Check that the relation is preserved by the transitions and trajectories.
+
+
+\paragraph{Problem 5 a. (10 points).}
+Model the following hysteresis-based switching system as a hybrid automaton.
+The automaton has (at least) $n$ continuous variables $x_1,\ldots,x_n$ and a discrete variable called $\mathit{m}$ which takes the values in the set
+$\mathit{mode_1},\ldots,\mathit{mode}_n$.
+We say that the system is in mode $i$, when $m = \mathit{mode}_i$.
+There are $n \times (n-1)$ actions $\auto{switch}(i,j)$,  where $i,j \in [n]$ and $j \neq i$.
+%
+When in mode $i$, $\dot{x}_i = a_i x_i$, where $a_i >0$ is a positive constant and $\dot{x}_j = 0$ for all $j \neq i$.
+When in mode $i$, for any $j \neq i$, if $x_i$ becomes greater than $(1+h) x_j$ then the automaton switches to mode $j$, otherwise it continues in mode $i$.
+Here $h > 0$ is a parameter of the model. Is your model deterministic?
+
+Ans.
+
+The model is non-deterministic as multiple actions can be enabled at same time.
+Consider an automaton with 3 modes, all $a_i = 1$, and $h = 1$,
+the automaton is as following implementation.
+
+\begin{lstlisting}[language=ioaLang, mathescape=true]
+automaton Switch()
+    variables
+        internal $x_1$:Real, $x_2$:Real, $x_3$:Real, $m$:$\{\mathit{mode_1},\mathit{mode}_2,\mathit{mode}_3\}$
+    signature
+        internal switch(1, 2); internal switch(2, 1); internal switch(3, 1);
+        internal switch(1, 3); internal switch(2, 3); internal switch(3, 2);
+    transitions
+        internal switch(1, 2) pre $m=\mathit{mode_1} \land x_1 > 2 x_2$ eff $m := \mathit{mode}_2$
+        internal switch(1, 2) pre $m=\mathit{mode_1} \land x_1 > 2 x_3$ eff $m := \mathit{mode}_3$
+        internal switch(2, 1) pre $m=\mathit{mode_2} \land x_2 > 2 x_1$ eff $m := \mathit{mode}_1$
+        internal switch(2, 3) pre $m=\mathit{mode_2} \land x_2 > 2 x_3$ eff $m := \mathit{mode}_3$
+        internal switch(3, 1) pre $m=\mathit{mode_3} \land x_3 > 2 x_1$ eff $m := \mathit{mode}_1$
+        internal switch(3, 2) pre $m=\mathit{mode_3} \land x_3 > 2 x_2$ eff $m := \mathit{mode}_2$
+
+    trajectories
+        evolve d$(x_1) = x_1$; d$(x_2) = 0$; d$(x_3) = 0$ invariant $m = \mathit{mode}_1\land x_1 \leq 2 x_2 \land x_1 \leq 2 x_3$
+        evolve d$(x_1) = 0$; d$(x_2) = x_2$; d$(x_3) = 0$ invariant $m = \mathit{mode}_2\land x_2 \leq 2 x_1 \land x_2 \leq 2 x_3$
+        evolve d$(x_1) = 0$; d$(x_2) = 0$; d$(x_3) = x_3$ invariant $m = \mathit{mode}_3\land x_3 \leq 2 x_1 \land x_3 \leq 2 x_2$
+\end{lstlisting}
+
+Given initial state $(x_1,x_2,x_3,m) = (1, 1, 1, \mathit{mode}_1)$,
+the state is updated until $x_1 > 2$.
+Here, both actions \texttt{switch(1,2)} and \texttt{switch(1,3)} are enabled,
+so both transitions can take place.
+That is, the automaton is non-deterministic.
+
+\paragraph{Problem 5 b (20 points).}
+Write a program (in any language) to generate simulations of the above automaton for given values of the parameters $\{a_i\}$ and $h$.
+
+First, set the initial values of the variables.
+The basic idea for simulating the system is to write a big {\bf For\/}-loop in which each iteration advances time by some small amount $\delta >0$ and updates the current state of the system.
+So, in the body of the loop you will first compute, for each $i$, $\tau.lstate \lceil x_i$ as a function of  $\tau.fstate \lceil x_i, \tau.fstate \lceil m$ and $\delta$.
+Then check if $\tau.\lstate$ satisfies any of the switching conditions and in that case update $m$. Ignore the fact that switches may actually occur sometime before the $\delta$ time interval.
+ 
+With start state $x_i = 0$, for each $i$, and $m = 0$, and plot two executions of the system with two different values of $h$.
+
+Ans.
+
+Notice that, for invariant $\dot{x}_i(t) = a_i x_i(t)$ and initial value $x_i(0) = 0$,
+there are multiple trajectories such as
+\[
+ x_i(t) = 0 \quad or\quad x_i(t) = e^{a_i t} - 1
+\]
+Hence, a trivial execution is $m(t) = 0$ and, for all $i$, $x_i(t) = 0$,
+and no discrete transition occurs.
+
+For another execution, we use $x_i(t) = e^{a_i t} - 1$ as the first trajectory.
+The execution is simulated under 3 modes with  $a_0=1, a_1=1, a_2=1$, and $h=9$.
+The plot is as Figure~\ref{fig:execution}.
+
+\begin{figure}
+    \centering
+    \caption{Colors: \textcolor{blue}{$m$}, \textcolor{OliveGreen}{$x_0$}, \textcolor{red}{$x_1$}, \textcolor{cyan}{$x_2$}}\label{fig:execution}
+    \includegraphics{execution-1}
+\end{figure}
+
+
+\bibliography{refs}
+\bibliographystyle{plain}
+\end{document}

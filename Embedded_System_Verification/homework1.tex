@@ -134,6 +134,12 @@
 \parskip 1.5ex
 %\renewcommand{\baselinestretch}{1.25}
 
+
+\lstset{
+    morekeywords={auto,type,signature,internal, variables,initially,transitions,
+        pre,eff, for, do, od, if, then, fi, mod},
+}
+
 \begin{document}
 
 
@@ -158,11 +164,11 @@ and all three processes satisfy the precondition to make the update.
 
 \begin{itemize}
     \item Process $p_0$ updates first: $x[0] := (x[2] + 1) \mod k $ \\
-          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 1 \land x[1] = 1 \land x[2] = 0$
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \xrightarrow{\textsf{step(0)}} x[0] = 1 \land x[1] = 1 \land x[2] = 0$
     \item Process $p_1$ updates first: $x[1] := x[0]$ \\
-          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 0 \land x[1] = 0 \land x[2] = 0$
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \xrightarrow{\textsf{step(1)}} x[0] = 0 \land x[1] = 0 \land x[2] = 0$
     \item Process $p_2$ updates first: $x[2] := x[1]$\\
-          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \to x[0] = 0 \land x[1] = 1 \land x[2] = 1$
+          $x[0] = 0 \land x[1] = 1 \land x[2] = 0 \xrightarrow{\textsf{step(2)}} x[0] = 0 \land x[1] = 1 \land x[2] = 1$
 \end{itemize}
 
 \item Write the specification of a synchronous version of the same algorithm in which all the processes in the ring update their state simultaneously.
@@ -170,8 +176,35 @@ and all three processes satisfy the precondition to make the update.
 Ans.
 
 
+\begin{lstlisting}[mathescape=true]
+auto SyncDijkstraTR (n:natural, k:natural)
+type indices: [0, ..., n-1]
+type values: [0, ..., k-1]
+signature
+        internal step()
+variables
+        x:[indices->values] initially $\forall i \in $indices, x[$i$] = 0
+transitions
+        internal step()
+        pre true
+        eff
+            y := x[n-1];
+            for i = n-1 .. 0 do
+                if (i $\neq$ 0 $\land$ x[i] $\neq$ x[i-1]) then
+                    x[i] := x[i-1];
+                fi
+                if (i = 0 $\land$ x[i] = y) then
+                    x[i] := x[i] + 1 mod k;
+                fi
+            od
+\end{lstlisting}
 
 \item Write the execution(s) of the synchronous model from the initial state in Part~(a).
+
+Ans.
+
+$x[0] = 0 \land x[1] = 1 \land x[2] = 0 \xrightarrow{\textsf{step()}} x[0] = 1 \land x[1] = 0 \land x[2] = 1$
+
 \end{enumerate}
 
 \paragraph{Problem 2 (LCR algorithm for Leader election).}
@@ -186,8 +219,83 @@ Each process sends its identifier to its successor around the ring. When a proce
 \item $\mathit{status}$: Takes values in $\{ \mathit{unknown},\mathit{leader}\}$ to indicate that the leader has been elected or not. 
 \end{itemize}
 
-\item Write an execution of the system in which status of at least one process is eventually set to $\mathit{leader\/}$. 
+\newcommand{\uid}[1]{\ensuremath{\mathtt{uid[}#1\mathtt{]}}}
+\newcommand{\stat}[1]{\ensuremath{\mathtt{stat[}#1\mathtt{]}}}
+\newcommand{\send}[1]{\ensuremath{\mathtt{send[}#1\mathtt{]}}}
+\newcommand{\UID} {\ensuremath{\mathtt{uid}}}
+\newcommand{\STAT}{\ensuremath{\mathtt{stat}}}
+\newcommand{\SEND}{\ensuremath{\mathtt{send}}}
+\newcommand{\UNKW}{\ensuremath{\mathtt{unknown}}}
+\newcommand{\LEAD}{\ensuremath{\mathtt{leader}}}
+Ans.
+
+Each process $p_i$ has a unique identifier \texttt{uid[$i$]}.
+Assuming each process $p_i$ receives messages sent by process $p_{i+1}$,
+and process $p_{n-1}$ receives message from $p_0$. 
+Initially. each process sends its \texttt{uid} for election.
+
+\begin{lstlisting}[mathescape=true]
+auto LCR (n:natural)
+type indices:     [0, ..., n-1]
+type identifiers: [null]$\cup\ \mathbb{N}$
+type status:      [unknown, leader]
+signature
+        internal pass(i:indices)
+        internal discard(i:indices)
+        internal lead(i:indices)
+variables
+        uid: [indices->identifiers]
+            initially $\forall i,$ (uid[$i$] $\neq$ null $\land\ \forall j \in $indices, $i\neq j \to$ uid[$i$] $\neq$ uid[$j$])
+        send:[indices->identifiers] initially $\forall i \in $indices, send[$i$] = uid[$i$]
+        stat:[indices->status] initially $\forall i \in $indices, stat[$i$] = unknown
+transitions
+        internal pass(i:indices)
+        pre send[i+1 mod n] $\neq$ null $\land$ uid[i] < send[i+1 mod n]
+        eff
+            send[i] := send[i+1 mod n];
+        
+        internal discard(i:indices)
+        pre send[i+1 mod n] = null $\lor$ uid[i] > send[i+1 mod n]
+        eff
+            send[i] := null;
+
+        internal lead(i:indices)
+        pre send[i+1 mod n] $\neq$ null $\land$ uid[i] = send[i+1 mod n]
+        eff 
+            stat[i] := leader;
+            send[i] := null;
+\end{lstlisting}
+
+\item Write an execution of the system in which status of at least one process is eventually set to $\mathit{leader}$.
+
+Ans.
+
+Let $n=3$ and start with an initial state $\uid{0}=1 \land \uid{1}=5 \land \uid{2}=3$.
+For simplicity, we denote it as $\UID=(1,5,3)$.
+We use the same notation for \UID, \SEND, and \STAT.
+Following the initialization, we know $\SEND=\UID=(1,5,3)$ and $\STAT=(\UNKW,\UNKW,\UNKW)$
+
+An execution to a status of at least one process is set to $\mathit{leader}$.
+\[
+\begin{array}{rl}
+	                               & \UID=(1,5,3) \land \SEND=(1,5,3) \land \STAT=(\UNKW,\UNKW,\UNKW) \\
+	\xrightarrow{\textsf{pass(0)}} & \UID=(1,5,3) \land \SEND=(5,5,3) \land \STAT=(\UNKW,\UNKW,\UNKW) \\
+    \xrightarrow{\textsf{pass(2)}} & \UID=(1,5,3) \land \SEND=(5,5,5) \land \STAT=(\UNKW,\UNKW,\UNKW) \\
+    \xrightarrow{\textsf{lead(1)}} & \UID=(1,5,3) \land \SEND=(5,null,5) \land \STAT=(\UNKW,\LEAD,\UNKW) \\
+\end{array}
+\]
+
+In this case, process 1 is elected as the leader.
+
 \item Write two properties that you think might be invariants of this system.
+
+Ans.
+\begin{itemize}
+    \item Each process $p_i$ always sends either null or some identifier no less than $\uid{i}$.
+        \[\forall i, \send{i} = \mathtt{null} \lor \send{i} \geq \uid{i} \]
+    \item At most one process can be the leader.
+        \[\forall i,j, (\stat{i} = \mathtt{leader} \land \stat{j} = \mathtt{leader}) \to i=j,  \]
+\end{itemize}
 \end{enumerate}
 
 
@@ -202,6 +310,49 @@ this as
 Prove that $\mbox{Mult} \in \mbox{L}$ by giving the pseudo-code of an
 algorithm and analyzing its memory requirements in terms of the number
 of (additional, non-input) bits it stores.
+
+Ans.
+
+\newcommand{\len}{\ensuremath{\mathtt{len}}}
+
+Let $m[j]$ be the $j$-th least significant (right-most) bit in the binary form
+and $\len(m) = \lceil \lg m \rceil$ be the number of bits for $m$,
+the algorithm below checks if the $i$-th bit of $m \times n$ is 1.
+
+\begin{lstlisting}[language=Python, mathescape=true]
+def Multiply(m, n, i):
+    if i > len(m)+len(n):
+        return false;
+    ''' ret is the result of m $\times$ n at the $j_r$-th bit '''
+    carry := 0;
+    for $j_r$ := 1 .. len(m)+len(n)-1:
+        for $j_n$ := max(1, $j_r$ - len(m) + 1) .. min($j_r$, len(n)):
+            $j_m$ := $j_r$ - $j_n$ + 1;
+            carry := carry + (m[$j_m$] * n[$j_n$]);
+        ret := carry % 2;
+        if $j_r$ == i:
+            return (ret == 1);
+        carry := carry / 2;
+    ret := carry % 2; 
+    return (ret == 1);
+\end{lstlisting}
+
+The space usage $N$ of input $(m, n, i)$ should be the number of bits for these 3 variables.
+That is, $N=\len(m) + \len(n) +\len(i)$.
+
+Consider all operations in the algorithm including $+,-,/2,\%2,>,==,$ \texttt{max,min},
+all of them can be achieved in constant space.
+Therefore, we only have to discuss the local variables we used.
+For index variable $j_r, j_m, j_n$, the space usage should be O($\len(\len(m)+\len(n))$) = O($\len(N)$)
+because their value never exceed \texttt{len($m$)+len($n$)}$ < N$.
+For \texttt{ret}, it's obvious it only use 1 bit as its value is either 1 or 0.
+For \texttt{carry}, an upper bound for its value is $(\len(m)+\len(n)-1)*(\len(n)) < N^2$
+as its the upper bound of the nested for-loop iterations,
+and \texttt{carry} only increases at most 1 in each iteration.
+Hence, the space usage of \texttt{carry} is O($\len(N^2)$) = O($2*\len(N)$) = O($\len(N)$).
+
+To summarize, the total space usage is O($\len(N)$) = O($\log N$);
+therefore, the language $\mbox{Mult} \in \mbox{L}$.
 
 \paragraph{Problem 4 (2SAT).}
 Recall the following definitions for Boolean formulas. A variable $x$
@@ -224,10 +375,32 @@ $\ell_1,\ell_2$, there is an edge $(\ell_1,\ell_2)$ in $G$ iff $(\neg
 $\neg \neg x = x$.
 \begin{enumerate}
 \item Prove that $\varphi$ is unsatisfiable if and only if there is a
-  variable $x$ such that there is a directed path from $x$ to $\neg x$
-  in $G$
+  variable $x$ such that there is a directed cycle from $x$ to $\neg x$ and 
+  back to $x$ in $G$
+
+Ans.
+
+Following the definition of implication graph,
+given a path $\ell_1, \ell_2 \dotsc \ell_n$ in $G$,
+we know that $(\neg \ell_1 \vee \ell_2)\dots(\neg \ell_{n-1} \vee \ell_n)$ are clauses in $\varphi$.
+By repeatedly applying resolution on $(\neg \ell_1 \vee \ell_2)\dots(\neg \ell_{n-1} \vee \ell_n)$,
+we can add clause $(\neg \ell_1 \vee \ell_n)$ to $\varphi$ while preserving the (un-)satisfiability.
+
+Therefore, if there is a path from node $x$ to $\neg x$,
+we can add clause $(\neg x \vee \neg x)$ to $\varphi$.
+Similarly we add $(x \vee x)$ if there is a path from node $\neg x$ to $x$.
+Since $(x \vee x)(\neg x \vee \neg x)$ is equivalent to false,
+this implies $\varphi$ is unsatisfiable. 
+
 \item Based on the previous part, what can you say about the
-  complexity of checking if a 2CNF formula is unsatisfiable? 
+  complexity of checking if a 2CNF formula is unsatisfiable?
+  
+Ans.
+
+The time as well as space complexity to translate $\varphi$ to implication graph is linear to the number of variables and clauses.
+To check if there is a cycle contains both node $x$ and node $\neg x$ in $G$, we can find Strongly Connected Components in $G$.
+The complexity for computing SCC is linear to number of nodes plus edges.
+Hence, the total time complexity is $O(|X|+|C|)$ where $|X|$ and $|C|$ is the number of variables and clauses in $\varphi$.
 \end{enumerate}
 
 \paragraph{Bonus Problem 5 (Invariant Checking of Boolean Automata).}
@@ -243,15 +416,39 @@ $I$ is {\bf not} an invariant of ${\cal A}$.
   pseudo-code of an algorithm. \emph{Hint:} Recall that since
   $\mbox{NPSPACE} = \mbox{PSPACE}$, your algorithm can be
   non-deterministic.
+  
+Ans.
+
+Following the symbolic reachability algorithm introduced in lecture,
+we can modify the algorithm and reduce the problem to quantified Boolean satisfiability (QBF) which is a well-known PSPACE-complete problem.
+
+\begin{lstlisting}[language=Python, mathescape=true]
+def Unsafe(${\cal A}, I$):
+    R := Reach(${\cal A}$);
+    return checkQSAT($\neg I\ \land$ R) = SAT;
+def Post(S, $(X, A, {\cal D})$):
+    PostS = false;
+    for $a$ in $A$:
+        NextS := $(\exists X,$ S$\ \land\ {\cal D}(a))[X'\mapsto X]$
+        PostS := PostS $\lor$ NextS; 
+    return PostS; 
+
+def Reach($(X,\Theta,A,{\cal D})$):
+    S := false;
+    NewS := $\Theta$ $\lor$ Post(S,$(X,A,{\cal D})$);
+    while checkQSAT(S $\not\leftrightarrow$ NewS) = SAT:
+        S := NewS;
+        NewS := $\Theta$ $\lor$ Post(S,$(X,A,{\cal D})$);
+    return S;
+\end{lstlisting}
+
 \item Prove that $\mathsf{Unsafe}$ is $\mbox{PSPACE}$-hard as
   follows. Let $L \in \mbox{PSPACE}$. Without loss of generality,
   assume that $M$ is 1-worktape Turing machine that solves $L$ using
   at most $p(n)$ worktape cells on an input of length $n$; here $p(n)$
   is assumed to be a polynomial. Show that $L \leq_{{\mbox L}}
-  \mathsf{Unsafe}$. 
+  \mathsf{Unsafe}$.
 \end{enumerate}
-
-
 
 %\paragraph($A \leq_L B, B \in C$}
 
