@@ -1,0 +1,240 @@
+\documentclass[11pt]{article}
+
+% This is a package for drawing figures
+% it is a part of standard latex 2e distribution
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usepackage{fullpage}
+
+
+\usepackage{palatino}
+\RequirePackage{ifthen}
+\usepackage{latexsym}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{xspace}
+\RequirePackage{graphics}
+\usepackage{xcolor}
+
+
+
+
+\RequirePackage{textcomp}
+\usepackage{keyval}
+%\usepackage{listings}
+\usepackage{xspace}
+\usepackage{mathrsfs,paralist, amsmath,amssymb,url,listings,mathrsfs}
+%\usepackage{pvs}
+%\usepackage{supertabular,alltt,latexsym}
+%\usepackage{multicol,multirow,epsfig}
+%\usepackage[dvips, usenames]{color}
+\usepackage{framed}
+\usepackage{lipsum}
+%\usepackage[dvipsnames]{color}
+
+% copyright notice
+
+
+\definecolor{reddish}{rgb}{1,.8,0.8}
+\definecolor{blueish}{rgb}{0.8,.8,1}
+\definecolor{greenish}{rgb}{.8,1,0.8}
+\definecolor{yellowish}{rgb}{1,1,.20}
+
+
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+  pdftitle={Lecture notes for Modeling and Verification of Real-time and Hybrid Systems},
+  pdfauthor={Sayan Mitra},
+  colorlinks=true,
+  citecolor={blue},
+  linkcolor = {blue},
+  pagecolor={blue},
+  backref={true},
+  bookmarks=true,
+  bookmarksopen=false,
+  bookmarksnumbered=true
+}
+
+%\newcommand{\remove}[1]{}
+
+\input{prelude1}
+
+
+\newcommand{\handout}[6]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded System Verification } \hfill #3 }
+      \vspace{4mm}
+      \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+      \vspace{2mm}
+       \hbox to 5.78in { {\Large \hfill #6  \hfill} }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\smallheader}[4]{
+  \noindent
+  \begin{center}
+  \framebox{
+    \vbox{
+      \hbox to 5.78in { {\bf ECE/CS 584: Embedded System Verification } \hfill #2 }
+      \vspace{2mm}
+      \hbox to 5.78in { {\em #3 \hfill #4} }
+    }
+  }
+  \end{center}
+  \vspace*{4mm}
+}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Lecture #1}}
+
+\newcommand{\homework}[2]{\smallheader{#1}{Fall 2014}{Homework #1}{#2}}
+\newcommand{\solution}[2]{\smallheader{#1}{Fall 2014}{Solutions for Homework #1}{#2}}
+
+
+\newcommand{\interestingfact}[1]{
+	\noindent
+	\begin{center}
+	\colorbox{yellowish}{
+	\parbox{11.5cm}{{\bf Factoid.} #1}
+	}
+	\end{center}
+	\vspace*{4mm}
+}
+%\definecolor{MyGray}{rgb}{0.96,0.97,0.98}
+\makeatletter\newenvironment{color1box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{reddish}{\usebox{\@tempboxa}}
+}\makeatother
+
+
+\makeatletter\newenvironment{color3box}{%
+   \begin{lrbox}{\@tempboxa}\begin{minipage}{\columnwidth}}{\end{minipage}\end{lrbox}%
+   \colorbox{blueish}{\usebox{\@tempboxa}}
+}\makeatother
+
+% 1-inch margins, from fullpage.sty by H.Partl, Version 2, Dec. 15, 1988.
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+%\renewcommand{\baselinestretch}{1.25}
+
+\begin{document}
+
+
+\homework{4--- Due on May $4^{th}$, 2016}{Chiao Hsieh}
+
+
+
+
+\paragraph{Problem 1 (15 points).}
+In the following hybrid automaton (switched system) $\A$,
+$a_1, a_2, c_1 \in \plreals$ and $b_1, b_2 \in \reals$
+are constant parameters of the model.
+
+\paragraph{(a)} 
+For $c_2 > 0$ constant show that $\A$ is globally exponentially stable under arbitrary switching.
+
+Ans. \textcolor{red}{Skipped.}
+
+
+\vspace{-0.2cm}
+\paragraph{(b)} 
+For any arbitrary, possibly negative, $c_2$, show that  $\A$ is globally exponentially stable under additional assumption about the switching speed (dwell time or average dwell time).
+
+Ans. \textcolor{red}{Skipped.}
+
+\paragraph{Problem 2 (15 points).}
+\paragraph{(a)} 
+Convert the following  initialized rectangular hybrid automaton (IRHA)
+to a timed automaton\footnote{clocks may be initialized to constant intervals.}.
+The first expression on an arrow is the precondition/guard and the second one is the effect/reset.
+
+Ans. \textcolor{red}{Skipped.}
+
+\paragraph{(b)}
+Plot an execution of the original IRHA and corresponding execution of the timed automaton.
+
+Ans. \textcolor{red}{Skipped.}
+
+\setcounter{section}{3}
+
+\paragraph{Problem 3 (70 points).}
+According to a NIST study, 24\% of all medical device recalls are owing to software design errors. Increasingly complex medical devices and software are being designed with new, smart features. Yet, the available testing approaches are very limited. Testing a medical device requires one to compose the device model with a model of the relevant physiology. In this problem, you will use the C2E2 verification tool to analyze a simple model of a pacemaker interacting with cardiac tissue. 
+
+%\section{Introduction on C2E2}
+
+\subsection{Problem overview}
+
+For this problem, create a model involving three cardiac oscillators, and then verify properties with different parameter values in the created model.
+
+\begin{table}[h]
+	\small
+	\centering
+	\caption{Model parameters}   
+	\begin{tabular}{|c | l | c |}
+		\hline
+		parameter & description & possible range \\
+		\hline
+		$c_1$ & duty cycle of pacemaker & $[2,10]$ \\
+		$c_2$ & stimulus strength  & $[5,10]$ \\
+		$\alpha_1$ & connection strength of stimulated cell & $[5,15]$ \\
+		$\alpha_2$ & connection strength of other cells & $[3,13]$ \\
+		\hline
+	\end{tabular}%
+	\label{tab:parameters}%
+\end{table}%
+
+\subsection{Parameters and properties}
+Choose the parameter values from Table \ref{tab:parameters} such that the following properties are satisfied. That is system is safe with respect to the initial set and the unsafe set.
+\begin{enumerate}
+	\item Initial set: 	{\bf stimOn\_cardiac:u1$>=$0.0\&\&u1$<=$0.1\&\&v1$>=$0\&\&v1$<=$0\&\&u2$>=$0.\&\& \\ 
+		u2$<=$0.1\&\&v2$>=$0\&\&v2$<=$0\&\&u3$>=$0.0\&\&u3$<=$0.1\&\&v3$>=$0\&\&v3$<=$0\&\& \\
+		stim\_local$>=$10\&\&stim\_local$<=$10\&\&t$==$0} \\
+	Unsafe set: 
+	{\bf u1$>=$2.0} is {\bf safe}\\
+	Time bound: $50$ seconds. \\
+	Verification should complete within 5 mins.
+    
+    Ans. $c_1 = 6.0, c_2 = 5.0, \alpha_1 = 10.0, \alpha_2 = 8.0$
+    
+	\item Initial set: same as above. \\
+	Unsafe set {\bf u2$>=$1.1} \\ 
+	Time bound: $50$ seconds \\
+	Verification should complete within 5 mins.
+    
+    Ans. $c_1 = 6.0, c_2 = 5.0, \alpha_1 = 10.0, \alpha_2 = 8.0$
+
+\end{enumerate}
+
+Please include the properties in the {\tt .hyxml} file that contains your solution. Remember to change the time horizon from $10$ to $50$ when checking the properties.
+
+\subsection{Bonus Question}
+Design a model for pacemaker with five cardiac cells as in Figure. Decide parameters such that the following property is satisfied.
+
+Initial set: {\bf stimOn\_cardiac:u1$>=$0.0\&\&u1$<=$0.01\&\&v1$>=$0\&\&v1$<=$0\&\&u2$>=$0.0\&\&u2$<=$0.0 \\ 
+	\&\&v2$>=$0\&\&v2$<=$0\&\&u3$>=$0.0\&\&u3$<=$0.0\&\&v3$>=$0\&\&v3$<=$0\&\&u4$>=$0.0\&\&u4$<=$0.0 \\ \&\&v4$>=$0\&\&v4$<=$0\&\&u5$>=$0.0\&\&u5$<=$0.0\&\&v5$>=$0\&\&v5$<=$0\&\& 
+	stim\_local$>=$10 \\ \&\&stim\_local$<=$10\&\&t$==$0}
+with Unsafe set 
+{\bf u1$>=$2.0} is {\bf safe} within $50$ seconds, and can be verified within 15 mins.
+
+Ans.
+
+    Ans. $c_1 = 6.0, c_2 = 5.0, \alpha_1 = 10.0, \alpha_2 = 8.0, \alpha_3 = 9.0$
+ 
+\end{document}

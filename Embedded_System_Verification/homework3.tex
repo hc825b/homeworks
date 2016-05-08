@@ -154,15 +154,33 @@ Consider a linear dynamical system $\dot{x} = Ax$, where $x \in \reals^n$ and $A
 
 Ans.
 
-Let $\A = (X, \Theta, D)$ be the time-abstract automaton for the linear dynamical system defined by $\dot{x} = Ax$.
-
-
+Since there is no discrete transitions in the system,
+the time-abstract automaton for the system is essentially composed of all states reachable by the continuous transitions.
+Let $\A = (x, \Theta, D)$ be a time-abstract automaton for the linear dynamical system defined by $\dot{x} = Ax$.
+The initial states $\Theta$ should be the same as the initial states of the given dynamical system.
+The discrete transitions $D$ is defined as
+\[
+D := \{(x_1, x_2) \mid \exists x_0, t_1, t_2(x_0 \in \Theta \land 0 \leq t_1 < t_2 \land x_1 = e^{A t_1}x_0 \land x_2 = e^{A t_2}x_0 )\}
+\]
 
 \item Suppose the set of initial states $\Theta$ is a convex polytope, that is, a set described by a set of linear inequalities.
-For any time $t \geq 0$, show that the states reached by the system at time $t$,  $\mathit{Reach}(t)$, is also a  polytope. 
+For any time $t \geq 0$, show that the states reached by the system at time $t$, $\mathit{Reach}(t)$, is also a polytope.
+ 
+Ans.
+
+Assuming $\Theta$ is describe by a set of linear inequalities $B_0x_0 \leq b_0$ where $B_0$ is an $m \times n$ matrix and $b_0$ is an $m \times 1$ vector,
+we prove that there exists another $B_1$ and $b_1$ s.t. $B_1x_1 \leq b_1$ for any reachable state $x_1 = e^{At} x_0$.
+It leads to the result that $\mathit{Reach}(t)$ is also a convex polytope.
+
+The prove is simple. Since the $n \times n$ matrix $e^{A}$ is always invertible and the inverse is $e^{-A}$,
+we can derive $e^{-At}x_1 = e^{-At}e^{At}x_0 = x_0$. Therefore,
+\[
+ B_0x_0 \leq b_0 \implies B_0 (e^{-At} x_1) \leq b_0 \implies (B_0 e^{-At}) x_1 \leq b_0
+\]
+We can always find $B_1 = B_0 e^{-At}$ and $b_1 = b_0$ that shows $\mathit{Reach}(t)$ is also a convex polytope.
+
 \end{enumerate}
 
- 
  \paragraph{Problem 2 (20 points).} 
  Consider the billiard system with a single ball $\A$ and the satellite system $\B$ from HW2. Show that under appropriate assumptions, and variable and action naming, $\B$ is an I/O abstraction for $\A$. There some flexibility in how you set-up the problem. To make it interesting you should assume that both the velocity components of the billiard ball are non-zero ($v_x, v_y \neq 0$). The relevant part of the descriptions of the two systems are given below:
  
@@ -175,20 +193,94 @@ For any time $t \geq 0$, show that the states reached by the system at time $t$,
  
  Ans.
  
-Let automaton of billiard system $\A = (\{v_x, v_y\}, \Theta_1, \{\act{jump}\}, D_1, \T_1)$ where
+Let the automaton of billiard system $\A = (X_1, \Theta_1, \{\act{jump}\}, D_1, \T_1)$ where
 \[
 \begin{array}{rcl}
-	\Theta_1 & = & (v_x \neq 0 \land v_y \neq 0) \\
-	     D_1 & = & ()                            \\
-	    \T_1 & = & 
+	     X_1 & := & \{x, y, v_x, v_y\} \text{ where } \type{x} \in [0, a], \type{y} \in [0, b], \type{v_x}, \type{v_y} \in \reals \\
+	\Theta_1 & := & (v_x \neq 0 \land v_y \neq 0)                                                                                 \\
+	     D_1 & := & \{(0, y, v_x, v_y) \arrow{\act{jump}} (0, y, -v_x, v_y) \mid v_x < 0\}                               \\
+&& \cup         \{(a, y, v_x, v_y) \arrow{\act{jump}} (a, y, -v_x, v_y) \mid v_x > 0\}                               \\
+	         &    & \cup \{(x, 0, v_x, v_y) \arrow{\act{jump}} (x, 0, v_x, -v_y) \mid v_y < 0\}                          \\
+ 	         &    & \cup \{(x, b, v_x, v_y) \arrow{\act{jump}} (x, b, v_x, -v_y) \mid v_y > 0\}                          \\
 \end{array}
 \]
+Trajectory $\T_1$ is defined by $\dot{x} = v_x, \dot{y} = v_y, \dot{v_x} = 0, \dot{v_y} = 0$ with the invariant $0 \leq x \leq a$ and $0 \leq y \leq b$.
 
-$\B = (\{\omega_1, \omega_2\}, \Theta_2, \{\act{jump}\}, D_2, \T_2 \})$
+The automaton of satellite system is defined as $\B = (X_2, \Theta_2, \{\act{jump}\}, D_2, \T_2 \})$.
+$x$ denotes the position of the first satellite, and $y$ denotes the position of the second one.
 \[
-\Theta_2 = (\omega_1 \neq 0 \land \omega_2 \neq 0)
+\begin{array}{rcl}
+	     X_2 & := & \{x, y, \omega_1, \omega_2\} \text{ where } \type{x}, \type{y} \in [0, 2\pi], \type{\omega_1}, \type{\omega_2} \in \reals \\
+	\Theta_2 & := & (\omega_1 \neq 0 \land \omega_2 \neq 0)                                                                                                   \\
+	     D_2 & := & \{(0, y, \omega_1, \omega_2) \arrow{\act{jump}} (2\pi, y, \omega_1, \omega_2) | \omega_1 < 0\}                                    \\
+	         &    & \cup \{(2\pi, y, \omega_1, \omega_2) \arrow{\act{jump}} (0, y, \omega_1, \omega_2) | \omega_1 > 0\}                               \\
+	         &    & \cup \{(x, 0, \omega_1, \omega_2) \arrow{\act{jump}} (x, 2\pi, \omega_1, \omega_2) | \omega_2 < 0\}                               \\
+	         &    & \cup \{(x, 2\pi, \omega_1, \omega_2) \arrow{\act{jump}} (x, 0, \omega_1, \omega_2) | \omega_2 > 0\}
+\end{array}
 \]
- 
+Trajectory $\T_2$ is defined by $\dot{x} = \omega_1, \dot{y} = \omega_2, \dot{\omega_1} = 0, \dot{\omega_2} = 0$  with invariant $0 \leq x, y \leq 2\pi$.
+
+To simplify our problem, we prove $\B$ is an I/O abstraction for $\A$ when $a = 2\pi$ and $b = 2\pi$.
+Giving a forward simulation relation $\R \subseteq val(X_1) \times val(X_2)$ which is defined as
+\[
+\begin{array}{rcl}
+	 \R & := & R_1 \cup R_2 \cup R_3                                                                              \\
+	R_1 & := & \{((x, y, v_x, v_y), (x, y, \omega_1, \omega_2)) \mid (v_x = \omega_1) \land (v_y = \omega_2)\}    \\
+	R_2 & := & \{((x_1, y, v_x, v_y), (x_2, y, \omega_1, \omega_2)) \mid (v_x = -\omega_1) \land (v_y = \omega_2) \\
+	    &    & \land ((x_1 = 0 \land x_2 = 2\pi) \lor (x_1 = 2\pi \land x_2 = 0))\}                               \\
+	R_3 & := & \{((x, y_1, v_x, v_y), (x, y_2, \omega_1, \omega_2)) \mid (v_x = \omega_1) \land (v_y = -\omega_2) \\
+	    &    & \land ((y_1 = 0 \land y_2 = 2\pi) \lor (y_1 = 2\pi \land y_2 = 0))\}
+\end{array}
+\]
+We argue that $\R$ is a simulation relation following the three parts described in the lecture.
+\begin{enumerate}
+\item $\forall \vx_1(\vx_1 \in \Theta_1 \to \exists \vx_2(\vx_2 \in \Theta_2 \land \vx_1 \R \vx_2))$
+
+It's easy to show that, for any initial state $\vx_1 = (x, y, v_x, v_y) \in \Theta_1$,
+we can found $\vx_2 = (x, y, \omega_1, \omega_2) \in \Theta_2$ with $\omega_1 = v_x$ and $\omega_2 = v_y$
+so that $\vx_1 \R \vx_2$.
+
+\item $\forall a,\vx_1,\vx_1',\vx_2(((\vx_1 \sarrow{\A}{a} \vx_1') \land \vx_1 \R \vx_2) \to \exists \beta, \vx_2'(\vx_2  \sarrow{\B}{\beta} \vx_2' \land \vx_1' \R \vx_2' \land trace(\beta) = a))$
+
+Since we have only one action $\act{jump}$ for both automata,
+it is sufficient to consider that, for each discrete transition $\vx_1 \sarrow{\A}{\act{jump}} \vx_1'$ and $\vx_1 \R \vx_2$,
+there is a discrete transition $\vx_2 \sarrow{\B}{\act{jump}} \vx_2'$ such that $\vx_1' \R \vx_2'$.
+
+We first discuss $\vx_1 = (0, y, v_x, v_y) \arrow{\act{jump}} (0, y, -v_x, v_y) = \vx_1'$ when $v_x < 0$ in $\A$,
+and we prove that there always exists $\vx_2'$ s.t. $\vx_2 \sarrow{\B}{\act{jump}} \vx_2'$.
+Following the definition of $R_1$ and $R_2$ in $\R$, $\vx_2$ can be $(0, y, v_x, v_y)$ or $(2\pi, y, -v_x, v_y)$.
+We can derive $\vx_2'$ in $\B$, that is, $(2\pi, y, v_x, v_y)$ or $(0, y, -v_x, v_y)$.
+
+Finally, by $R_2 \subseteq \R$, we know $\vx_1' \R \vx_2'$ for either case of $\vx_2'$.
+We can prove for other discrete transitions of $\A$ in the same manner.
+
+\item $\forall \tau_1, \vx_2(\tau_1.\fstate \R \vx_2 \to 
+       \exists \tau_2(\tau_2.\fstate = \vx_2 \land \tau_1.\lstate \R \tau_2.\lstate \land trace(\tau_1) = trace(\tau_2)))$
+
+To prove this property, we consider the 3 parts of $\R$ separately.
+
+$R_1$ is essentially the identity function when we specify $a = b = 2\pi$
+since the types of variables and trajectories are the same for both automata;
+therefore, for each $\tau_1.\fstate R_1 \vx_2$, there must be $\tau_2 = \tau_1$ with the same first and last state and same trace.
+
+For $R_2$, we have to further consider the following 2 conditions.
+
+(1) $\vx_1 = (0, y, v_x, v_y)$ and $\vx_2 = (2\pi, y, -v_x, v_y)$ with $v_x > 0$.
+
+(2) $\vx_1 = (2\pi, y, v_x, v_y)$ and $\vx_2 = (0, y, -v_x, v_y)$ with $v_x < 0$.
+
+(We don't have to consider $v_x < 0$ for (1) and $v_x > 0$ for (2) since they will enable discrete transition $\act{jump}$.)
+{
+\color{red}
+
+It seems the relation $\R$ is not a simulation relation because the trajectory of $x$ and $y$ does not satisfy part of the property that 
+$\forall \tau_1 \exists \tau_2(\tau_1.\fstate \R \tau_2.\fstate \land \tau_1.\lstate \R \tau_2.\lstate)$.
+because $v_x$ and $\omega_1$ are in opposite directions. 
+}
+\end{enumerate}
+
+
+
  \paragraph{Problem 3. (30 points)} In this problem, you will model the $n$-process distributed token ring system (from last problem set) in PVS  and prove its key invariant. 
 
 \paragraph{Recall the system description.} Consider $n$ processes $0, \ldots, n-1$ connected in a directed ring. 

@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hyxml>
+<hyxml>
+  <automaton name="pacemaker">
+    <variable name="t" scope="LOCAL_DATA" type="Real"/>
+    <variable name="stim_local" scope="LOCAL_DATA" type="Real"/>
+    <variable name="stim" scope="OUTPUT_DATA" type="Real"/>
+    <mode id="0" initial="True" name="stimOn">
+      <dai equation="t_dot = 1.0"/>
+      <dai equation="stim_local_dot = 0.0"/>
+      <dai equation="stim=stim_local"/>
+      <invariant equation="t &lt; 5.0"/>
+    </mode>
+    <mode id="1" initial="False" name="stimOff">
+      <dai equation="t_dot = 1.0"/>
+      <dai equation="stim_local_dot = 0.0"/>
+      <dai equation="stim=stim_local"/>
+      <invariant equation="t &lt; 20.0"/>
+    </mode>
+    <transition destination="1" id="2" source="0">
+      <guard equation="t &gt;= 20.0"/>
+      <action equation="stim_local=5.0"/>
+      <action equation="t=0.0"/>
+    </transition>
+    <transition destination="0" id="3" source="1">
+      <guard equation="t &gt;= 6.0"/>
+      <action equation="stim_local=0.0"/>
+      <action equation="t=0.0"/>
+    </transition>
+  </automaton>
+  <automaton name="cells">
+    <variable name="stim" scope="INPUT__DATA" type="Real"/>
+    <variable name="u1" scope="LOCAL_DATA" type="Real"/>
+    <variable name="u2" scope="LOCAL_DATA" type="Real"/>
+    <variable name="u3" scope="LOCAL_DATA" type="Real"/>
+    <variable name="cell_1_v" scope="LOCAL_DATA" type="Real"/>
+    <variable name="cell_2_v" scope="LOCAL_DATA" type="Real"/>
+    <variable name="cell_3_v" scope="LOCAL_DATA" type="Real"/>
+    <mode id="4" initial="True" name="cardiac">
+      <dai equation="u1_dot = -0.9*u1*u1-u1*u1*u1-0.9*u1-cell_1_v+stim+10.0*(u3+u2-2.0*u1)"/>
+      <dai equation="cell_1_v_dot = u1-2.0*cell_1_v"/>
+      <dai equation="u2_dot = -0.9*u2*u2-u2*u2*u2-0.9*u2-cell_2_v+8.0*(u1+u3-2.0*u2)"/>
+      <dai equation="cell_2_v_dot = u2-2.0*cell_2_v"/>
+      <dai equation="u3_dot = -0.9*u3*u3-u3*u3*u3-0.9*u3-cell_3_v+8.0*(u2+u1-2.0*u3)"/>
+      <dai equation="cell_3_v_dot = u3-2.0*cell_3_v"/>
+    </mode>
+  </automaton>
+  <composition automata="pacemaker;cells"/>
+  <property initialSet="stimOn:u1 &gt;= 0.0 &amp;&amp; u1 &lt;= 0.1 &amp;&amp; cell_1_v &gt;= 0.0 &amp;&amp; cell_1_v &lt;= 0.0 &amp;&amp; u2 &gt;= 0.0 &amp;&amp; u2 &lt;= 0.1 &amp;&amp; cell_2_v &gt;= 0.0 &amp;&amp; cell_2_v &lt;= 0.0 &amp;&amp; u3 &gt;= 0.0 &amp;&amp; u3 &lt;= 0.1 &amp;&amp; cell_3_v &gt;= 0.0 &amp;&amp; cell_3_v &lt;= 0.0 &amp;&amp; stim_local &gt;= 10.0 &amp;&amp; stim_local &lt;= 10.0 &amp;&amp; t == 0.0" name="P1" type="0" unsafeSet="u1 &gt;= 2.0">
+  </property>
+  <property initialSet="stimOn:u1 &gt;= 0.0 &amp;&amp; u1 &lt;= 0.1 &amp;&amp; cell_1_v &gt;= 0.0 &amp;&amp; cell_1_v &lt;= 0.0 &amp;&amp; u2 &gt;= 0.0 &amp;&amp; u2 &lt;= 0.1 &amp;&amp; cell_2_v &gt;= 0.0 &amp;&amp; cell_2_v &lt;= 0.0 &amp;&amp; u3 &gt;= 0.1 &amp;&amp; u3 &lt;= 0.0 &amp;&amp; cell_3_v &gt;= 0.0 &amp;&amp; cell_3_v &lt;= 0.0 &amp;&amp; stim_local &gt;= 10.0 &amp;&amp; stim_local &lt;= 10.0 &amp;&amp; t == 0.0" name="P2" type="0" unsafeSet="u2 &gt;= 1.1"/>
+</hyxml>
