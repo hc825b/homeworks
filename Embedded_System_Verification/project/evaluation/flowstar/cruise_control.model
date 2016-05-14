@@ -1,0 +1,288 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ../../evaluation/models/subjects-linear/cruise_control/cruise_control.xml
+# Command Line arguments: -debug -flowstar ../../evaluation/models/subjects-linear/cruise_control/cruise_control.xml ../../evaluation/models/subjects-linear/cruise_control/cruise_control.cfg -o cruise_control.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var v, t, x
+
+  setting
+  {
+    fixed steps 0.1
+    time 100
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon t,v
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 10
+    print on
+  }
+
+  modes
+  {
+    q1
+    {
+      nonpoly ode
+      {
+        v' = -t - 2.5
+        x' = 0
+        t' = 1
+      }
+      inv
+      {
+        # Original invariant: v >= 15 & v <= 40 & t >= 0 & t <= 2.5
+
+        v >= 15   v <= 40   t >= 0   t <= 2.5
+      }
+    }
+
+    q2
+    {
+      nonpoly ode
+      {
+        v' = -5
+        x' = 0
+        t' = 0
+      }
+      inv
+      {
+        # Original invariant: v >= 15 & v <= 40
+
+        v >= 15   v <= 40
+      }
+    }
+
+    q3
+    {
+      nonpoly ode
+      {
+        v' = -2.5
+        x' = 0
+        t' = 0
+      }
+      inv
+      {
+        # Original invariant: v >= 5 & v <= 20
+
+        v >= 5   v <= 20
+      }
+    }
+
+    q4
+    {
+      nonpoly ode
+      {
+        v' = -t - 1.2
+        x' = 0
+        t' = 0.5
+      }
+      inv
+      {
+        # Original invariant: v >= 5 & v <= 20 & t >= 0 & t <= 1.3
+
+        v >= 5   v <= 20   t >= 0   t <= 1.3
+      }
+    }
+
+    q5
+    {
+      nonpoly ode
+      {
+        v' = -0.001 * x - 0.052 * v
+        x' = v
+        t' = 0
+      }
+      inv
+      {
+        # Original invariant: v >= -15 & v <= 15 & x >= -500 & x <= 500
+
+        v >= -15   v <= 15   x >= -500   x <= 500
+      }
+    }
+
+    q6
+    {
+      nonpoly ode
+      {
+        v' = 1.5
+        x' = 0
+        t' = 0
+      }
+      inv
+      {
+        # Original invariant: v >= -20 & v <= -5
+
+        v >= -20   v <= -5
+      }
+    }
+  }
+
+  jumps
+  {
+    q1 -> q2
+    guard
+    {
+      # Original guard: t = 2.5 & v >= 15 & v <= 40
+
+      t = 2.5   v >= 15   v <= 40
+    }
+    reset
+    {
+    }
+    parallelotope aggregation {}
+
+    q1 -> q4
+    guard
+    {
+      # Original guard: t >= 0 & t <= 2.5 & v >= 15 & v <= 16
+
+      t >= 0   t <= 2.5   v >= 15   v <= 16
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    q2 -> q4
+    guard
+    {
+      # Original guard: t = 2.5 & v >= 15 & v <= 16
+
+      t = 2.5   v >= 15   v <= 16
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    q3 -> q1
+    guard
+    {
+      # Original guard: t = 1.3 & v >= 18 & v <= 20
+
+      t = 1.3   v >= 18   v <= 20
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    q3 -> q5
+    guard
+    {
+      # Original guard: t = 1.3 & v >= 5 & v <= 11
+
+      t = 1.3   v >= 5   v <= 11
+    }
+    reset
+    {
+      x' := 0
+    }
+    parallelotope aggregation {}
+
+    q4 -> q3
+    guard
+    {
+      # Original guard: t = 1.3 & v >= 5 & v <= 20
+
+      t = 1.3   v >= 5   v <= 20
+    }
+    reset
+    {
+    }
+    parallelotope aggregation {}
+
+    q4 -> q1
+    guard
+    {
+      # Original guard: t >= 0 & t <= 1.3 & v >= 18 & v <= 20
+
+      t >= 0   t <= 1.3   v >= 18   v <= 20
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    q4 -> q5
+    guard
+    {
+      # Original guard: t >= 0 & t <= 1.3 & v >= 5 & v <= 11
+
+      t >= 0   t <= 1.3   v >= 5   v <= 11
+    }
+    reset
+    {
+      x' := 0
+    }
+    parallelotope aggregation {}
+
+    q5 -> q4
+    guard
+    {
+      # Original guard: v >= 13 & v <= 15 & x >= -500 & x >= 500
+
+      v >= 13   v <= 15   x >= -500   x >= 500
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    q5 -> q6
+    guard
+    {
+      # Original guard: v >= -15 & v <= -14 & x >= -500 & x <= 500
+
+      v >= -15   v <= -14   x >= -500   x <= 500
+    }
+    reset
+    {
+    }
+    parallelotope aggregation {}
+
+    q6 -> q5
+    guard
+    {
+      # Original guard: v >= -6 & v <= -5 & x >= -500 & x <= 500
+
+      v >= -6   v <= -5   x >= -500   x <= 500
+    }
+    reset
+    {
+      x' := 0
+    }
+    parallelotope aggregation {}
+  }
+
+  init
+  {
+    q1
+    {
+      t in [0, 2.5]
+      v in [15, 40]
+      x in [0, 0]
+    }
+  }
+}
+
+unsafe set
+{
+  q1 {v <= -2}
+  q2 {v <= -2}
+  q3 {v <= -2}
+  q4 {v <= -2}
+  q5 {v <= -2}
+  q6 {v <= -2}
+}

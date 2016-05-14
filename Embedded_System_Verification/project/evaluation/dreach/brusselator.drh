@@ -1,0 +1,33 @@
+// Created by Hyst v1.2
+// Hybrid Automaton in dReach
+// Converted from file: ../../evaluation/models/subjects-nonlinear/brusselator/brusselator.xml
+// Command Line arguments: -debug -dreach ../../evaluation/models/subjects-nonlinear/brusselator/brusselator.xml ../../evaluation/models/subjects-nonlinear/brusselator/brusselator.cfg -o brusselator.drh
+
+
+//Vars
+[0, 15] time;
+[0, 15] x;
+[0, 15] y;
+
+
+
+// start modes
+// running
+{
+  mode 1;
+  invt:
+  flow:
+    d/dt[x] = 1.0 + x * x * y - 2.5 * x;
+    d/dt[y] = 1.5 * x - x * x * y;
+
+  jump:
+
+  // end running
+}
+// end modes
+
+init:
+@1 (and (and (and (x >= 2.0) (x <= 3.0)) (y >= 1.0)) (y <= 1.5));
+
+goal:
+@1 (x >= 10.0);

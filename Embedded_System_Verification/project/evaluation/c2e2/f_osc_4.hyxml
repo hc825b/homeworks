@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by Hyst v1.2
+Hybrid Automaton in C2E2
+Converted from file: ./subjects/subjects-linear-hybrid/f_osc_4/f_osc_4.xml
+Command Line arguments: -c2e2 ./subjects/subjects-linear-hybrid/f_osc_4/f_osc_4.xml ./subjects/subjects-linear-hybrid/f_osc_4/f_osc_4.cfg -o f_osc_4.hyxml--><hyxml>
+  <automaton name="f_osc_4">
+    <variable name="varx" scope="LOCAL_DATA" type="Real"/>
+    <variable name="y" scope="LOCAL_DATA" type="Real"/>
+    <variable name="x1" scope="LOCAL_DATA" type="Real"/>
+    <variable name="x2" scope="LOCAL_DATA" type="Real"/>
+    <variable name="x3" scope="LOCAL_DATA" type="Real"/>
+    <variable name="z" scope="LOCAL_DATA" type="Real"/>
+    <mode id="0" initial="False" name="np">
+      <dai equation="varx_dot=-2.0 * varx + 1.4"/>
+      <dai equation="y_dot=-y - 0.7"/>
+      <dai equation="x1_dot=5.0 * varx - 5.0 * x1"/>
+      <dai equation="x2_dot=5.0 * x1 - 5.0 * x2"/>
+      <dai equation="x3_dot=5.0 * x2 - 5.0 * x3"/>
+      <dai equation="z_dot=5.0 * x3 - 5.0 * z"/>
+      <invariant equation="varx &lt;= 0.0 &amp;&amp; y + 0.714286 * varx &gt;= 0.0"/>
+    </mode>
+    <mode id="1" initial="True" name="nn">
+      <dai equation="varx_dot=-2.0 * varx - 1.4"/>
+      <dai equation="y_dot=-y + 0.7"/>
+      <dai equation="x1_dot=5.0 * varx - 5.0 * x1"/>
+      <dai equation="x2_dot=5.0 * x1 - 5.0 * x2"/>
+      <dai equation="x3_dot=5.0 * x2 - 5.0 * x3"/>
+      <dai equation="z_dot=5.0 * x3 - 5.0 * z"/>
+      <invariant equation="varx &lt;= 0.0 &amp;&amp; y + 0.714286 * varx &lt;= 0.0"/>
+    </mode>
+    <mode id="2" initial="False" name="pp">
+      <dai equation="varx_dot=-2.0 * varx + 1.4"/>
+      <dai equation="y_dot=-y - 0.7"/>
+      <dai equation="x1_dot=5.0 * varx - 5.0 * x1"/>
+      <dai equation="x2_dot=5.0 * x1 - 5.0 * x2"/>
+      <dai equation="x3_dot=5.0 * x2 - 5.0 * x3"/>
+      <dai equation="z_dot=5.0 * x3 - 5.0 * z"/>
+      <invariant equation="varx &gt;= 0.0 &amp;&amp; y + 0.714286 * varx &gt;= 0.0"/>
+    </mode>
+    <mode id="3" initial="False" name="pn">
+      <dai equation="varx_dot=-2.0 * varx - 1.4"/>
+      <dai equation="y_dot=-y + 0.7"/>
+      <dai equation="x1_dot=5.0 * varx - 5.0 * x1"/>
+      <dai equation="x2_dot=5.0 * x1 - 5.0 * x2"/>
+      <dai equation="x3_dot=5.0 * x2 - 5.0 * x3"/>
+      <dai equation="z_dot=5.0 * x3 - 5.0 * z"/>
+      <invariant equation="varx &gt;= 0.0 &amp;&amp; y + 0.714286 * varx &lt;= 0.0"/>
+    </mode>
+    <transition destination="2" id="1" source="0">
+      <guard equation="varx == 0.0 &amp;&amp; 0.714286 * varx + y &gt;= 0.0"/>
+      <action equation="varx=varx"/>
+      <action equation="y=y"/>
+      <action equation="x1=x1"/>
+      <action equation="x2=x2"/>
+      <action equation="z=z"/>
+      <action equation="x3=x3"/>
+    </transition>
+    <transition destination="0" id="2" source="1">
+      <guard equation="y + 0.714286 * varx == 0.0 &amp;&amp; varx &lt;= 0.0"/>
+      <action equation="varx=varx"/>
+      <action equation="y=y"/>
+      <action equation="x1=x1"/>
+      <action equation="x2=x2"/>
+      <action equation="z=z"/>
+      <action equation="x3=x3"/>
+    </transition>
+    <transition destination="3" id="3" source="2">
+      <guard equation="y + 0.714286 * varx == 0.0 &amp;&amp; varx &gt;= 0.0"/>
+      <action equation="varx=varx"/>
+      <action equation="y=y"/>
+      <action equation="x1=x1"/>
+      <action equation="x2=x2"/>
+      <action equation="z=z"/>
+      <action equation="x3=x3"/>
+    </transition>
+    <transition destination="1" id="4" source="3">
+      <guard equation="varx == 0.0 &amp;&amp; 0.714286 * varx + y &lt;= 0.0"/>
+      <action equation="varx=varx"/>
+      <action equation="y=y"/>
+      <action equation="x1=x1"/>
+      <action equation="x2=x2"/>
+      <action equation="z=z"/>
+      <action equation="x3=x3"/>
+    </transition>
+  </automaton>
+  <composition automata="f_osc_4"/>
+  <property initialSet="nn:0.2 &lt;= varx &amp;&amp; varx &lt;= 0.3 &amp;&amp; -0.1 &lt;= y &amp;&amp; y &lt;= 0.1 &amp;&amp; z == 0.0 &amp;&amp; x1 == 0.0 &amp;&amp; x2 == 0.0 &amp;&amp; x3 == 0.0" name="P1" type="0" unsafeSet="y &gt;= 0.5">
+    <parameters delta="0.0" taylororder="10.0" timehorizon="4.0" timestep="0.1"/>
+  </property>
+</hyxml>
+

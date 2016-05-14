@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by Hyst v1.2
+Hybrid Automaton in C2E2
+Converted from file: ./subjects/subjects-linear-hybrid/bball/bball.xml
+Command Line arguments: -c2e2 ./subjects/subjects-linear-hybrid/bball/bball.xml ./subjects/subjects-linear-hybrid/bball/bball.cfg -o bball.hyxml--><hyxml>
+  <automaton name="bball">
+    <variable name="varx" scope="LOCAL_DATA" type="Real"/>
+    <variable name="varv" scope="LOCAL_DATA" type="Real"/>
+    <mode id="0" initial="True" name="always">
+      <dai equation="varx_dot=varv"/>
+      <dai equation="varv_dot=-9.81"/>
+      <invariant equation="varx &gt;= 0.0"/>
+    </mode>
+    <transition destination="0" id="1" source="0">
+      <guard equation="varx &lt;= 0.0 &amp;&amp; varv &lt;= 0.0"/>
+      <action equation="varv=-0.75 * varv"/>
+    </transition>
+  </automaton>
+  <composition automata="bball"/>
+  <property initialSet="always:10.0 &lt;= varx &amp;&amp; varx &lt;= 10.2 &amp;&amp; varv == 0.0" name="P1" type="0" unsafeSet="varv &gt;= 10.7">
+    <parameters delta="0.0" taylororder="10.0" timehorizon="40.0" timestep="0.1"/>
+  </property>
+</hyxml>
+

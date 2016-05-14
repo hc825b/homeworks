@@ -1,0 +1,59 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ./subjects/subjects-nonlinear-continuous/brusselator/brusselator.xml
+# Command Line arguments: -flowstar ./subjects/subjects-nonlinear-continuous/brusselator/brusselator.xml ./subjects/subjects-nonlinear-continuous/brusselator/brusselator.cfg -o brusselator.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var x, y
+
+  setting
+  {
+    fixed steps 0.03
+    time 15
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon x,y
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 100
+    print on
+  }
+
+  modes
+  {
+    running
+    {
+      nonpoly ode
+      {
+        x' = 1 + x * x * y - 2.5 * x
+        y' = 1.5 * x - x * x * y
+      }
+      inv
+      {
+      }
+    }
+  }
+
+  jumps
+  {
+  }
+
+  init
+  {
+    running
+    {
+      x in [0.8, 1]
+      y in [0, 0.2]
+    }
+  }
+}
+
+unsafe set
+{
+  running {x >= 10}
+}

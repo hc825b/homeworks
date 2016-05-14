@@ -1,0 +1,74 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ../../evaluation/models/subjects-linear/bball/bball.xml
+# Command Line arguments: -debug -flowstar ../../evaluation/models/subjects-linear/bball/bball.xml ../../evaluation/models/subjects-linear/bball/bball.cfg -o bball.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var x, v
+
+  setting
+  {
+    fixed steps 0.1
+    time 40
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon x,v
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 5
+    print on
+  }
+
+  modes
+  {
+    always
+    {
+      nonpoly ode
+      {
+        x' = v
+        v' = -9.81
+      }
+      inv
+      {
+        # Original invariant: x >= 0
+
+        x >= 0
+      }
+    }
+  }
+
+  jumps
+  {
+    always -> always
+    guard
+    {
+      # Original guard: x <= ball_eps & v <= 0
+
+      x <= 0   v <= 0
+    }
+    reset
+    {
+      v' := -0.75 * v
+    }
+    parallelotope aggregation {}
+  }
+
+  init
+  {
+    always
+    {
+      v in [0, 0]
+      x in [10, 10.2]
+    }
+  }
+}
+
+unsafe set
+{
+  always {v >= 10.7}
+}

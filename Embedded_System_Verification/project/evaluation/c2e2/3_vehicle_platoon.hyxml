@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by Hyst v1.2
+Hybrid Automaton in C2E2
+Converted from file: subjects/subjects-linear-hybrid/3_vehicle_platoon/3_vehicle_platoon.xml subjects/subjects-linear-hybrid/3_vehicle_platoon/3_vehicle_platoon.xml
+Command Line arguments: -c2e2 subjects/subjects-linear-hybrid/3_vehicle_platoon/3_vehicle_platoon.xml subjects/subjects-linear-hybrid/3_vehicle_platoon/3_vehicle_platoon.xml -o 3_vehicle_platoon.hyxml--><hyxml>
+  <automaton name="3_vehicle_platoon">
+    <variable name="e1" scope="LOCAL_DATA" type="Real"/>
+    <variable name="e1prime" scope="LOCAL_DATA" type="Real"/>
+    <variable name="a1" scope="LOCAL_DATA" type="Real"/>
+    <variable name="e2" scope="LOCAL_DATA" type="Real"/>
+    <variable name="e2prime" scope="LOCAL_DATA" type="Real"/>
+    <variable name="a2" scope="LOCAL_DATA" type="Real"/>
+    <variable name="e3" scope="LOCAL_DATA" type="Real"/>
+    <variable name="e3prime" scope="LOCAL_DATA" type="Real"/>
+    <variable name="a3" scope="LOCAL_DATA" type="Real"/>
+    <variable name="tclk" scope="LOCAL_DATA" type="Real"/>
+    <mode id="0" initial="True" name="ok">
+      <dai equation="e1_dot=e1prime"/>
+      <dai equation="e1prime_dot=-a1"/>
+      <dai equation="a1_dot=1.605 * e1 + 4.868 * e1prime - 3.5754 * a1 - 0.8198 * e2 + 0.427 * e2prime - 0.045 * a2 - 0.1942 * e3 + 0.3626 * e3prime - 0.0946 * a3"/>
+      <dai equation="e2_dot=e2prime"/>
+      <dai equation="e2prime_dot=a1 - a2"/>
+      <dai equation="a2_dot=0.8718 * e1 + 3.814 * e1prime - 0.0754 * a1 + 1.1936 * e2 + 3.6258 * e2prime - 3.2396 * a2 - 0.595 * e3 + 0.1294 * e3prime - 0.0796 * a3"/>
+      <dai equation="e3_dot=e3prime"/>
+      <dai equation="e3prime_dot=a2 - a3"/>
+      <dai equation="a3_dot=0.7132 * e1 + 3.573 * e1prime - 0.0964 * a1 + 0.8472 * e2 + 3.2568 * e2prime - 0.0876 * a2 + 1.2726 * e3 + 3.072 * e3prime - 3.1356 * a3"/>
+      <dai equation="tclk_dot=1.0"/>
+      <invariant equation="tclk &lt;= 2.0"/>
+    </mode>
+    <mode id="1" initial="False" name="corrupt">
+      <dai equation="e1_dot=e1prime"/>
+      <dai equation="e1prime_dot=-a1"/>
+      <dai equation="a1_dot=1.605 * e1 + 4.868 * e1prime - 3.5754 * a1"/>
+      <dai equation="e2_dot=e2prime"/>
+      <dai equation="e2prime_dot=a1 - a2"/>
+      <dai equation="a2_dot=1.1936 * e2 + 3.6258 * e2prime - 3.2396 * a2"/>
+      <dai equation="e3_dot=e3prime"/>
+      <dai equation="e3prime_dot=a2 - a3"/>
+      <dai equation="a3_dot=0.7132 * e1 + 3.573 * e1prime - 0.0964 * a1 + 0.8472 * e2 + 3.2568 * e2prime - 0.0876 * a2 + 1.2726 * e3 + 3.072 * e3prime - 3.1356 * a3"/>
+      <dai equation="tclk_dot=1.0"/>
+      <invariant equation="tclk &lt;= 2.0"/>
+    </mode>
+    <transition destination="1" id="1" source="0">
+      <guard equation="tclk &gt;= 2.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="0" id="2" source="1">
+      <guard equation="tclk &gt;= 2.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+  </automaton>
+  <composition automata="3_vehicle_platoon"/>
+  <property initialSet="ok:e1 &gt;= 0.9 &amp;&amp; e1 &lt;= 1.1 &amp;&amp; e1prime &gt;= 0.9 &amp;&amp; e1prime &lt;= 1.1 &amp;&amp; a1 &gt;= 0.9 &amp;&amp; a1 &lt;= 1.1 &amp;&amp; e2 &gt;= 0.9 &amp;&amp; e2 &lt;= 1.1 &amp;&amp; e2prime &gt;= 0.9 &amp;&amp; e2prime &lt;= 1.1 &amp;&amp; a2 &gt;= 0.9 &amp;&amp; a2 &lt;= 1.1 &amp;&amp; e3 &gt;= 0.9 &amp;&amp; e3 &lt;= 1.1 &amp;&amp; e3prime &gt;= 0.9 &amp;&amp; e3prime &lt;= 1.1 &amp;&amp; a3 &gt;= 0.9 &amp;&amp; a3 &lt;= 1.1 &amp;&amp; tclk == 0.0" name="P1" type="0" unsafeSet="e1 &gt;= 1.7">
+    <parameters delta="0.0" taylororder="10.0" timehorizon="12.0" timestep="0.1"/>
+  </property>
+</hyxml>
+

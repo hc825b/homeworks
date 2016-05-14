@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by Hyst v1.2
+Hybrid Automaton in C2E2
+Converted from file: ./subjects/subjects-nonlinear-continuous/jetengine/jetengine.xml
+Command Line arguments: -c2e2 ./subjects/subjects-nonlinear-continuous/jetengine/jetengine.xml ./subjects/subjects-nonlinear-continuous/jetengine/jetengine.cfg -o jetengine.hyxml--><hyxml>
+  <automaton name="jetengine">
+    <variable name="varx" scope="LOCAL_DATA" type="Real"/>
+    <variable name="y" scope="LOCAL_DATA" type="Real"/>
+    <mode id="0" initial="True" name="running">
+      <dai equation="varx_dot=-1.0 * y - 1.5 * varx * varx - 0.5 * varx * varx * varx - 0.5"/>
+      <dai equation="y_dot=3.0 * varx - y"/>
+    </mode>
+  </automaton>
+  <composition automata="jetengine"/>
+  <property initialSet="running:varx &gt;= 0.8 &amp;&amp; varx &lt;= 1.2 &amp;&amp; y &gt;= 0.8 &amp;&amp; y &lt;= 1.2" name="P1" type="0" unsafeSet="varx &gt;= 10.0">
+    <parameters delta="0.0" taylororder="10.0" timehorizon="10.0" timestep="0.01"/>
+  </property>
+</hyxml>
+

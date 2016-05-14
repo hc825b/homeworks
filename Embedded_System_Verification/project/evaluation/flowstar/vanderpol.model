@@ -1,0 +1,59 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ./subjects/subjects-nonlinear-continuous/vanderpol/vanderpol.xml
+# Command Line arguments: -flowstar ./subjects/subjects-nonlinear-continuous/vanderpol/vanderpol.xml ./subjects/subjects-nonlinear-continuous/vanderpol/vanderpol.cfg -o vanderpol.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var x, y
+
+  setting
+  {
+    fixed steps 0.01
+    time 20
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon x,y
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 100
+    print on
+  }
+
+  modes
+  {
+    running
+    {
+      nonpoly ode
+      {
+        x' = y
+        y' = (-1 - x * x) * y - x
+      }
+      inv
+      {
+      }
+    }
+  }
+
+  jumps
+  {
+  }
+
+  init
+  {
+    running
+    {
+      x in [1, 1.2]
+      y in [1, 1.2]
+    }
+  }
+}
+
+unsafe set
+{
+  running {x >= 5}
+}

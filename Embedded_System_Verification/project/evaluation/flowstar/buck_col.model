@@ -1,0 +1,59 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.xml
+# Command Line arguments: -debug -flowstar ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.xml ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.cfg -o bind_col.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var x, y
+
+  setting
+  {
+    fixed steps 0.01
+    time 10
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon x,y
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 100
+    print on
+  }
+
+  modes
+  {
+    running
+    {
+      nonpoly ode
+      {
+        x' = y
+        y' = 2 * x - x * x * x - 0.2 * y + 0.1
+      }
+      inv
+      {
+      }
+    }
+  }
+
+  jumps
+  {
+  }
+
+  init
+  {
+    running
+    {
+      x in [-0.5, -0.45]
+      y in [-0.5, -0.45]
+    }
+  }
+}
+
+unsafe set
+{
+  running {x >= 0}
+}

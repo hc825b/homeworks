@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by Hyst v1.2
+Hybrid Automaton in C2E2
+Converted from file: ./subjects/subjects-linear-hybrid/cruise_control/cruise_control.xml
+Command Line arguments: -c2e2 ./subjects/subjects-linear-hybrid/cruise_control/cruise_control.xml ./subjects/subjects-linear-hybrid/cruise_control/cruise_control.cfg -o cruise_control.hyxml--><hyxml>
+  <automaton name="cruise_control">
+    <variable name="varv" scope="LOCAL_DATA" type="Real"/>
+    <variable name="tclk" scope="LOCAL_DATA" type="Real"/>
+    <variable name="varx" scope="LOCAL_DATA" type="Real"/>
+    <mode id="0" initial="True" name="q1">
+      <dai equation="varv_dot=-tclk - 2.5"/>
+      <dai equation="varx_dot=0.0"/>
+      <dai equation="tclk_dot=1.0"/>
+      <invariant equation="varv &gt;= 15.0 &amp;&amp; varv &lt;= 40.0 &amp;&amp; tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 2.5"/>
+    </mode>
+    <mode id="1" initial="False" name="q2">
+      <dai equation="varv_dot=-5.0"/>
+      <dai equation="varx_dot=0.0"/>
+      <dai equation="tclk_dot=0.0"/>
+      <invariant equation="varv &gt;= 15.0 &amp;&amp; varv &lt;= 40.0"/>
+    </mode>
+    <mode id="2" initial="False" name="q3">
+      <dai equation="varv_dot=-2.5"/>
+      <dai equation="varx_dot=0.0"/>
+      <dai equation="tclk_dot=0.0"/>
+      <invariant equation="varv &gt;= 5.0 &amp;&amp; varv &lt;= 20.0"/>
+    </mode>
+    <mode id="3" initial="False" name="q4">
+      <dai equation="varv_dot=-tclk - 1.2"/>
+      <dai equation="varx_dot=0.0"/>
+      <dai equation="tclk_dot=0.5"/>
+      <invariant equation="varv &gt;= 5.0 &amp;&amp; varv &lt;= 20.0 &amp;&amp; tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 1.3"/>
+    </mode>
+    <mode id="4" initial="False" name="q5">
+      <dai equation="varv_dot=-0.001 * varx - 0.052 * varv"/>
+      <dai equation="varx_dot=varv"/>
+      <dai equation="tclk_dot=0.0"/>
+      <invariant equation="varv &gt;= -15.0 &amp;&amp; varv &lt;= 15.0 &amp;&amp; varx &gt;= -500.0 &amp;&amp; varx &lt;= 500.0"/>
+    </mode>
+    <mode id="5" initial="False" name="q6">
+      <dai equation="varv_dot=1.5"/>
+      <dai equation="varx_dot=0.0"/>
+      <dai equation="tclk_dot=0.0"/>
+      <invariant equation="varv &gt;= -20.0 &amp;&amp; varv &lt;= -5.0"/>
+    </mode>
+    <transition destination="1" id="1" source="0">
+      <guard equation="tclk == 2.5 &amp;&amp; varv &gt;= 15.0 &amp;&amp; varv &lt;= 40.0"/>
+    </transition>
+    <transition destination="3" id="2" source="0">
+      <guard equation="tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 2.5 &amp;&amp; varv &gt;= 15.0 &amp;&amp; varv &lt;= 16.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="3" id="3" source="1">
+      <guard equation="tclk == 2.5 &amp;&amp; varv &gt;= 15.0 &amp;&amp; varv &lt;= 16.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="0" id="4" source="2">
+      <guard equation="tclk == 1.3 &amp;&amp; varv &gt;= 18.0 &amp;&amp; varv &lt;= 20.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="4" id="5" source="2">
+      <guard equation="tclk == 1.3 &amp;&amp; varv &gt;= 5.0 &amp;&amp; varv &lt;= 11.0"/>
+      <action equation="varx=0.0"/>
+    </transition>
+    <transition destination="2" id="6" source="3">
+      <guard equation="tclk == 1.3 &amp;&amp; varv &gt;= 5.0 &amp;&amp; varv &lt;= 20.0"/>
+    </transition>
+    <transition destination="0" id="7" source="3">
+      <guard equation="tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 1.3 &amp;&amp; varv &gt;= 18.0 &amp;&amp; varv &lt;= 20.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="4" id="8" source="3">
+      <guard equation="tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 1.3 &amp;&amp; varv &gt;= 5.0 &amp;&amp; varv &lt;= 11.0"/>
+      <action equation="varx=0.0"/>
+    </transition>
+    <transition destination="3" id="9" source="4">
+      <guard equation="varv &gt;= 13.0 &amp;&amp; varv &lt;= 15.0 &amp;&amp; varx &gt;= -500.0 &amp;&amp; varx &gt;= 500.0"/>
+      <action equation="tclk=0.0"/>
+    </transition>
+    <transition destination="5" id="10" source="4">
+      <guard equation="varv &gt;= -15.0 &amp;&amp; varv &lt;= -14.0 &amp;&amp; varx &gt;= -500.0 &amp;&amp; varx &lt;= 500.0"/>
+    </transition>
+    <transition destination="4" id="11" source="5">
+      <guard equation="varv &gt;= -6.0 &amp;&amp; varv &lt;= -5.0 &amp;&amp; varx &gt;= -500.0 &amp;&amp; varx &lt;= 500.0"/>
+      <action equation="varx=0.0"/>
+    </transition>
+  </automaton>
+  <composition automata="cruise_control"/>
+  <property initialSet="q1:varv &lt;= 40.0 &amp;&amp; varv &gt;= 15.0 &amp;&amp; tclk &gt;= 0.0 &amp;&amp; tclk &lt;= 2.5 &amp;&amp; varx == 0.0" name="P1" type="0" unsafeSet="varv &lt;= -2.0">
+    <parameters delta="0.0" taylororder="10.0" timehorizon="100.0" timestep="0.1"/>
+  </property>
+</hyxml>
+

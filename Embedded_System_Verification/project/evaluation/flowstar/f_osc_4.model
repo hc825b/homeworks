@@ -1,0 +1,201 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: ../../evaluation/models/subjects-linear/f_osc_4/f_osc_4.xml
+# Command Line arguments: -debug -flowstar ../../evaluation/models/subjects-linear/f_osc_4/f_osc_4.xml ../../evaluation/models/subjects-linear/f_osc_4/f_osc_4.cfg -o f_osc_4.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var x, y, x1, x2, x3, z
+
+  setting
+  {
+    fixed steps 0.1
+    time 4
+    remainder estimation 1e-4
+    identity precondition
+    gnuplot octagon x,y
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 10
+    print on
+  }
+
+  modes
+  {
+    np
+    {
+      nonpoly ode
+      {
+        x' = -2 * x + 1.4
+        y' = -y - 0.7
+        x1' = 5 * x - 5 * x1
+        x2' = 5 * x1 - 5 * x2
+        x3' = 5 * x2 - 5 * x3
+        z' = 5 * x3 - 5 * z
+      }
+      inv
+      {
+        # Original invariant: x <= 0 & y + 0.714286 * x >= 0
+
+        x <= 0   y + 0.714286 * x >= 0
+      }
+    }
+
+    nn
+    {
+      nonpoly ode
+      {
+        x' = -2 * x - 1.4
+        y' = -y + 0.7
+        x1' = 5 * x - 5 * x1
+        x2' = 5 * x1 - 5 * x2
+        x3' = 5 * x2 - 5 * x3
+        z' = 5 * x3 - 5 * z
+      }
+      inv
+      {
+        # Original invariant: x <= 0 & y + 0.714286 * x <= 0
+
+        x <= 0   y + 0.714286 * x <= 0
+      }
+    }
+
+    pp
+    {
+      nonpoly ode
+      {
+        x' = -2 * x + 1.4
+        y' = -y - 0.7
+        x1' = 5 * x - 5 * x1
+        x2' = 5 * x1 - 5 * x2
+        x3' = 5 * x2 - 5 * x3
+        z' = 5 * x3 - 5 * z
+      }
+      inv
+      {
+        # Original invariant: x >= 0 & y + 0.714286 * x >= 0
+
+        x >= 0   y + 0.714286 * x >= 0
+      }
+    }
+
+    pn
+    {
+      nonpoly ode
+      {
+        x' = -2 * x - 1.4
+        y' = -y + 0.7
+        x1' = 5 * x - 5 * x1
+        x2' = 5 * x1 - 5 * x2
+        x3' = 5 * x2 - 5 * x3
+        z' = 5 * x3 - 5 * z
+      }
+      inv
+      {
+        # Original invariant: x >= 0 & y + 0.714286 * x <= 0
+
+        x >= 0   y + 0.714286 * x <= 0
+      }
+    }
+  }
+
+  jumps
+  {
+    np -> pp
+    guard
+    {
+      # Original guard: x = 0 & 0.714286 * x + y >= 0
+
+      x = 0   0.714286 * x + y >= 0
+    }
+    reset
+    {
+      x' := x
+      y' := y
+      x1' := x1
+      x2' := x2
+      z' := z
+      x3' := x3
+    }
+    parallelotope aggregation {}
+
+    nn -> np
+    guard
+    {
+      # Original guard: y + 0.714286 * x = 0 & x <= 0
+
+      y + 0.714286 * x = 0   x <= 0
+    }
+    reset
+    {
+      x' := x
+      y' := y
+      x1' := x1
+      x2' := x2
+      z' := z
+      x3' := x3
+    }
+    parallelotope aggregation {}
+
+    pp -> pn
+    guard
+    {
+      # Original guard: y + 0.714286 * x = 0 & x >= 0
+
+      y + 0.714286 * x = 0   x >= 0
+    }
+    reset
+    {
+      x' := x
+      y' := y
+      x1' := x1
+      x2' := x2
+      z' := z
+      x3' := x3
+    }
+    parallelotope aggregation {}
+
+    pn -> nn
+    guard
+    {
+      # Original guard: x = 0 & 0.714286 * x + y <= 0
+
+      x = 0   0.714286 * x + y <= 0
+    }
+    reset
+    {
+      x' := x
+      y' := y
+      x1' := x1
+      x2' := x2
+      z' := z
+      x3' := x3
+    }
+    parallelotope aggregation {}
+  }
+
+  init
+  {
+    nn
+    {
+      x in [0.2, 0.3]
+      x1 in [0, 0]
+      x2 in [0, 0]
+      x3 in [0, 0]
+      y in [-0.1, 0.1]
+      z in [0, 0]
+    }
+  }
+}
+
+unsafe set
+{
+  np {y >= 0.5}
+  nn {y >= 0.5}
+  pp {y >= 0.5}
+  pn {y >= 0.5}
+}

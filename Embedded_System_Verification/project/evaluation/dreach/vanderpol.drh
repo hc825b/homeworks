@@ -1,0 +1,33 @@
+// Created by Hyst v1.2
+// Hybrid Automaton in dReach
+// Converted from file: ../../evaluation/models/subjects-nonlinear/vanderpol/vanderpol.xml
+// Command Line arguments: -debug -dreach ../../evaluation/models/subjects-nonlinear/vanderpol/vanderpol.xml ../../evaluation/models/subjects-nonlinear/vanderpol/vanderpol.cfg -o vanderpol.drh
+
+
+//Vars
+[0, 10] time;
+[-1000,1000] x;
+[-1000,1000] y;
+
+
+
+// start modes
+// running
+{
+  mode 1;
+  invt:
+  flow:
+    d/dt[x] = y;
+    d/dt[y] = (-1.0 - x * x) * y - x;
+
+  jump:
+
+  // end running
+}
+// end modes
+
+init:
+@1 (and (and (and (x >= 1.0) (x <= 1.2)) (y >= 1.0)) (y <= 1.2));
+
+goal:
+@1 (x >= 5.0);

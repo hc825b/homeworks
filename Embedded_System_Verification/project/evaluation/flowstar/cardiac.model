@@ -1,0 +1,105 @@
+# Created by Hyst v1.2
+# Hybrid Automaton in Flow*
+# Converted from file: /home/bridge/Documents/homeworks/Embedded_System_Verification/project/evaluation/subjects-nonlinear-hybrid/cardiac/hw4.xml
+# Command Line arguments: -debug -flowstar /home/bridge/Documents/homeworks/Embedded_System_Verification/project/evaluation/subjects-nonlinear-hybrid/cardiac/hw4.xml /home/bridge/Documents/homeworks/Embedded_System_Verification/project/evaluation/subjects-nonlinear-hybrid/cardiac/hw4.cfg -o hw4.model
+
+
+hybrid reachability
+{
+  # Vars
+  state var t, u, v
+
+  setting
+  {
+    fixed steps 0.01
+    time 10
+    remainder estimation 1e-4
+    QR precondition
+    gnuplot octagon t,u
+    adaptive orders { min 3, max 8 } 
+    cutoff 1e-15
+    precision 53
+    output out
+    max jumps 100
+    print on
+  }
+
+  modes
+  {
+    stimOn
+    {
+      nonpoly ode
+      {
+        t' = 1
+        u' = -0.9 * u * u - u * u * u - 0.9 * u - v + 1
+        v' = u - 2 * v
+      }
+      inv
+      {
+        # Original invariant: t <= 5
+
+        t <= 5
+      }
+    }
+
+    stimOff
+    {
+      nonpoly ode
+      {
+        t' = 1
+        u' = -0.9 * u * u - u * u * u - 0.9 * u - v
+        v' = u - 2 * v
+      }
+      inv
+      {
+        # Original invariant: t <= 20
+
+        t <= 20
+      }
+    }
+  }
+
+  jumps
+  {
+    stimOn -> stimOff
+    guard
+    {
+      # Original guard: t >= 5
+
+      t >= 5
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+
+    stimOff -> stimOn
+    guard
+    {
+      # Original guard: t >= 20
+
+      t >= 20
+    }
+    reset
+    {
+      t' := 0
+    }
+    parallelotope aggregation {}
+  }
+
+  init
+  {
+    stimOn
+    {
+      u in [0, 0]
+      v in [0, 0]
+    }
+  }
+}
+
+unsafe set
+{
+  stimOn {u >= 2.5}
+  stimOff {u >= 2.5}
+}

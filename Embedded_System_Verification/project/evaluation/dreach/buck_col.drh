@@ -1,0 +1,33 @@
+// Created by Hyst v1.2
+// Hybrid Automaton in dReach
+// Converted from file: ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.xml
+// Command Line arguments: -debug -dreach ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.xml ../../evaluation/models/subjects-nonlinear/bind_col/bind_col.cfg -o bind_col.drh
+
+
+//Vars
+[0, 10] time;
+[-1000,1000] x;
+[-1000,1000] y;
+
+
+
+// start modes
+// running
+{
+  mode 1;
+  invt:
+  flow:
+    d/dt[x] = y;
+    d/dt[y] = 2.0 * x - x * x * x - 0.2 * y + 0.1;
+
+  jump:
+
+  // end running
+}
+// end modes
+
+init:
+@1 (and (and (and (x >= -0.5) (x <= -0.45)) (y >= -0.5)) (y <= -0.45));
+
+goal:
+@1 (x >= 0.0);

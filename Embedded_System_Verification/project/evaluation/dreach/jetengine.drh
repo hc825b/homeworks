@@ -1,0 +1,33 @@
+// Created by Hyst v1.2
+// Hybrid Automaton in dReach
+// Converted from file: ../../evaluation/models/subjects-nonlinear/jetengine/jetengine.xml
+// Command Line arguments: -debug -dreach ../../evaluation/models/subjects-nonlinear/jetengine/jetengine.xml ../../evaluation/models/subjects-nonlinear/jetengine/jetengine.cfg -o jetengine
+
+
+//Vars
+[0, 10] time;
+[-1000,1000] x;
+[-1000,1000] y;
+
+
+
+// start modes
+// running
+{
+  mode 1;
+  invt:
+  flow:
+    d/dt[x] = -1.0 * y - 1.5 * x * x - 0.5 * x * x * x - 0.5;
+    d/dt[y] = 3.0 * x - y;
+
+  jump:
+
+  // end running
+}
+// end modes
+
+init:
+@1 (and (and (and (x >= 0.8) (x <= 1.2)) (y >= 0.8)) (y <= 1.2));
+
+goal:
+@1 (x >= 10.0);
