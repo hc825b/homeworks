@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="cellStim">
+    <param name="t" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="u" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <param name="v" type="real" local="false" d1="1" d2="1" dynamics="any" />
+    <location id="1" name="stimOn" x="390.0" y="229.0" width="400.0" height="104.0">
+      <invariant>t &lt;= 5</invariant>
+      <flow>
+t' == 1 &amp;
+u' == -0.9*u*u - u*u*u - 0.9*u - v + 1 &amp;
+v' == u - 2*v</flow>
+    </location>
+    <location id="2" name="stimOff" x="390.0" y="229.0" width="400.0" height="104.0">
+      <invariant>t &lt;= 20</invariant>
+      <flow>
+t' == 1 &amp;
+u' == -0.9*u*u - u*u*u - 0.9*u - v &amp;
+v' == u - 2*v</flow>
+    </location>
+    <transition source="2" target="1">
+      <guard> t &gt;= 20.0 </guard>
+      <assignment>t := 0.0</assignment>
+    </transition>
+    <transition source="1" target="2">
+      <guard> t &gt;= 5.0 </guard>
+      <assignment>t := 0.0</assignment>
+    </transition>
+  </component>
+  <component id="sys">
+    <param name="t" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="398.0" y="121.0" />
+    <param name="u" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="553.0" y="236.0" />
+    <param name="v" type="real" local="false" d1="1" d2="1" dynamics="any" controlled="true" x="513.0" y="318.0" />
+    <bind component="cellStim" as="cell" x="305.0" y="252.0" width="58.0" height="46.0">
+      <map key="t">t</map>
+      <map key="u">u</map>
+      <map key="v">v</map>
+    </bind>
+  </component>
+</sspaceex>
+
