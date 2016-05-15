@@ -1,0 +1,88 @@
+
+grammar{
+    start = element hyxml {
+        ( Automaton )+,
+        ( Composition ),
+        ( Property )*
+    }
+
+    ## Name should be unique?
+    Automaton = element automaton {
+        attribute name { Name },
+        ( Variable )+,
+        ( Mode )+,
+        ( Transition )*
+    }
+
+    ## Currently only support Real type
+    Variable = element variable {
+        attribute name  { Name },
+        attribute scope { "LOCAL_DATA" | "INPUT_DATA" | "OUTPUT_DATA" },
+        attribute type  { "Int" | "Real" }
+    }
+
+    ## Consider using xsd:ID for id
+    Mode = element mode {
+        attribute id { xsd:int },
+        attribute initial { xsd:boolean | "True" | "False" },
+        attribute name { Name },
+        ( Dai )+,
+        ( Invariant )*,
+        ( Annotation )?
+    }
+
+    Dai = element dai { attribute equation { Assignment } }
+
+    Invariant = element invariant { attribute equation {DNFPredicate} }
+
+    Annotation = element annotation {
+        attribute mode { Name },
+        element K { attribute value {xsd:decimal} },
+        element gamma { attribute value {xsd:decimal} },
+        element type {
+            ## Other string?
+            attribute string { "exponential" },
+            attribute value  { xsd:decimal }
+        }
+    }
+
+    ## Consider using xsd:ID for id
+    ## Consider using xsd:IDREF for source and target
+    Transition = element transition {
+        attribute id { xsd:int },
+        attribute source { xsd:int },
+        attribute destination { xsd:int },
+        ( element guard { attribute equation { CNFPredicate } } ),
+        ( element action { attribute equation { Assignment } } )*
+    }
+
+    Composition = element composition {
+       ## Composition of automata
+       ( attribute automata { Names } )
+    }
+
+    Property = element property {
+        attribute name { Name },
+        attribute type { xsd:int },
+        attribute initialSet { LabeledCNFPredicate },
+        attribute unsafeSet  { CNFPredicate },
+        ( Parameters )?
+    }
+
+    Parameters = element parameters {
+        attribute delta       { xsd:decimal },
+        attribute taylororder { xsd:decimal },
+        attribute timehorizon { xsd:decimal }, 
+        attribute timestep    { xsd:decimal }
+    }
+
+    ## Predicate does not allow OR and NOT
+    DNFPredicate  = xsd:token { pattern = "([a-zA-Z0-9_.+\-*/()]|>=?|<=?|==|(\|\|)| *)+" }
+    CNFPredicate  = xsd:token { pattern = "([a-zA-Z0-9_.+\-*/()]|>=?|<=?|==|&&| *)+" }
+    LabeledCNFPredicate = xsd:token { pattern = "[a-zA-Z_][a-zA-Z0-9_]* *: *([a-zA-Z0-9_.+\-*/()]|>=?|<=?|==|&&| *)+" }
+    Assignment = xsd:token { pattern = "[a-zA-Z_][a-zA-Z0-9_]* *=( *[a-zA-Z0-9_.+\-*/()])+" }
+
+    Name  = xsd:token { pattern = "[a-zA-Z_][a-zA-Z0-9_]*" }
+    Names = xsd:token { pattern = "([a-zA-Z_][a-zA-Z0-9_]* *; *)*[a-zA-Z_][a-zA-Z0-9_]*" }
+}
+
