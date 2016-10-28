@@ -1,0 +1,177 @@
+\documentclass{article}
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{
+    mathescape=true
+}
+
+\title{\Large\bfseries CS 477: Formal Software Development Methods \\
+Fall 2016 \\
+Homework 1}
+\author{Chiao Hsieh, chsieh16@illinois.edu}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item \textbf{[30 points]}
+Consider the following program.
+\begin{lstlisting}
+@pre: $m > 0$
+x := 0;
+y := 1;
+z := 1;
+while (x $\neq$ m) {
+    z := 2 * z;
+    y := y + z;
+    x := x + 1;
+}
+@post: $y = 2^{m + 1} - 1$
+\end{lstlisting}
+
+Prove the program satisfies its pre-post condition by giving a proof using
+Hoare logic.
+
+You can assume any valid logical statement that is expressed purely in
+arithmetic as an axiom
+
+\medskip
+Ans.
+\medskip
+
+Let loop invariant \verb|@LI:| $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1$ ,
+we can prove that
+
+Part 1:
+\begin{lstlisting}
+{$0 \leq x \leq m \land 1 = 2^x \land y = 2^{x + 1} - 1$} z := 1; {@LI} (Axiom)
+{$0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{x + 1} - 1$} y := 1; {$0 \leq x \leq m \land 1 = 2^x \land y = 2^{x + 1} - 1$} (Axiom)
+{$0 \leq 0 \leq m \land 1 = 2^0 \land 1 = 2^{0 + 1} - 1$} x := 0; {$0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{x + 1} - 1$} (Axiom)
+=> {@pre} x := 0 {$0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{x + 1} - 1$} (Consequence)
+=> {@pre} x := 0; y := 1; z := 1; {@LI} (Composition)
+\end{lstlisting}
+
+Part 2: while loop
+\begin{lstlisting}
+{$0 \leq (x + 1) \leq m \land z = 2^{(x+1)} \land y = 2^{(x + 1) + 1} - 1$} x := x + 1 {@LI} (Axiom)
+{$0 \leq (x + 1) \leq m \land z = 2^{(x+1)} \land y + z = 2^{(x + 1) + 1} - 1$}
+    y := y + z;
+{$0 \leq (x + 1) \leq m \land z = 2^{(x+1)} \land y = 2^{(x + 1) + 1} - 1$} (Axiom)
+{$0 \leq (x + 1) \leq m \land 2*z = 2^{(x+1)} \land y + 2*z = 2^{(x + 1) + 1} - 1$}
+    z := 2 * z;
+{$0 \leq (x + 1) \leq m \land z = 2^{(x+1)} \land y = 2^{(x + 1) + 1} - 1$} (Axiom)
+=> {$0 \leq (x + 1) \leq m \land 2*z = 2^{(x+1)} \land y + 2*z = 2^{(x + 1) + 1} - 1$}
+       z := 2 * z; y := y + z; x := x + 1;
+   {@LI} (Composition)
+=> {$x \neq m\ \land$ @LI} z := 2 * z; y := y + z; x := x + 1; {@LI} (Consequence)
+=> {@LI} 
+    while (x $\neq$ m) {
+       z := 2 * z;
+       y := y + z;
+       x := x + 1;
+    }
+    {@LI $\land\ (x = m)$} (Loop)
+=>{@LI} 
+    while (x $\neq$ m) {
+        z := 2 * z;
+        y := y + z;
+        x := x + 1;
+    }
+    {@post} (Consequence)
+\end{lstlisting}
+
+By applying rule of composition to the 2 parts, we show that the program satisfies pre/post-condition.
+
+\item \textbf{[8*5=40 points]}
+For each of the following Hoare triples, write down
+\begin{enumerate}[(a)]
+\item the weakest pre-condition of the post condition with respect to the program,
+\item write down the verification condition using the weakest pre-condition, and
+\item formulate the negation of the verification condition in Z3 and report whether it found the verification condition to be valid or not
+\end{enumerate}
+
+\medskip
+Ans.
+\medskip
+
+\begin{enumerate}[(1)]
+    \item \verb|{x > 0} y:=x+1; y:=y*2; {y > 0}|
+
+        Weakest Precondition: $(x+1)*2 > 0$ \\
+        Verification condition: $x > 0 \implies (x+1)*2 > 0$ \\
+        Z3 formula: UNSAT
+\begin{verbatim}
+(declare-fun x () Int)
+(assert (and (> x 0) (not (> (* (+ x 1) 2) 0))))
+(check-sat)
+\end{verbatim}
+        
+    \item \verb|{x = y * y} x:=4*x {x > y}|
+
+        Weakest Precondition: $4*x > y$ \\
+        Verification condition: $x = y*y \implies 4*x > y$ \\
+        Z3 formula: SAT when $x=0 \land y=0$
+\begin{verbatim}
+(declare-fun x () Int)
+(declare-fun y () Int)
+(assert (and (= x (* y y)) (not (> (* 4 x) y))))
+(check-sat)
+\end{verbatim}
+
+\item @pre $\implies$ wp(\verb|x := 0; y := 1; z := 1;|, @LI)
+
+        Weakest Precondition: $0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{x + 1} - 1$ \\
+        Verification condition: $m > 0 \implies (0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{0 + 1} - 1)$ \\
+        Z3 formula: UNKNOWN
+\begin{verbatim}
+(declare-const x Int)
+(declare-const m Int)
+
+(assert 
+(and (> m 0) 
+     (not (and (<= 0 x) (<= x m) (= 1 (^ 2 x))
+               (= 1 (- (^ 2 (+ 0 1)) 1)))))
+)
+(check-sat)
+\end{verbatim}
+
+\item (@LI $\land\ x \neq m) \implies$ wp(\verb|z := 2 * z; y := y + z; x := x + 1;|, @LI)
+
+        Weakest Precondition: $0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1$ \\
+        Verification condition:\\
+        $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land x \neq m$ \\
+        $\implies (0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1)$ \\
+        Z3 formula: UNKNOWN
+\begin{verbatim}
+(declare-const x Int)
+(declare-const y Int)
+(declare-const z Int)
+(declare-const m Int)
+
+(assert 
+    (and (and (not (= x m)) (<= 0 x) (<= x m) (= z (^ 2 x))
+              (= y (- (^ 2 (+ x 1)) 1)))
+         (not (and (<= 0 (+ x 1)) (<= (+ x 1) m) (= (* 2 z) (^ 2 (+ x 1)))
+                   (= (+ y (* 2 z)) (- (^ 2 (+ (+ x 1) 1)) 1))
+              )
+         )
+    )
+)
+(check-sat)
+\end{verbatim}
+
+\item @LI $\land\ \neg(x\neq m) \implies$ @post
+
+        Verification condition:\\
+        $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land \neg(x \neq m) \implies y = 2^{m+1} - 1$\\
+        Z3 formula: UNSAT
+        
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}
