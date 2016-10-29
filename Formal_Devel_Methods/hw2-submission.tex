@@ -102,7 +102,7 @@ Ans.
     \item \verb|{x > 0} y:=x+1; y:=y*2; {y > 0}|
 
         Weakest Precondition: $(x+1)*2 > 0$ \\
-        Verification condition: $x > 0 \implies (x+1)*2 > 0$ \\
+        Verification condition: $x > 0 \to (x+1)*2 > 0$ \\
         Z3 formula: UNSAT
 \begin{verbatim}
 (declare-fun x () Int)
@@ -113,7 +113,7 @@ Ans.
     \item \verb|{x = y * y} x:=4*x {x > y}|
 
         Weakest Precondition: $4*x > y$ \\
-        Verification condition: $x = y*y \implies 4*x > y$ \\
+        Verification condition: $x = y*y \to 4*x > y$ \\
         Z3 formula: SAT when $x=0 \land y=0$
 \begin{verbatim}
 (declare-fun x () Int)
@@ -122,41 +122,44 @@ Ans.
 (check-sat)
 \end{verbatim}
 
-\item @pre $\implies$ wp(\verb|x := 0; y := 1; z := 1;|, @LI)
+\item @pre $\to$ wp(\verb|x := 0; y := 1; z := 1;|, @LI)
 
-        Weakest Precondition: $0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{x + 1} - 1$ \\
-        Verification condition: $m > 0 \implies (0 \leq x \leq m \land 1 = 2^x \land 1 = 2^{0 + 1} - 1)$ \\
-        Z3 formula: UNKNOWN
+        Weakest Precondition: $0 \leq 0 \leq m \land 1 = 2^0 \land 1 = 2^{0 + 1} - 1$ \\
+        Verification condition: $m > 0 \to (0 \leq 0 \leq m \land 1 = 2^0 \land 1 = 2^{0 + 1} - 1)$ \\
+        Z3 formula: UNSAT
 \begin{verbatim}
-(declare-const x Int)
 (declare-const m Int)
 
 (assert 
 (and (> m 0) 
-     (not (and (<= 0 x) (<= x m) (= 1 (^ 2 x))
+     (not (and (<= 0 0) (<= 0 m) (= 1 (^ 2 0))
                (= 1 (- (^ 2 (+ 0 1)) 1)))))
 )
 (check-sat)
 \end{verbatim}
 
-\item (@LI $\land\ x \neq m) \implies$ wp(\verb|z := 2 * z; y := y + z; x := x + 1;|, @LI)
+\item (@LI $\land\ x \neq m) \to$ wp(\verb|z := 2 * z; y := y + z; x := x + 1;|, @LI)
 
         Weakest Precondition: $0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1$ \\
         Verification condition:\\
         $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land x \neq m$ \\
-        $\implies (0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1)$ \\
-        Z3 formula: UNKNOWN
+        $\to (0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1)$ \\
+        Z3 formula: UNSAT
 \begin{verbatim}
 (declare-const x Int)
 (declare-const y Int)
 (declare-const z Int)
 (declare-const m Int)
+(declare-fun pow2 (Int) Int)
 
-(assert 
-    (and (and (not (= x m)) (<= 0 x) (<= x m) (= z (^ 2 x))
-              (= y (- (^ 2 (+ x 1)) 1)))
-         (not (and (<= 0 (+ x 1)) (<= (+ x 1) m) (= (* 2 z) (^ 2 (+ x 1)))
-                   (= (+ y (* 2 z)) (- (^ 2 (+ (+ x 1) 1)) 1))
+(assert (= 1 (pow2 0)))
+(assert (forall ((n Int)) (=> (> n 0) (= (pow2 n) (* 2 (pow2 (- n 1)))))))
+
+(assert
+    (and (and (not (= x m)) (<= 0 x) (<= x m) (= z (pow2 x))
+              (= y (- (pow2 (+ x 1)) 1)))
+         (not (and (<= 0 (+ x 1)) (<= (+ x 1) m) (= (* 2 z) (pow2 (+ x 1)))
+                   (= (+ y (* 2 z)) (- (pow2 (+ (+ x 1) 1)) 1))
               )
          )
     )
@@ -164,14 +167,117 @@ Ans.
 (check-sat)
 \end{verbatim}
 
-\item @LI $\land\ \neg(x\neq m) \implies$ @post
+\item @LI $\land\ \neg(x\neq m) \to$ @post
 
         Verification condition:\\
-        $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land \neg(x \neq m) \implies y = 2^{m+1} - 1$\\
+        $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land \neg(x \neq m) \to y = 2^{m+1} - 1$\\
         Z3 formula: UNSAT
-        
-\end{enumerate}
+\begin{verbatim}
+(declare-const x Int)
+(declare-const y Int)
+(declare-const z Int)
+(declare-const m Int)
+(declare-fun pow2 (Int) Int)
 
+(assert
+    (and (and (not (not (= x m))) (<= 0 x) (<= x m) (= z (pow2 x))
+              (= y (- (pow2 (+ x 1)) 1)))
+         (not (= y (- (pow2 (+ m 1)) 1)))
+    )
+)
+(check-sat)
+\end{verbatim}
+
+\item @pre $\to$ wp($i := l$, @L)
+
+		Weakest Precondition: $l \leq l \land (\forall j. l\leq j < l \to a[j] \neq e)$\\
+		Verification Condition:
+		$(0 \leq l \land u < |a|) \to (l \leq l \land (\forall j. l\leq j < l\to a[j] \neq e))$\\
+		Z3 formula: UNSAT
+\begin{verbatim}
+(declare-const a (Array Int Int))
+(declare-const l Int)
+(declare-const u Int)
+(declare-const e Int)
+(assert
+   (and (<= 0 l) (not (and (<= l l) 
+      (forall ((j Int)) (=> (and (<= l j) (< j l)) (not (= (select a j) e)))))
+)))
+(check-sat)
+\end{verbatim}
+
+\item @L $\to$ wp(\verb|assume(|$i\leq u$\verb|);assume(|$\neg a[i]=e$\verb|);|$i:=i+1;$, @L)
+
+	Weakest Precondition:
+	$i\leq u \to \neg a[i]=e \to l \leq i+1 \land (\forall j. l\leq j < i+1 \to a[j] \neq e)$\\
+	Verification Condition:\\
+	$l \leq i \land (\forall j. l\leq j < i \to a[j] \neq e) \land i\leq u \\
+	\to (i\leq u \to \neg a[i]=e \to l \leq i+1 \land (\forall j. l\leq j < i+1 \to a[j] \neq e))$\\
+	Z3 formula: UNSAT
+\begin{verbatim}
+(declare-const a (Array Int Int))
+(declare-const l Int)
+(declare-const u Int)
+(declare-const e Int)
+(declare-const i Int)
+(assert
+   (and (<= l i)
+        (forall ((j Int)) (=> (and (<= l j) (< j i)) (not (= (select a j) e)))) 
+      (not (=> (<= i u) (=> (not (= (select a i) e)) (and (<= l (+ i 1)) 
+        (forall ((j Int)) (=> (and (<= l j) (< j l)) (not (= (select a j) e)))))
+)))))
+(check-sat)
+\end{verbatim}
+
+\item @L $\to$ wp(\verb|assume(|$i\leq u$\verb|);assume(|$a[i]=e$\verb|);|$rv:=true;$, @post) \\
+    $\ \land\ $ @L $\to$ wp(\verb|assume|($\neg i\leq u$);$rv:=false$;, @post)
+
+	Weakest Preconditions: \\
+	From \verb|return true|:  $i\leq u \to a[i]=e \to (true \leftrightarrow \exists i. l \leq i \leq u \land a[i] = e)$\\
+	From \verb|return false|: $\neg i\leq u \to (false \leftrightarrow \exists i. l \leq i \leq u \land a[i] = e)$\\
+	Verification Condition:\\
+	$(l \leq i \land (\forall j. l\leq j < i \to a[j] \neq e)
+	\to i\leq u \to a[i]=e \to (true \leftrightarrow \exists i. l \leq i \leq u \land a[i] = e)) \\
+	\land (l \leq i \land (\forall j. l\leq j < i \to a[j] \neq e)
+	\to \neg i\leq u \to (false \leftrightarrow \exists i. l \leq i \leq u \land a[i] = e))$
+
+\newpage
+
+	Z3 formula: UNSAT
+\begin{verbatim}
+(declare-const a (Array Int Int))
+(declare-const l Int)
+(declare-const u Int)
+(declare-const e Int)
+(declare-const i Int)
+
+(declare-const L Bool)
+(declare-const WP_T Bool)
+(declare-const WP_F Bool)
+(declare-const VC Bool)
+
+(assert (= L
+   (and (<= l i)
+      (forall ((j Int))
+              (=> (and (<= l j) (< j i)) (not (= (select a j) e)))
+      ))))
+(assert (= WP_T
+   (=> (<= i u)
+      (=> (= (select a i) e)
+         (= true (exists ((i Int)) (and (<= l i) (<= i u) (= (select a i) e))))
+      ))))
+
+(assert (= WP_F
+   (=> (not (<= i u))
+     (= false (exists ((i Int)) (and (<= l i) (<= i u) (= (select a i) e))))
+   )))
+(assert (= VC (and (=> L WP_T) (=> L WP_F))))
+(assert (not VC))
+(check-sat)
+\end{verbatim}
+
+
+\end{enumerate}
 \end{enumerate}
 
 \end{document}
