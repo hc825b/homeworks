@@ -11,7 +11,7 @@
 
 \title{\Large\bfseries CS 477: Formal Software Development Methods \\
 Fall 2016 \\
-Homework 1}
+Homework 2}
 \author{Chiao Hsieh, chsieh16@illinois.edu}
 
 \begin{document}
@@ -103,7 +103,7 @@ Ans.
 
         Weakest Precondition: $(x+1)*2 > 0$ \\
         Verification condition: $x > 0 \to (x+1)*2 > 0$ \\
-        Z3 formula: UNSAT
+        Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-fun x () Int)
 (assert (and (> x 0) (not (> (* (+ x 1) 2) 0))))
@@ -114,7 +114,7 @@ Ans.
 
         Weakest Precondition: $4*x > y$ \\
         Verification condition: $x = y*y \to 4*x > y$ \\
-        Z3 formula: SAT when $x=0 \land y=0$
+        Z3 formula: negation of verification condition is SAT when $x=0 \land y=0$
 \begin{verbatim}
 (declare-fun x () Int)
 (declare-fun y () Int)
@@ -126,7 +126,7 @@ Ans.
 
         Weakest Precondition: $0 \leq 0 \leq m \land 1 = 2^0 \land 1 = 2^{0 + 1} - 1$ \\
         Verification condition: $m > 0 \to (0 \leq 0 \leq m \land 1 = 2^0 \land 1 = 2^{0 + 1} - 1)$ \\
-        Z3 formula: UNSAT
+        Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const m Int)
 
@@ -144,7 +144,7 @@ Ans.
         Verification condition:\\
         $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land x \neq m$ \\
         $\to (0 \leq (x + 1) \leq m \land z = 2^x \land y = 2^{x + 1} - 1)$ \\
-        Z3 formula: UNSAT
+        Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const x Int)
 (declare-const y Int)
@@ -171,7 +171,7 @@ Ans.
 
         Verification condition:\\
         $0 \leq x \leq m \land z = 2^x \land y = 2^{x + 1} - 1 \land \neg(x \neq m) \to y = 2^{m+1} - 1$\\
-        Z3 formula: UNSAT
+        Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const x Int)
 (declare-const y Int)
@@ -193,7 +193,7 @@ Ans.
 		Weakest Precondition: $l \leq l \land (\forall j. l\leq j < l \to a[j] \neq e)$\\
 		Verification Condition:
 		$(0 \leq l \land u < |a|) \to (l \leq l \land (\forall j. l\leq j < l\to a[j] \neq e))$\\
-		Z3 formula: UNSAT
+		Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const a (Array Int Int))
 (declare-const l Int)
@@ -213,7 +213,7 @@ Ans.
 	Verification Condition:\\
 	$l \leq i \land (\forall j. l\leq j < i \to a[j] \neq e) \land i\leq u \\
 	\to (i\leq u \to \neg a[i]=e \to l \leq i+1 \land (\forall j. l\leq j < i+1 \to a[j] \neq e))$\\
-	Z3 formula: UNSAT
+	Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const a (Array Int Int))
 (declare-const l Int)
@@ -243,7 +243,7 @@ Ans.
 
 \newpage
 
-	Z3 formula: UNSAT
+	Z3 formula: negation of verification condition is UNSAT
 \begin{verbatim}
 (declare-const a (Array Int Int))
 (declare-const l Int)
