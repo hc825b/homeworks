@@ -1,5 +1,5 @@
 ///<summary>
-///  Iteration implementation for immutable set
+///  Iterator implementation for immutable set
 ///</summary>
 iterator Iter<T>(S: set<T>) yields (x: T)
   yield ensures x in S && x !in xs[..|xs|-1];
@@ -62,7 +62,7 @@ predicate Reachable<T(==)>(G: DiGraphBase<T>, s: T, t:T, p: seq<T>)
 datatype NodeT = NIL | NodeT(nat)
 datatype DistT = INF | DistT(l: int)
 datatype Color = WHITE | GREY | BLACK
-datatype NodeLabel = NodeLabel(color: Color, d: DistT, ghost pred:seq<NodeT>)
+datatype NodeLabel = NodeLabel(color: Color, d: DistT, ghost path:seq<NodeT>)
 
 /// <summary>
 /// </summary>
@@ -82,7 +82,7 @@ class SearchAlgorithmBase
     forall v :: v in G.V
        ==> (labels[v].color == WHITE
          && labels[v].d == INF
-         && labels[v].pred == [])
+         && labels[v].path == [])
   }
 
   ///<summary>
@@ -113,7 +113,7 @@ class SearchAlgorithmBase
       // Custom
       invariant forall v :: v in X
             ==> (v in labels && labels[v].color == WHITE
-                 && labels[v].d == INF && labels[v].pred == []);
+                 && labels[v].d == INF && labels[v].path == []);
     {
       // Iterator code
       var more := it.MoveNext();
@@ -147,16 +147,21 @@ class SearchAlgorithmBase
   }
 */
 
+  ///<summary>
+  ///  Implement search algorithm by coloring nodes
+  ///  <param name="G">given directed graph</param>
+  ///  <param name="s">given starting node</param>
+  ///</summary>
   method Search(G: DiGraphBase<NodeT>, s : NodeT)
     modifies this;
     requires Valid(G) && s in G.V;
     requires ValidLabels(G) && InitializedLabels(G); 
     ensures  ValidLabels(G) 
     ensures  forall v :: v in G.V && labels[v].color == BLACK
-         ==> labels[v].d != INF && Reachable(G, s, v, labels[v].pred);
+         ==> labels[v].d != INF && Reachable(G, s, v, labels[v].path);
   {
     var s_label := labels[s];
-    s_label := s_label.(color := GREY, d := DistT(0), pred := [s]);
+    s_label := s_label.(color := GREY, d := DistT(0), path := [s]);
     labels := labels[s := s_label];
 
     var worklist : seq<NodeT> := [s];
@@ -180,13 +185,13 @@ class SearchAlgorithmBase
       decreases G.V - B;
       // LI_7
       invariant forall v,n :: v in G.V && n in G.V && labels[v].color == WHITE
-                          ==> v !in labels[n].pred
+                          ==> v !in labels[n].path
       // LI_8 depends on LI_7
       invariant forall v :: v in worklist
-                        ==> Reachable(G, s, v, labels[v].pred);
+                        ==> Reachable(G, s, v, labels[v].path);
       // LI_9
       invariant forall v :: v in B
-            ==> labels[v].d != INF && Reachable(G, s, v, labels[v].pred);
+            ==> labels[v].d != INF && Reachable(G, s, v, labels[v].path);
     {
       // Dequeue
       var u := worklist[0];
@@ -224,14 +229,14 @@ class SearchAlgorithmBase
         invariant u in labels && labels[u].d != INF;
         // LI_7
         invariant forall v,n :: v in G.V && n in G.V && labels[v].color == WHITE
-              ==> v !in labels[n].pred
+              ==> v !in labels[n].path
         // LI_8 depends on LI_7
-        invariant Reachable(G, s, u, labels[u].pred)
+        invariant Reachable(G, s, u, labels[u].path)
                && forall v :: v in worklist
-                          ==> Reachable(G, s, v, labels[v].pred)
+                          ==> Reachable(G, s, v, labels[v].path)
         // LI_9
         invariant forall v :: v in B 
-              ==> labels[v].d != INF && Reachable(G, s, v, labels[v].pred);
+              ==> labels[v].d != INF && Reachable(G, s, v, labels[v].path);
       {
         // Iterator Code
         var more := it.MoveNext();
@@ -247,9 +252,9 @@ class SearchAlgorithmBase
           v_label := v_label.(
             color := GREY,
             d := DistT(labels[u].d.l + 1),
-            pred := labels[u].pred + [v]
+            path := labels[u].path + [v]
           );
-          assert Reachable(G, s, v, v_label.pred); // Proven by LI_7. Help prove LI_8
+          assert Reachable(G, s, v, v_label.path); // Proven by LI_7. Help prove LI_8
           labels := labels[v := v_label];
           // Enqueue
           worklist := worklist + [v];
