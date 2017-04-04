@@ -1,0 +1,304 @@
+\documentclass{article}
+
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+
+\title{\Large\bfseries CS 598: Runtime Verification \\
+Spring 2017 \\
+Homework 1}
+\author{Chiao Hsieh, chsieh16@illinois.edu}
+
+\begin{document}
+\maketitle
+
+\newcommand{\FinTraces}{\ensuremath{\Sigma^*}\xspace}
+\newcommand{\InfTraces}{\ensuremath{\Sigma^\omega}\xspace}
+\newcommand{\prefixes}{\ensuremath{\mathtt{prefixes}}\xspace}
+\newcommand{\Nat}{\ensuremath{\mathbb{N}}\xspace}
+\newcommand{\Real}{\ensuremath{\mathbb{R}}\xspace}
+\newcommand{\Bool}{\ensuremath{\mathbb{B}}\xspace}
+
+
+\begin{enumerate}
+\item Show that each of the following sets have cardinal $c$: streams
+(i.e., infinite sequences) of Booleans; streams of natural numbers;
+streams of real numbers; closed intervals of real numbers;
+open intervals of real numbers; closed sets of real numbers;
+open sets of real numbers.
+
+Ans.
+
+\textbf{Stream of Booleans}
+
+We can easily prove $|\Bool^\omega| \leq c$ by mapping
+each $\alpha \in \Bool^\omega$ to a real number $0.\bar{\alpha}$.
+The function is trivially injective.
+
+To prove $|\Bool^\omega| \geq c$, we create a function
+$\varphi : (0,1) \mapsto \Bool^\omega$ which $\alpha = \varphi(r)$ is
+the sub-string after the point of the binary representation of $r$,
+i.e., $r = 0.\bar{\alpha}$.
+If the binary string of $r$ is finite,
+we can just append $0^\omega$ after the end.
+$\varphi$ is injective since the binary representation is unique.
+Hence, we infer that $|\Bool^\omega| \geq c$.
+
+\textbf{Stream of natural numbers}
+
+$|\Nat^\omega|\geq|\Bool^\omega| = c$ is trivially true since $|\Bool|<|\Nat|$.
+
+To prove $|\Nat^\omega| \leq c$, we can consider an intermediate sets which is
+the set of all possible functions $(\Nat \mapsto \Nat)$.
+$\varphi: \Nat^\omega \mapsto (\Nat \mapsto \Nat)$ is a bijective function since
+a sequence is equivalent to a function from index to number.
+Hence, $|\Nat^\omega| = |(\Nat\mapsto\Nat)| \leq |\wp(\Nat\times\Nat)| = 2^{\aleph_0} = c$
+
+\textbf{Stream of real numbers}
+
+$|\Real^\omega|\geq|\Bool^\omega| = c$ is trivially true since $|\Bool|<|\Real|$.
+To prove $|\Real^\omega| \leq c$, we can consider an intermediate sets which is
+the set of all possible functions $(\Nat \mapsto \Real)$.
+Also we know there is a bijective function from \Real to $\Bool^\omega$,
+i.e., $(\Nat \mapsto \Bool)$.
+Therefore, we construct $\varphi: \Real^\omega \mapsto (\Nat \mapsto (\Nat \mapsto \Bool))$,
+a bijective function.
+
+Hence, $|\Real^\omega| = |(\Nat\mapsto(\Nat\mapsto\Bool))| \leq |\wp(\Nat\times\Nat\times\Bool)| = c$
+
+\textbf{Closed intervals of real numbers}
+
+For any closed intervals, we can find exactly a pair of real numbers,
+$(r1, r2) \in \Real\times\Real$ to represent it.
+Hence, its cardinality $\leq |\Real\times\Real| = c\cdot c = c$.
+
+For any real number $r$, we can find a unique element $[r, r]$.
+Hence, its cardinality $\geq |\Real| = c$
+
+\textbf{Open intervals of real numbers}
+
+\bigskip
+
+\textbf{Closed sets of real numbers}
+
+\bigskip
+
+\textbf{Open sets of real numbers}
+
+\bigskip
+
+\item The $\prefixes: \wp(\FinTraces) \to \wp(\FinTraces)$ in Definition 1
+is a closure operator: it is extensive ($P \subseteq \prefixes(P)$),
+monotone ($P \subseteq P'$ implies $\prefixes(P) \subseteq \prefixes(P')$),
+and idempotent ($\prefixes(\prefixes(P)) = \prefixes(P)$).
+
+Ans.
+
+Extensive:
+
+For any given trace $w \in P$, $w \in \prefixes(w)$ and
+$\prefixes(w) \subseteq \prefixes(P)$ by definition of \prefixes.
+Hence, $P \subseteq \prefixes(P)$
+
+\medskip
+
+Monotone:
+
+Assuming \prefixes is not monotonic, that is,
+$\prefixes(P) \not\subseteq \prefixes(P')$.
+Then we can find at least one prefix $p$ of a word $w \in P$ s.t.
+$p \notin \prefixes(P')$.
+However, since $w \in P \subseteq P'$,
+$p \in \prefixes(w) \subseteq \prefixes(P')$ by definition.
+Therefore, no such prefix $p$ exists. Prove by contradiction.
+
+\medskip
+
+Idempotent:
+
+Since \prefixes is extensive, we already know
+$\prefixes(P)\subseteq\prefixes(\prefixes(P))$.
+We now prove $\prefixes(P)\supseteq\prefixes(\prefixes(P))$.
+
+For any given $p \in \prefixes(\prefixes(P))$,
+there must be a prefix $q \in \prefixes(P)$ s.t. $p \in \prefixes(q)$.
+Similarly, there must be a trace $w \in P$ s.t. $q \in \prefixes(w)$.
+By definition of $\prefixes$, $\exists w'. qw' = w \land \exists w''. pw'' = q$.
+Therefore, we can infer that $pw'w'' = w$; hence $p \in \prefixes(w)$.
+Since $w \in P$, we conclude that $p \in \prefixes(P)$. 
+
+\item (Counter-)Example 4 showed that the finiteness of $\Sigma$ was necessary
+in order for Proposition 2 to hold, by defining a property $P$ over
+$\Sigma = \Nat\cup\{\infty\}$ in which all non-empty words start with $\infty$.
+Can we remove $\infty$ from $\Sigma$ and from all the words in $P$?
+Why, or why not?
+
+Ans.
+
+If we don't introduce $\infty$, then property $P$ is defined as
+$$
+P = \{\epsilon\} \cup \{n(n-1)\dots(m+1)m \mid 0 \leq m \leq n+1 \}
+$$
+$P$ is still an infinite set, and the only persistent subset of $P$
+is still $\emptyset$.
+The argument is the same. For any persistent subset $P' \subseteq P$,
+$P'$ does not contain any trace ending in $0$ since it cannot be continued.
+Inductively, we can assume any trace ending with some $n \in \Nat$ is also
+not in $P'$ and infer that all traces ending with $n+1$ are not in $P'$.
+Hence, we prove that the only persistent subset of $P$ is $\emptyset$
+and $P^{\circ} = \emptyset$.
+
+
+\item Same like Exercise 3, but for Example 5 instead of Example 4.
+
+Ans.
+
+Following the proof in Example 5, we know that $P_i$ for $P$ without $\infty$ is
+$$
+P_i = \{\epsilon\} \cup \{n(n-1)\dots(m+1)m \mid i \leq m \leq n+1 \}
+$$
+We can still prove that $\epsilon \in \bigcap_{i\geq 0} P_i$.
+First, $0 \in P_0$ trivially.
+Second, since we know $i \in P_i$ for any $i$ when we set $m = n = i$,
+we know $\epsilon \in P_{i+1}$ by definition of $P^-$.
+Therefore, we proved that $\bigcap_{i\geq 0} P_i \neq P^{\circ}$ which is empty.
+
+
+\item Prove Proposition 8.
+
+Ans.
+
+\begin{itemize}
+\item $\square \prefixes(\square P) = \square P$ for any $P \subseteq \FinTraces$
+
+\medskip
+For $\square \prefixes(\square P) \subseteq \square P$:
+
+Since $\prefixes(u) \subseteq P$ for every $u \in \square P$,
+we know $\prefixes(\square P) \subseteq P$.
+Now because $\square$ is monotonic by definition,
+$\square \prefixes(\square P) \subseteq \square P$.
+
+\medskip
+For $\square \prefixes(\square P) \supseteq \square P$:
+
+We first assume there exists $u \in \square P$ such that
+$u \notin \square \prefixes(\square P)$.
+By definition of $\square$, $\prefixes(u) \not\subseteq \prefixes(\square P)$. 
+However, $\prefixes(u) \subseteq \prefixes(\square P)$ because $u \in \square P$.
+Therefore, we proved it by contradiction.
+
+\item $Q$ is a safety property iff $\square \prefixes(Q) = Q$
+
+\medskip
+$Q$ is a safety property $\implies$ $\square \prefixes(Q) = Q$:
+
+Since $Q$ is a safety property, there exists $P$ s.t $\square P = Q$.
+We therefore have to prove $\square \prefixes(\square P) = \square P$
+which is proven.
+
+\medskip
+$Q$ is a safety property $\impliedby$ $\square \prefixes(Q) = Q$:
+
+We can find $P = \prefixes(Q)$ so that $\square P = Q$.
+By definition, $Q = \square P \in Safety_{\square}$.
+ 
+
+\end{itemize}
+
+
+\item The ``closure under limits'' operation in Definition 7 is indeed a closure
+operator on $\InfTraces$: it is extensive ($Q \subseteq \overline{Q}$),
+monotone ($Q\subseteq Q'$ implies $\overline{Q} \subseteq \overline{Q'}$),
+and idempotent ($\overline{\overline{Q}} = \overline{Q}$).
+
+Ans.
+
+Extensive:
+
+For any infinite trace $q \in Q$,
+we can always choose an infinite sequence $u^{(1)}=q, u^{(2)}=q, u^{(3)}=q, \dots$
+s.t. $q = \lim_i u^{(i)} \in \overline{Q}$.
+Therefore, $Q \subseteq \overline{Q}$.
+
+\medskip
+
+Monotonic:
+
+For any sequence of traces $u^{(1)}, u^{(2)},\dots$,
+$u^{(i)} \in Q$ implies $u^{(i)} \in Q'$ because $Q \subseteq Q'$,
+so $\lim_i u^{(i)} \in \overline{Q}$ implies
+$\lim_i u^{(i)} \in \overline{Q'}$.
+Therefore, $\overline{Q} \subseteq \overline{Q'}.$
+
+\medskip
+
+Idempotent:
+
+Since $\overline{\overline{Q}} \supseteq \overline{Q}$ is proven by extensiveness,
+we only have to prove $\overline{\overline{Q}} \subseteq \overline{Q}$.
+
+Assuming there is a trace $u \in \overline{\overline{Q}}$ such that
+$u \notin \overline{Q}$.
+There exists an infinite sequence of traces where each $u^{(i)} \in \overline{Q}$
+and $u = \lim_i u^{(i)}$.
+Since each $u^{(i)}$ belongs $\overline{Q}$,
+there is an infinite sequence of traces where each $u^{(i)(j)} \in Q$ s.t.
+$u^{(i)} = \lim_j u^{(i)(j)}$.
+We now can construct a new infinite sequence $u^{(1)(1)}, u^{(2)(2)}, \dots$
+by selecting those $u^{(k)(k)} \in Q$,
+and we argue that $u = \lim_k u^{(k)(k)}$.
+By definition, we know the following is true.
+$$
+\begin{array}{rl}
+      & \forall m\geq 0. \exists n\geq 0 . \forall k \geq n.
+        u^{(k)(k)}_1 u^{(k)(k)}_2\dots u^{(k)(k)}_m = u^{(k)}_1 u^{(k)}_2 \dots u^{(k)}_m \\
+\land & \forall m\geq 0. \exists n\geq 0 . \forall k \geq n.
+        u^{(k)}_1 u^{(k)}_2\dots u^{(k)}_m = u_1 u_2 \dots u_m
+\end{array}
+$$
+
+Although existential quantifer is not distributive over $\land$,
+we argue that one can always select the larger $n$ so that
+both clauses will be valid.
+Therefore, we can infer that
+$$
+\forall m\geq 0. \exists n\geq 0 . \forall k \geq n.
+u^{(k)(k)}_1 u^{(k)(k)}_2\dots u^{(k)(k)}_m = u_1 u_2 \dots u_m
+$$
+and prove that $u = \lim_k u^{(k)(k)} \in \overline{Q}$ which
+contradicts our assumption. 
+
+\item Define a canonical monitor for the property
+\begin{center}
+``A file can only be accessed if it is open.''
+\end{center}
+That is, the file can only be accessed if it was opened at some moment
+in the past and it was not closed since then.
+Suppose $\Sigma$ consists of the events/actions $\{o,a,c\}$,
+where $o$ stands for ``file open'', $a$ for ``file access'',
+and $c$ for ``file close''.
+
+Ans.
+
+\newcommand{\monitor}{\ensuremath{\mathcal{N}}\xspace}
+For this property, we only need 2 states to indicate
+when the file is closed (state 0) and open (state 1).
+The canonical monitor \monitor for the property is defined as follow.
+$$
+\begin{array}{l}
+\monitor : \Nat \times \Sigma \rightharpoondown \Nat \\
+\monitor(0, c) = 0\\
+\monitor(0, o) = 1\\
+\monitor(1, c) = 0\\
+\monitor(1, o) = 1\\
+\monitor(1, a) = 1
+\end{array}
+$$
+Following the definition, $S_\monitor = \{0, 1\}$ and
+$\mathcal{L}(\monitor) = (c+o(o+a)^*c)^*(\epsilon+o(o+a)^*)$
+
+\end{enumerate}
+
+\end{document}
