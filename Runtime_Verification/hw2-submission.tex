@@ -166,6 +166,12 @@ the bad-prefixes for $\Lang(\neg\varphi)$ is clearly not $\Sigma^*$.
 
 \item 
 
+\textcolor{red}{
+Given $\varphi$, try to construct $ \varphi \land \psi$ so that
+$\psi$ describes the stutter when finite trace is extended to infinite trace.
+And then maybe check the validity of $\varphi \leftrightarrow \varphi \land \psi$
+}
+
 \end{enumerate}
 
 
@@ -395,6 +401,11 @@ Ans.
 		$s_4 \rightsquigarrow e ? (b?s_3 s_4 : s_3) : \emptyset$
 	\end{subfigure}
 \end{figure}
+
+\textcolor{red}{
+	The answer to $a\land\circ(\F b)\land \F(\G(e))$ after collapsing is wrong.
+	Node 1 is also a total SCC and goes to accepting state, so it can be collapsed.
+}
 
 \end{enumerate}
 

@@ -1,0 +1,99 @@
+\documentclass{article}
+
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[noend]{algorithm2e}
+\usepackage{xspace}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usetikzlibrary{positioning, automata}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{\Large\bfseries CS 598: Runtime Verification \\
+Spring 2017 \\
+Homework 3}
+\author{Chiao Hsieh, chsieh16@illinois.edu}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item Theorem 19 showed that only two temporal operators are actually needed.
+All the others can be regarded as derived operators.
+This is similar to how only two logical connectives are actually needed in 
+propositional logic, say $\neg$ and $\land$.
+Therefore, it is tempting to pick only two temporal operators and then desugar
+all the others to them.
+Explain the drawbacks of doing so in terms of the time/space complexity of the
+resulting monitors,
+addressing each of the discussed monitoring approaches separately:
+rewriting (Section 10.4), monitor generation (Section 10.5) including
+post-generation optimizations (Section 10.5.3),
+as well as directly-optimal monitor generation (Section 10.7).
+
+Ans.
+
+
+\item Consider the four derived operators in Section 11.3.
+Modify the \textsc{ptCaRet} monitor synthesis algorithm in Section 11.4.2,
+as well as the related results that yield its correctness,
+to generate monitoring code directly for these derived operators,
+without first desugaring them to the standard operators.
+
+(do only $\overline{S_c}$)
+
+Ans.
+
+
+\item Manually execute the CFG monitoring algorithm in Figure 12.6 for the
+\texttt{SafeLock} property in Section 12.1.1 with its LALR(1) table in Table 12.2,
+on the following observed trace:
+\texttt{begin begin acquire acquire release release end begin acquire release end
+end begin end}.
+Explain only the major steps.
+The purpose of this exercise to is to demonstrate that you understand the CFG
+monitoring algorithm, including the handling of the \$ event.
+
+Ans.
+
+\item Revise the pattern-match automata and rewriting algorithms in Figures~13.4
+and 13.8, respectively.
+In class, it was suggested that there was a problem in these algorithms with how
+pattern-matching was done.
+Can you find a problem, or you think they are correct?
+Explain with enough detail to show that you understand the algorithm.
+
+Ans.
+
+
+\item String rewriting is more general than CFG monitoring.
+Specifically, we can associate an equivalent string rewrite system to any CFG,
+and then use the former to do monitoring. 
+Describe the general procedure to translate a CFG to a string rewrite system.
+Then apply the general procedure manually to the \texttt{SafeLock} CFG property
+in Exercise 22,
+and redo Exercise 26 with the resulting SRS.
+How does the resulting SRS monitor compare with the one in Exercise 26?
+How about the one in Exercise 22?
+Comment on the asymptotic complexity of monitoring CFG (Chapter 12) vs monitoring
+the corresponding SRS.
+
+Ans.
+
+
+\newcommand{\ALTL}{\texttt{ALTL}\xspace}
+\item Definition 62 shows how to translate \ALTL to future-time LTL.
+Give an equivalent translation of \ALTL to past-time LTL,
+and exemplify it on the \ALTL formula in Example 18.
+Compare monitoring \ALTL using the algorithm described in Section 14.4,
+with monitoring the corresponding past-time LTL using the optimized
+algorithm in Chapter 10.
+
+Ans.
+
+\end{enumerate}
+
+\end{document}
