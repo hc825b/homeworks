@@ -3,6 +3,9 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{unicode-math}
+\setmathfont{latinmodern-math.otf}
+\setmathfont[range=\diamondcdot]{xits-math.otf}
 \usepackage[noend]{algorithm2e}
 \usepackage{xspace}
 \usepackage{enumerate}
@@ -11,6 +14,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{float}
+\usepackage{longtable}
 
 \title{\Large\bfseries CS 598: Runtime Verification \\
 Spring 2017 \\
@@ -19,6 +23,16 @@ Homework 3}
 
 \begin{document}
 \maketitle
+
+\newcommand{\ptLTL}{\textsc{ptLTL}\xspace}
+\newcommand{\BigO}{\ensuremath{\mathcal{O}}\xspace}
+
+\newcommand{\TT}{\texttt{true}\xspace}
+\newcommand{\FF}{\texttt{false}\xspace}
+\newcommand{\Prev}{\ensuremath{\odot}\xspace}
+\newcommand{\Since}{\ensuremath{S_s}\xspace}
+\newcommand{\PastF}{\ensuremath{\diamondcdot}\xspace}
+\newcommand{\PastG}{\ensuremath{\boxdot}\xspace}
 
 \begin{enumerate}
 \item Theorem 19 showed that only two temporal operators are actually needed.
@@ -36,17 +50,98 @@ as well as directly-optimal monitor generation (Section 10.7).
 
 Ans.
 
+Let's choose $\{\Prev, \Since\}$ to desugar any \ptLTL formula.
+We can rewrite all other temporal operators with only these 2 operators as follows.
+
+\[
+\begin{array}{lll}
+	\PastF \varphi                   & = & \TT \Since \varphi                                                 \\
+	\PastG \varphi                   & = & \neg (\TT \Since \neg \varphi)                                     \\
+	\varphi_1 S_w \varphi_2          & = & (\neg (\TT \Since \neg \varphi_1)) \lor \varphi_1 \Since \varphi_2 \\
+	\uparrow \varphi                 & = & \varphi \land \neg \Prev \varphi                                   \\
+	\downarrow \varphi               & = & \neg \varphi \lor \Prev \varphi                                    \\
+	\lbrack \varphi_1, \varphi_2 )_s & = & \neg \varphi_2 \land ((\Prev \neg \varphi_2) \Since \varphi_1)     \\
+	\lbrack \varphi_1, \varphi_2 )_w & = & \neg \varphi_2 \land ((\Prev \neg \varphi_2) S_w \varphi_1)        \\
+	                                 & = & \neg \varphi_2 \land ((\neg (\TT \Since \neg (\Prev \neg \varphi_2))) \lor (\Prev \neg \varphi_2) \Since \varphi_1)        \\
+\end{array}
+\]
+
+As shown above, we can see that to desugar $S_w$, $\uparrow$, $\downarrow$,
+$\lbrack , )_s$, and $\lbrack , )_w$ operators, it creates copies of sub-formulas
+$\varphi_1$ and $\varphi_2$.
+Therefore, the size of desugared formula can grow exponentially large.
+
+\textbf{Rewriting}
+
+If we na\"ively construct a tree structure for the desugared formula,
+the space complexity becomes $\BigO(2^m)$ for a \ptLTL formula of original size
+$m$ since we need to store a node for each operator of the desugared formula.
+If we use the same recursive semantic for $\{\Prev, \Since\}$ on this tree,
+the time complexity is $\BigO(n \cdot 2^{m})$ for a trace of $n$ events.
+
+However, if we construct a DAG structure in which duplicated sub-formulas 
+for desugaring are represented by the same sub-DAG,
+the size of the DAG is only proportional to $m$.
+Hence, the space and time complexity are still $\BigO(m)$ and $\BigO(m \cdot n)$.
+
+\textbf{Monitor Generation with Post-generation Optimizations}
+
+In the monitor generation algorithm, the number of bits required for $now$
+vectors is determined by the number of unique sub-formulas.
+Similar to DAG structure discussed above, the size of $now$ vector for
+desugared formula is still proportional to $m$. 
+Therefore, the space complexity is $\BigO(m)$ before optimization.
+
+After post-generation optimizations,
+the number of bits is reduced to the number of temporal operators.
+In the desugared formula, the number of unique sub-formulas with temporal operator
+as root could be 4 times more if we observe $\lbrack , )_w$ operator.
+The space complexity is $\BigO(4\cdot \log(k))$ where $k$ is the number of
+temporal operators in original formula.
+The time complexity should stay the same, that is, $\BigO(n \cdots m)$.
+
+\textbf{Directly Optimal Monitor Generation}
+
+The generated monitor using directly optimal monitor generation produces the monitor
+with the same time and space complexity as the post-generation optimization.
+Therefore, the above analysis should work, and the complexity should be the same.
+
+\newcommand{\CALL}{\texttt{call}\xspace}
+\newcommand{\RETURN}{\texttt{return}\xspace}
+\newcommand{\BEGIN}{\texttt{begin}\xspace}
+\newcommand{\END}{\texttt{end}\xspace}
+\newcommand{\ASince}{\overline{S}\xspace}
+\newcommand{\APrev}{\overline{\Prev}\xspace}
 
 \item Consider the four derived operators in Section 11.3.
 Modify the \textsc{ptCaRet} monitor synthesis algorithm in Section 11.4.2,
 as well as the related results that yield its correctness,
 to generate monitoring code directly for these derived operators,
 without first desugaring them to the standard operators.
-
 (do only $\overline{S_c}$)
 
 Ans.
 
+Observing each definition of the derived operators,
+we can rewrite it with a recursive definition.
+
+\newcommand{\Sc}{\ensuremath{\overline{S_c}}\xspace}
+
+$$
+\begin{array}{lll}
+	\psi_1\Sc\psi_2 & = & (\CALL \to \psi_1)\ASince (\BEGIN \land \Prev \psi_2)                                                      \\
+	                & = & (\BEGIN\land\Prev\psi_2)\lor((\CALL\to\psi_1)\land\APrev((\CALL\to\psi_1)\ASince(\BEGIN\land\Prev\psi_2))) \\
+	                & = & (\BEGIN\land\Prev\psi_2)\lor((\CALL\to\psi_1)\land\APrev(\psi_1\Sc\psi_2))
+\end{array}
+$$
+
+We then can add a rule to directly synthesize $\psi_1 \Sc \psi_2$ in the algorithm
+\begin{itemize}
+	\item if $\phi = \psi_1\Sc\psi_2$ then
+	
+	$Code^\varphi_{before}\leftarrow Code^{\varphi}_{before}
+	(\beta_\phi := (s(\BEGIN)\land\alpha_{\psi_2})\lor((\CALL\to\overline{\psi_1})\land\beta_\phi))$
+\end{itemize}
 
 \item Manually execute the CFG monitoring algorithm in Figure 12.6 for the
 \texttt{SafeLock} property in Section 12.1.1 with its LALR(1) table in Table 12.2,
@@ -59,6 +154,37 @@ monitoring algorithm, including the handling of the \$ event.
 
 Ans.
 
+\newcommand{\ACQ}{\texttt{acquire}\xspace}
+\newcommand{\REL}{\texttt{release}\xspace}
+\newcommand{\REDUCE}{\ensuremath{reduce}}
+\newcommand{\SHIFT}{\ensuremath{shift}}
+
+\begin{longtable}{l|l|l|r|l|r}
+	State & Event  & Action        & Temp Stack & Goto          &           Stack \\ \hline
+	      &        &               &            &               &               0 \\ \hline
+	0     & \BEGIN & \SHIFT(16)    &            &               &            16,0 \\ \hline
+	16    & \BEGIN & \SHIFT(16)    &            &               &         16,16,0 \\ \hline
+	16    & \ACQ   & \SHIFT(14)    &            &               &      14,16,16,0 \\ \hline
+	14    & \ACQ   & \SHIFT(14)    &            &               &   14,14,16,16,0 \\ \hline
+	14    & \REL   & \SHIFT(1)     &            &               & 1,14,14,16,16,0 \\
+	1     & \$     & \REDUCE(S, 2) & 14,16,16,0 & Goto[14] = 10 &   10,14,16,16,0 \\ \hline
+	10    & \REL   & \SHIFT(3)     &            &               & 3,10,14,16,16,0 \\
+	3     & \$     & \REDUCE(S, 3) &    16,16,0 & Goto[16] = 11 &      11,16,16,0 \\ \hline
+	11    & \END   & \SHIFT(4)     &            &               &    4,11,16,16,0 \\
+	4     & \$     & \REDUCE(S, 3) &       16,0 & Goto[16] = 11 &         11,16,0 \\ \hline
+	11    & \BEGIN & \SHIFT(17)    &            &               &      17,11,16,0 \\ \hline
+	17    & \ACQ   & \SHIFT(14)    &            &               &   14,17,11,16,0 \\ \hline
+	14    & \REL   & \SHIFT(1)     &            &               & 1,14,17,11,16,0 \\
+	1     & \$     & \REDUCE(S, 2) & 17,11,16,0 & Goto[17] = 13 &   13,17,11,16,0 \\ \hline
+	13    & \END   & \SHIFT(8)     &            &               & 8,13,17,11,16,0 \\
+	8     & \$     & \REDUCE(S, 4) &       16,0 & Goto[16] = 11 &         11,16,0 \\ \hline
+	11    & \END   & \SHIFT(4)     &            &               &       4,11,16,0 \\
+	4     & \$     & \REDUCE(S, 3) &          0 & Goto[0] = 9   &             9,0 \\ \hline
+	9     & \BEGIN & \SHIFT(17)    &            &               &          17,9,0 \\ \hline
+	17    & \END   & \SHIFT(6)     &            &               &        6,17,9,0 \\
+	6     & \$     & \REDUCE(S, 3) &          0 & Goto[0] = 9   &             9,0
+\end{longtable}
+
 \item Revise the pattern-match automata and rewriting algorithms in Figures~13.4
 and 13.8, respectively.
 In class, it was suggested that there was a problem in these algorithms with how
@@ -68,6 +194,23 @@ Explain with enough detail to show that you understand the algorithm.
 
 Ans.
 
+The algorithm in Figure~13.4 has problem matching the given example,
+\BEGIN \BEGIN \ACQ \BEGIN \END, in Section~13.3.3.
+Supposedly, the execution output should match the table in Figure~13.5.
+However, the conditional at line~17 in Figure~13.4 does not distinguish whether
+the transition is self-loop at state 0 or from other states.
+Line~17-22 is supposed to handle only self transitions at state 0.
+This causes the problem that transitions from states != 0 to state 0 are handled
+incorrectly.
+For the given example, we can see that, after processing \BEGIN \BEGIN,
+the current state is 1 and next state is 0.
+The algorithm will execute true-branch of line~17 and incorrectly call
+$second.next(1)$ at line~19,
+so at 3rd iteration it reads the symbol \ACQ which is inconsistent with Figure~13.5.
+
+A fix to the algorithm in Figure~13.4 is to correct the branch condition at line~17,
+i.e., change $(nextState = 0)$ to $(state =0 \land nextState = 0)$.
+Similarly, we have to fix line~32 in Figure~13.8 the same way.
 
 \item String rewriting is more general than CFG monitoring.
 Specifically, we can associate an equivalent string rewrite system to any CFG,
@@ -83,6 +226,37 @@ the corresponding SRS.
 
 Ans.
 
+\textbf{CFG specification to SRS}
+
+First, we can remove $\epsilon$-rules of the given CFG specification.
+Let the CFG = $(V, \Sigma, R, S)$ where $V$ is the set of non-terminal symbols,
+$S \in V$ is the starting symbol, and $R$ is the set of production rules.
+For each $(X, w) \in R \subseteq$, $X \in V$ is the left-hand side non-terminal symbol
+and $w \in (\Sigma \cup V)^+$ is the produced non-empty word.
+
+We then define a SRS over $\Sigma \cup V$.
+First, we construct a special rule $S \to \epsilon$;
+since once we can reduce it to starting symbol $S$,
+the string is actually accepted by the original CFG grammar.
+Then for each rule $(X, w) \in R$, we construct a rule $w \to X$.
+
+We now run the procedure on \texttt{SafeLock} CFG property.
+First, we derive the grammar without $\epsilon$-rules shown as below.
+
+\begin{tabular}{rcl}
+	S & \to & \ACQ \REL | S \ACQ \REL | \ACQ M \REL | \ACQ \REL A                       \\
+	  &  |  & S \ACQ M \REL | S \ACQ \REL A                                             \\
+	  &  |  & \ACQ M \REL A | S \ACQ M \REL A                                           \\
+	M & \to & \BEGIN \END | M \BEGIN \END | \BEGIN M \END | M \BEGIN M \END | \ACQ \REL \\
+	  &  |  & M \ACQ \REL | \ACQ M \REL | M \ACQ M \REL                                 \\
+	A & \to & \BEGIN | \END | A\ \BEGIN | A\ \END
+\end{tabular}
+
+Since the translation to SRS is rather straight forward, we skip this part and directly
+rewrite the given string
+\texttt{begin begin acquire acquire release release
+end begin acquire release end end begin end}.
+
 
 \newcommand{\ALTL}{\texttt{ALTL}\xspace}
 \item Definition 62 shows how to translate \ALTL to future-time LTL.
@@ -93,6 +267,9 @@ with monitoring the corresponding past-time LTL using the optimized
 algorithm in Chapter 10.
 
 Ans.
+
+Following Proposition~21 in Section~14.3,
+we first define 
 
 \end{enumerate}
 
