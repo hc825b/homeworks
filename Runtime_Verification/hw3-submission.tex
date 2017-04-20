@@ -143,7 +143,7 @@ We then can add a rule to directly synthesize $\psi_1 \Sc \psi_2$ in the algorit
 	(\beta_\phi := (s(\BEGIN)\land\alpha_{\psi_2})\lor((\CALL\to\overline{\psi_1})\land\beta_\phi))$
 \end{itemize}
 
-\item Manually execute the CFG monitoring algorithm in Figure 12.6 for the
+\item\label{p3} Manually execute the CFG monitoring algorithm in Figure 12.6 for the
 \texttt{SafeLock} property in Section 12.1.1 with its LALR(1) table in Table 12.2,
 on the following observed trace:
 \texttt{begin begin acquire acquire release release end begin acquire release end
@@ -226,37 +226,109 @@ the corresponding SRS.
 
 Ans.
 
-\textbf{CFG specification to SRS}
+Since the algorithm proposed in Chapter 12 can only handle the LR subset of
+Context Free Language, we restrict our string rewriting system to deal with LR(1)
+class as well.
 
-First, we can remove $\epsilon$-rules of the given CFG specification.
+\textbf{CFG in LR(1) to SRS}
+
 Let the CFG = $(V, \Sigma, R, S)$ where $V$ is the set of non-terminal symbols,
 $S \in V$ is the starting symbol, and $R$ is the set of production rules.
-For each $(X, w) \in R \subseteq$, $X \in V$ is the left-hand side non-terminal symbol
-and $w \in (\Sigma \cup V)^+$ is the produced non-empty word.
+%For each $(X \to w) \in R$, $X \in V$ is the left-hand side non-terminal symbol
+%and $w \in (\Sigma \cup V)^*$ is the produced word.
+First, we construct LR(1) parser including the set of states, $Q$ as well as
+action and goto tables, $action$ and $goto$, for the given CFG.
 
-We then define a SRS over $\Sigma \cup V$.
-First, we construct a special rule $S \to \epsilon$;
-since once we can reduce it to starting symbol $S$,
-the string is actually accepted by the original CFG grammar.
-Then for each rule $(X, w) \in R$, we construct a rule $w \to X$.
+We then define a SRS over $\Sigma \cup \{\$, -, \texttt{\#goto}\} \cup V \cup Q$.
+Intuitively, we want to rewrite the given string by maintaining a stack in front
+of the special symbol \$,
+and eventually consume both the event sequence and the stack with $-$.
+The SRS essentially simulates a Pushdown Automaton.
+Formally, we constructs the rules in following orders.
 
-We now run the procedure on \texttt{SafeLock} CFG property.
-First, we derive the grammar without $\epsilon$-rules shown as below.
+First, for each $action(q_1, e) = reduce(X, n)$ where $q_1 \in Q$,
+$e \in \Sigma$, $X \in V$, and $n \in \mathbb{N}$, we add following rule to SRS.
+$$
+    q_1\$ \to q_1 \underbrace{- \cdots -}_{n} \texttt{\#goto} X\$
+$$$$
+    q_1\$e \to q_1 \underbrace{- \cdots -}_{n} \texttt{\#goto} X\$
+$$
+Also for each entry $q_2 = goto(X, q1)$ in the $goto$ table,
+we add the rule to push state $q_2$.
+$$
+    q_1 \texttt{\#goto} X \$ \to q_1 q_2 \$
+$$
+After all rules for $reduce$ action are created, we add another rule
+$$
+    . - \to \texttt{\#epsilon}
+$$
+where `$.$' matches any symbol in front of $-$.
 
-\begin{tabular}{rcl}
-	S & \to & \ACQ \REL | S \ACQ \REL | \ACQ M \REL | \ACQ \REL A                       \\
-	  &  |  & S \ACQ M \REL | S \ACQ \REL A                                             \\
-	  &  |  & \ACQ M \REL A | S \ACQ M \REL A                                           \\
-	M & \to & \BEGIN \END | M \BEGIN \END | \BEGIN M \END | M \BEGIN M \END | \ACQ \REL \\
-	  &  |  & M \ACQ \REL | \ACQ M \REL | M \ACQ M \REL                                 \\
-	A & \to & \BEGIN | \END | A\ \BEGIN | A\ \END
+Second, for each $action(q_1, e) = shift(q_2)$ where $q_1, q_2 \in Q$ and
+$e \in \Sigma$, we construct the rule below.
+$$
+   q_1\$e \to q_1 q_2\$
+$$
+
+Third, for each $action(q, e) = accept$, we simply rewrite
+$
+    q \$ e \to \texttt{\#succeed}
+$
+so that the monitor algorithm will terminate accordingly.
+
+Finally, we have to put the initial stack in front of event sequence at initialization.
+That is,
+$$
+    \textasciicircum e \to q_0 \$ e
+$$
+where $e \in \Sigma$ can be any event, $q_0$ is the initial state in $Q$,
+and \textasciicircum\ means the begin of the string.
+
+We now run the procedure on \texttt{SafeLock} CFG property based on the LR table
+at Table~12.2.
+We skip the generation of pattern match automaton for the SRS since it's
+basically a visualization of the $action$ and $goto$ tables.
+We now run part of the rewriting steps. 
+
+\begin{tabular}{rl}
+	         & \texttt{begin begin acq acq rel rel end begin acq rel end end begin end}                     \\
+	   $\to$ & 0 \$ \texttt{begin begin acq acq rel rel end begin acq rel end end begin end}                \\
+	   $\to$ & 0 16 \$ \texttt{begin acq acq rel rel end begin acq rel end end begin end}                   \\
+	   $\to$ & 0 16 16 \$ \texttt{acq acq rel rel end begin acq rel end end begin end}                      \\
+	   $\to$ & 0 16 16 14 \$ \texttt{acq rel rel end begin acq rel end end begin end}                       \\
+	   $\to$ & 0 16 16 14 14 \$ \texttt{rel rel end begin acq rel end end begin end}                        \\
+	   $\to$ & 0 16 16 14 14 1 \$ \texttt{rel end begin acq rel end end begin end}                          \\
+	   $\to$ & 0 16 16 14 14 1 $--$ \texttt{\#goto} $S$ \$ \texttt{rel end begin acq rel end end begin end} \\
+	 $\to^*$ & 0 16 16 14 \texttt{\#goto} $S$ \$ \texttt{rel end begin acq rel end end begin end}           \\
+	   $\to$ & 0 16 16 14 10 \$ \texttt{rel end begin acq rel end end begin end}                            \\
+	   $\to$ & 0 16 16 14 10 3 \$ \texttt{end begin acq rel end end begin end}                              \\
+	   $\to$ & 0 16 16 14 10 3 $---$ \texttt{\#goto} $S$ \$ \texttt{end begin acq rel end end begin end}    \\
+	 $\to^*$ & 0 16 16 \texttt{\#goto} $S$ \$ \texttt{end begin acq rel end end begin end}                  \\
+	   $\to$ & 0 16 16 11 \$ \texttt{end begin acq rel end end begin end}                                   \\
+	   $\to$ & 0 16 16 11 4 \$ \texttt{begin acq rel end end begin end}                                     \\
+	   $\to$ & 0 16 16 11 4 $---$ \texttt{\#goto} $S$ \$ \texttt{begin acq rel end end begin end}           \\
+	 $\to^*$ & 0 16 \texttt{\#goto} $S$ \$ \texttt{begin acq rel end end begin end}                         \\
+	   $\to$ & 0 16 11 \$ \texttt{begin acq rel end end begin end}                                          \\
+	$\cdots$ &\\
+     $\to^*$ & 0 \$
 \end{tabular}
 
-Since the translation to SRS is rather straight forward, we skip this part and directly
-rewrite the given string
-\texttt{begin begin acquire acquire release release
-end begin acquire release end end begin end}.
+\textbf{Comparison}
 
+Comparing to Figure~13.3 for Exercise~26, the generated pattern match automaton
+of our approach is significantly larger.
+The number of states of our automaton is proportional to the rows of LR(1) table,
+and the number of edges is linear to the size of goto table and shift in action table.
+
+Comparing to Exercise~22 (Problem~\ref{p3}), the asymptotic complexity of our
+approach is guaranteed worse than CFG monitor algorithm because both approaches
+use the LR table to determine state transitions and push/pop stack elements.
+For CFG monitor, it simply queries the action and goto tables and updates stack
+accordingly
+However, for SRS monitor, it has to reset first and second iterators to the head
+of the event string whenever the string is rewritten.
+Therefore, the complexity of our approach should at least be quadratic to the
+size of currently observed string.
 
 \newcommand{\ALTL}{\texttt{ALTL}\xspace}
 \item Definition 62 shows how to translate \ALTL to future-time LTL.
@@ -269,7 +341,8 @@ algorithm in Chapter 10.
 Ans.
 
 Following Proposition~21 in Section~14.3,
-we first define 
+we first define $\in_i$ using \ptLTL.
+The 
 
 \end{enumerate}
 
