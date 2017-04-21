@@ -5,15 +5,9 @@
 \usepackage{amssymb}
 \usepackage{unicode-math}
 \setmathfont{Latin Modern Math}
-\setmathfont[range=\diamondcdot]{Asana Math}
-\usepackage[noend]{algorithm2e}
+\setmathfont[range=\diamondcdot]{XITS Math}
 \usepackage{xspace}
 \usepackage{enumerate}
-\usepackage{tikz}
-\usetikzlibrary{positioning, automata}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{float}
 \usepackage{longtable}
 
 \title{\Large\bfseries CS 598: Runtime Verification \\
@@ -367,8 +361,36 @@ $$
 $$
 For the rest of the operators, we have to consider the case that the property can
 hold in the future but inconclusive with current history.
-Therefore, the translated \ptLTL formula will also allow that the property can hold in the future.
-In the table below, each row describes the constraint that should hold on the current history.
+Therefore, the translated \ptLTL formula will also allow that the property can hold in the future, but reject if the trace definitely violates the property.
+For monitoring $Overlaps(i,j)$ as an example, observed event traces (each column is an event) can be as below.
+
+\begin{center}
+$
+\begin{array}{*{4}{c}|}
+	  \in_i    & \in_i & \in_i & \in_i \\
+	\not \in_j & \in_j & \in_j & \in_j
+\end{array}
+$\hspace{3cm}
+$
+\begin{array}{*{4}{c}|}
+	\not\in_i & \in_i & \in_i & \in_i \\
+	\not\in_j & \in_j & \in_j & \in_j
+\end{array}
+$
+\end{center}
+
+In the left case, we know, if $i$ stops before $j$ stops in the future,
+the trace can still satisfy $Overlaps(i,j)$; hence it should be allowed.
+However, in the right case, the trace could never satisfy $Overlaps(i,j)$ because $i$ and $j$ start at the same time,
+so it must be rejected.
+This is depicted by the second rule $(\in_j\land\in_i\land\PastF(\neg\in_j\land\in_i))$ for $Overlaps(i,j)$.
+The rule rejects the right case because $\neg\in_j\land\in_i$ must be seen in the past.
+
+In Table~\ref{ALTL2ptLTL}, each row describes the constraint that should hold on the current history,
+and the final \ptLTL formula for an \ALTL operator is the disjunction of all rows.
+
+\begin{table}[t]
+    \caption{Translation from \ALTL to \ptLTL}\label{ALTL2ptLTL}
 $$
 \begin{array}{lcl}
 	\ALTL         &         & LTL \text{ Formula}                                                              \\ \hline
@@ -398,6 +420,7 @@ $$
 	Occurs(p, i)  & \mapsto & \PastF (\in_i \land\ p) \lor \in_i \lor \PastG(\neg \in_i)  \\
 \end{array}
 $$
+\end{table}
 
 \textbf{Comparison}
 
