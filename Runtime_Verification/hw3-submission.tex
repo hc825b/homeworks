@@ -4,8 +4,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{unicode-math}
-\setmathfont{latinmodern-math.otf}
-\setmathfont[range=\diamondcdot]{xits-math.otf}
+\setmathfont{Latin Modern Math}
+\setmathfont[range=\diamondcdot]{Asana Math}
 \usepackage[noend]{algorithm2e}
 \usepackage{xspace}
 \usepackage{enumerate}
@@ -279,7 +279,7 @@ so that the monitor algorithm will terminate accordingly.
 Finally, we have to put the initial stack in front of event sequence at initialization.
 That is,
 $$
-    \textasciicircum e \to q_0 \$ e
+    \text{\textasciicircum} e \to q_0 \$ e
 $$
 where $e \in \Sigma$ can be any event, $q_0$ is the initial state in $Q$,
 and \textasciicircum\ means the begin of the string.
@@ -342,7 +342,82 @@ Ans.
 
 Following Proposition~21 in Section~14.3,
 we first define $\in_i$ using \ptLTL.
-The 
+In the proposition, we know the constraint consists of 2 parts,
+the interval should happen eventually and is convex.
+The first part is actually not monitorable as it is not a safety property.
+Therefore, we only translate the second part.
+Let $\mathcal(M) = (T, <, v, \sigma)$ be a \ALTL model and $\mathcal{N}$ is
+the equivalent \ptLTL model.
+Since the valuation $\sigma(i)$ of interval $i \in \mathcal{I}$ is convex
+if and only if there are no time points (backwardly) $t_m, t_n, t_k$ with $0 < m < n < k$
+such that $t_m, t_k \in \sigma(i)$ and $t_n \notin \sigma(i)$,
+we specify this in \ptLTL as below.
+$$
+	\mathcal{N} \models \neg \PastF (\in_i \land \PastF( \neg \in_i \land \PastF \in_i))
+$$
+Note that the constraint is essentially just replace future temporal operator with the past version.
+This is because the convex property is not affected by the direction of time.
+Similarly, we can derive other time independent \ALTL operators in the same manner.
+$$
+\begin{array}{lcl}
+	\text{Operator} &         & LTL \text{ Formula}       \\ \hline
+	Equals(i, j)    & \mapsto & \PastG (\in_i \iff \in_j) \\
+	Holds(p, i)     & \mapsto & \PastG (\in_i \implies p) \\
+\end{array}
+$$
+For the rest of the operators, we have to consider the case that the property can
+hold in the future but inconclusive with current history.
+Therefore, the translated \ptLTL formula will also allow that the property can hold in the future.
+In the table below, each row describes the constraint that should hold on the current history.
+$$
+\begin{array}{lcl}
+	\ALTL         &         & LTL \text{ Formula}                                                              \\ \hline
+	              &         & \PastF(\in_j\land\PastF(\neg\in_j\land\neg\in_i\land\PastF\in_i)) \cdots \text{in or after $j$} \\
+	Before(i, j)  & \mapsto & \lor \PastF (\in_i \land \PastG \neg\in_j) \cdots \text{before $j$ and in or after $i$} \\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i) \cdots \text{before both $i$ and $j$} \\ \hline
+	              &         & \PastF(\in_j\land\PastF\in_i\land\neg\PastF(\in_j\land\in_i)\land\neg\PastF(\neg\in_j\land\neg\in_i\land\PastF\in_i)) \cdots \text{in or after $j$} \\
+	Meets(i, j)   & \mapsto & \lor (\in_i \land \PastG (\neg \in_j)) \cdots \text{before $j$ and in $i$}      \\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i) \cdots \text{before both $i$ and $j$} \\ \hline
+	              &         & \PastF(\in_j\land\neg\in_i\land\PastF(\in_j\land\in_i\land\PastF(\neg\in_j\land\in_i))) \cdots \text{after $i$ and in or after $j$} \\
+	Overlaps(i,j) & \mapsto & \lor (\in_j\land\in_i\land\PastF(\neg\in_j\land\in_i)) \cdots \text{in both $i$ and $j$} \\
+	              &         & \lor (\in_i\land \PastG(\neg\in_j)) \cdots \text{in $i$ and before $j$}                 \\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i)                                      \\ \hline
+	              &         & \PastF(\neg\in_j\land\in_i\land\PastF(\in_j\land\in_i\land\PastF(\neg\in_j\land\in_i))) \cdots \text{after $j$ and in or after $i$} \\
+	Contains(i,j) & \mapsto & \lor (\in_j\land\in_i\land\PastF(\neg\in_j\land\in_i)) \cdots \text{in both $i$ and $j$} \\
+	              &         & \lor (\in_i\land \PastG(\neg\in_j)) \cdots \text{in $i$ and before $j$}        \\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i)                                      \\ \hline
+	              &         & \PastG (\in_i \implies \in_j) \land \PastF(\in_j \land \neg \in_i) \land \neg \PastF(
+	              \in_j \land \in_i \land \PastF(\in_j \land \neg \in_i)) \\
+	Starts(i,j)   & \mapsto & \lor (\in_j \land \in_i \land \PastG(\in_j \iff \in_i)) \cdots \text{in both $i$ and $j$}\\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i)                                      \\ \hline
+	              &         & \PastG (\in_i \implies \in_j) \land \PastF(\in_j \land \neg \in_i) \land \neg \PastF(
+	              	              \in_j \land \neg \in_i \land \PastF\in_i) \cdots \text{after $i$ and $j$} \\
+	Ends(i,j)     & \mapsto & \lor (\in_j\land\in_i\land\PastF(\in_j\land\neg\in_i)) \cdots \text{in both $i$ and $j$} \\
+	              &         & \lor (\in_j\land \PastG(\neg\in_i)) \cdots \text{in $j$ and before $i$}        \\
+	              &         & \lor \PastG (\neg \in_j \land \neg \in_i)                                      \\ \hline
+	Occurs(p, i)  & \mapsto & \PastF (\in_i \land\ p) \lor \in_i \lor \PastG(\neg \in_i)  \\
+\end{array}
+$$
+
+\textbf{Comparison}
+
+If we use the \ALTL monitoring algorithm in Section 14.4,
+the procedure to process each incoming event is to update all monitor automata
+and check for satisfiability on the propositional formula part if some automata
+produced \TT or \FF.
+That is, given a \ALTL formula with $|\mathcal{I}|$ of intervals, $m$ \ALTL
+temporal operators, and $n$ propositional operators,
+the time complexity to process an event is $\BigO(|I| + m + NP(n))$ if we ignore
+the time to check atomic predicates.
+Further, the space complexity depends on the generated automata and SAT solving
+algorithm.
+A loose bound should be $\BigO(|I| + m + PSPACE(n))$.
+
+Other the other hand, based on the \ptLTL monitor generation algorithm,
+we can generate a monitor with time and space complexity of $\BigO(|\psi|)$.
+Following our translation from \ALTL to \ptLTL,
+$|\psi|$ should be proportional to $|I| + m + n$.
+Therefore, the time and space complexity should be $\BigO(|I| + m + n)$. 
 
 \end{enumerate}
 
