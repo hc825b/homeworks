@@ -1,0 +1,59 @@
+\documentclass{article}
+
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{enumerate}
+
+\title{\Large\bfseries CS 598: Runtime Verification \\
+Spring 2017 \\
+Homework 4}
+\author{Chiao Hsieh, chsieh16@illinois.edu}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+
+\item The garbage collection technique discussed in this chapter, specifically in Section~17.4,
+has been developed several years before the foundations of parametric monitoring presented in Chapter~15.
+Discuss the garbage collection technique and prove its correctness with respect to the algorithm in Figure~15.4.
+
+Ans.
+
+\item The causal maximal model techniques presented in Chapters~19 and 20 assumed
+that nothing is known about the code that produced the observed trace $\tau$
+except that it can produce $\tau$ when executed.
+In additional to the usual concurrent object events considered in the original
+technique in Chapter~19,
+the technique in Chapter~20 assumes that simple branch events of the form 
+$branch(t)$ are logged in $\tau$ whenever thread $t$ makes a control-flow choice.
+ In practice, such a choice is given by the result of some computation,
+such as, for example, evaluating some boolean expression, say $b$.
+
+This exercise requires you to extend the maximal causal model technique to take
+into account additional knowledge about the execution of the program,
+namely when the evaluation of the boolean expression $b$ starts and when it ends.
+Specifically, suppose that the events $branch(t)$ are replaced with pairs of
+events $branch(t, begin)$ and $branch(t,end)$ stating when the expression $b$
+starts being evaluated and, respectively, when its evaluation has terminated.
+
+Discuss how you extend or modify at least each of the following notions and
+results: feasible set of executions, feasibility closure, soundness theorem,
+maximality theorem, encoding as SMT formula.
+
+
+Ans.
+
+\item Same as Exercise 30, but suppose that now you know the entire expression$b$.
+That is, replace events $branch(t)$ with $branch(t,b)$,
+where $b$ is a Boolean expression over (some) shared variables.
+Assume that $b$ contains nothing but the usual arithmetic expression constructs
+and shared variables.
+
+Ans.
+
+\end{enumerate}
+
+\end{document}
