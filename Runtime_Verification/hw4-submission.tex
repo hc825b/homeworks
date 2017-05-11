@@ -22,6 +22,14 @@ Discuss the garbage collection technique and prove its correctness with respect 
 
 Ans.
 
+In order to prove the correctness of the garbage collection w.r.t the algorithm,
+we first discuss the 
+
+we provide the loop invariants for loops at line 2, 8, 9, and 16 in Figure~15.4,
+and describe the proof informally.
+
+
+
 \item The causal maximal model techniques presented in Chapters~19 and 20 assumed
 that nothing is known about the code that produced the observed trace $\tau$
 except that it can produce $\tau$ when executed.
@@ -43,10 +51,44 @@ Discuss how you extend or modify at least each of the following notions and
 results: feasible set of executions, feasibility closure, soundness theorem,
 maximality theorem, encoding as SMT formula.
 
-
+\newcommand{\Rest}{\ensuremath{\upharpoonright}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
 Ans.
 
-\item Same as Exercise 30, but suppose that now you know the entire expression$b$.
+If $branch(t, begin)$ and $branch(t,end)$ are also encoded in event traces,
+all prefixes of a consistent trace must contains equally many or more
+$branch(t, begin)$ then $branch(t, end)$ because a branch must begin before end
+but some begins may not match ends when prefixes stop at the middle of branches.
+Formally, for a given thread $t$, $\tau\Rest_{t,branch}$ should satisfy following grammar.
+$$
+\begin{array}{rcl}
+	S & ::= &        M \mid branch(t, begin)\ M \mid M\ branch(t, begin) \\
+	M & ::= & \epsilon \mid branch(t, begin)\ M\ branch(t, end) \mid M\ M
+\end{array}
+$$
+$M$ represents the grammar for matching pairs of $begin$ and $end$,
+and $S$ shows that we can insert $begin$ arbitrarily.
+The membership query to the language can be formulate as a FOL formula.
+
+We then add new axioms into \textit{Local Determinism} with the $branch$ events.
+\begin{itemize}
+\item \textbf{Branch Begin:}
+    \begin{itemize}
+	\item If $op(e_1) = branch(t, begin)$ and 
+		  $\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ then $\tau_2 e_1 \in \F$
+    \end{itemize}
+\item \textbf{Branch End:}
+    \begin{itemize}
+	\item If $op(e_1) = branch(t, end)$ and 
+		  $\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ then $\tau_2 e_1 \in \F$
+    \end{itemize}
+\end{itemize}
+
+
+
+
+
+\item Same as Exercise 30, but suppose that now you know the entire expression $b$.
 That is, replace events $branch(t)$ with $branch(t,b)$,
 where $b$ is a Boolean expression over (some) shared variables.
 Assume that $b$ contains nothing but the usual arithmetic expression constructs
