@@ -5,6 +5,11 @@
 \usepackage{amssymb}
 \usepackage{xspace}
 \usepackage{enumerate}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
 
 \title{\Large\bfseries CS 598: Runtime Verification \\
 Spring 2017 \\
@@ -23,12 +28,48 @@ Discuss the garbage collection technique and prove its correctness with respect 
 Ans.
 
 In order to prove the correctness of the garbage collection w.r.t the algorithm,
-we first discuss the 
+we describe the proof informally by discussing the usage of $\Delta$ at line 3,
+10, and 17 in Figure~15.4.
 
-we provide the loop invariants for loops at line 2, 8, 9, and 16 in Figure~15.4,
-and describe the proof informally.
+\newcommand{\pmapsto}{\ensuremath{\rightharpoondown}}
 
+The $\Delta(\theta_{max})$ at line 3 is for searching $max(\theta]_{\Theta}$
+by searching $\theta_{max} \in dom(\Theta)$ s.t $\theta_{max} \sqsubset \theta$ in reverse post-order.
+The incorrect garbage collection means that the monitor for $max(\theta]_{\Theta}$
+is unnecessary (and later garbage-collected) but some 
+$\theta' \sqsubset max(\theta]_{\Theta}$ is not,
+and it leads us to find wrong $\theta_{max}$. 
+According to Section 17.4, a monitor is marked unnecessary only when an instantiation
+$v_i$ of a parameter $x_i$ is already garbage-collected in the last event $e_m$
+stored in the monitor.
+Once an instantiation $v_i$ is proved unnecessary,
+it's impossible that newly arrived event $e\langle\theta\rangle$ will have
+$\theta(x_i) = v_i$.
+Therefore, the garbage-collection won't cause incorrectness here.
 
+The $\Delta(\theta_{comp} \sqcup \theta)$ at line 10 is to help build new monitors
+from existing compatible $\theta_{comp}$.
+The incorrect garbage collection means it deletes the monitor for
+$\theta_{comp} \sqcup \theta$ incorrectly, and therefore build a new monitor again.
+This is also impossible due to the same reason that,
+once an instantiation $v_i$ is proved unnecessary, it should not appear again.
+Hence if some $\theta_{comp} \sqcup \theta$ which contains $v_i$ is
+garbage-collected, it won't be constructed again.
+
+The $\Delta(\theta')$ with $\theta' \in \{\theta\} \cup \mathcal{U}$ at line 17
+is to update the states for monitors.
+The incorrect garbage collection would delete the monitors supposed to be updated
+before here.
+There are 2 cases to consider. First case is for those monitors created at line 7
+or line 11 when processing current event.
+It's trivially correct since newly created monitor is impossible to be 
+garbage-collected in its initially state.
+Second case is that the monitor is marked unnecessary after previous events.
+This is also impossible because a removed instantiation $v_i$ will never
+appear again.
+
+In summary, we proved that, for every usage of $\Delta$ in Figure 15.4,
+the garbage collection works correctly.
 
 \item The causal maximal model techniques presented in Chapters~19 and 20 assumed
 that nothing is known about the code that produced the observed trace $\tau$
@@ -56,37 +97,87 @@ maximality theorem, encoding as SMT formula.
 Ans.
 
 If $branch(t, begin)$ and $branch(t,end)$ are also encoded in event traces,
-all prefixes of a consistent trace must contains equally many or more
-$branch(t, begin)$ then $branch(t, end)$ because a branch must begin before end
-but some begins may not match ends when prefixes stop at the middle of branches.
-Formally, for a given thread $t$, $\tau\Rest_{t,branch}$ should satisfy following grammar.
-$$
-\begin{array}{rcl}
-	S & ::= &        M \mid branch(t, begin)\ M \mid M\ branch(t, begin) \\
-	M & ::= & \epsilon \mid branch(t, begin)\ M\ branch(t, end) \mid M\ M
-\end{array}
-$$
-$M$ represents the grammar for matching pairs of $begin$ and $end$,
-and $S$ shows that we can insert $begin$ arbitrarily.
-The membership query to the language can be formulate as a FOL formula.
+all prefixes of a consistent trace must contains equally many or one more
+$branch(t, begin)$ than $branch(t, end)$ because the evaluation must begin before end,
+and some begins may not match ends when the trace stop at the middle of evaluating $b$.
+Note that we assume branch evaluations cannot be nested and 
+a $branch(t, end)$ always matches the closest $branch(t, begin)$ in the past.
+However, these are not necessarily true since one can invoke a function call during
+evaluation and lead to branches in that function call,
+and, if exception handling happens during evaluation, $branch(t, end)$ may not be
+emitted for some $branch(t, begin)$.   
 
-We then add new axioms into \textit{Local Determinism} with the $branch$ events.
+Formally, for a given thread $t$ and $\tau\Rest_{t,branch} = e_1 e_2 \cdots e_n$,
+odd indexed events $e_{2k+1} = branch(t, begin)$ and even indexed events
+$e_{2k+2} = branch(t, end)$ for all $k > 0$.
+
+
+\textbf{Feasible Set of Executions}
+
+We replace the $branch$ axiom of \emph{Local Determinism} in Section 20.2.3
+with these 2 new axioms for $branch$ events.
 \begin{itemize}
-\item \textbf{Branch Begin:}
-    \begin{itemize}
-	\item If $op(e_1) = branch(t, begin)$ and 
-		  $\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ then $\tau_2 e_1 \in \F$
-    \end{itemize}
-\item \textbf{Branch End:}
-    \begin{itemize}
-	\item If $op(e_1) = branch(t, end)$ and 
-		  $\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ then $\tau_2 e_1 \in \F$
-    \end{itemize}
+\item \textbf{Branch Begin:}\newline
+	If $op(e_1) = branch(t, begin)$ and 
+	$\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ and $\tau_2 e_1$ is consistent
+	then $\tau_2 e_1 \in \F$
+\item \textbf{Branch End:}\newline
+	If $op(e_1) = branch(t, end)$ and 
+	$\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$ and $\tau_2 e_1$ is consistent
+	then $\tau_2 e_1 \in \F$
 \end{itemize}
 
+A feasible set of executions, \F, must satisfy \emph{Prefix-closeness} and
+the modified \emph{Local Determinism}.
+We now discuss the feasibility of traces constructed with the new $branch$ axioms.
 
+For \textbf{Branch Begin}, same as the argument in Section 20.2, the trace $\tau_2$ must reach
+the exact same branch condition as $\tau_1 e_1$ when every $read$ returns the
+same value.
+Further, we also require that $\tau_2 e_1$ is consistent;
+hence we won't append another $branch(t, begin)$ if it causes nested branch evaluation.
+Therefore, we can safely append $e_1 = branch(t, begin)$ to $\tau_2$
+because $\tau_2$ will reach the exact branch that $e_1$ is from in the program.
 
+For \textbf{Branch End}, in order for $b$ evaluates to the same value,
+all $read$ values between $branch(t, begin)$ and $branch(t, end)$ should be the same.
+Also we require $\tau_2 e_1$ consistent so the appended $branch(t, end)$ will match
+the last $branch(t, begin)$.
+Therefore, the traces inferred from these 2 axioms must be feasible.
 
+\textbf{Feasibility Closure}
+
+The feasibility closure $feasible(\tau)$ of a given trace $\tau$ is the smallest set
+of traces that contains $\tau$ and feasible as defined in Section 19.3.  
+
+\textbf{Soundness Theorem}
+
+To prove the soundness, we just have to modify the $branch$ part of the proof for
+Theorem 31 in Section 20.2.
+For　both $branch(t, begin)$ and $branch(t, begin)$,
+the proof is exactly the same as the original proof for $branch$
+because $\tau_1\Rest_{t,read} = \tau_2\Rest_{t,read}$　ensures
+that the same assignment to symbolic values is still valid for $\tau_2 e_1$.
+
+\textbf{Maximality Theorem}
+
+To prove maximality, we modify the proof for Theorem 32 in Section 20.2.4.
+In order to generate a witness CONC trace program which doesn't contain any 
+$\tau' \notin feasible(\tau)$,
+we use the same same trick to add an if statement with the condition
+to ensure the same $read$ values for every $branch(t, begin)$ and
+$branch(t, end)$ events.
+For other kind of events, we follow the same way to construct the program
+as described in Theorem 32. 
+Any trace $\tau'\notin feasible(\tau)$ cannot be produced by the program
+
+\textbf{Encoding as SMT formula}
+In order to support encoding constraints as described in Section 20.3.2,
+we encode $branch(t, begin)$ and $branch(t, end)$ the same way.
+$$
+\Phi_{cf}(e) = \bigwedge_{r \in \tau_e \Rest_{t, read}} \Phi_{cf}(r),
+\quad op(e) \in \{branch(t, begin), branch(t, end)\}
+$$
 
 \item Same as Exercise 30, but suppose that now you know the entire expression $b$.
 That is, replace events $branch(t)$ with $branch(t,b)$,
@@ -95,6 +186,87 @@ Assume that $b$ contains nothing but the usual arithmetic expression constructs
 and shared variables.
 
 Ans.
+
+The consistency regarding branch events is still the same to ensure $branch(t, b, begin)$
+and $branch(t, b, begin)$ are paired properly except for the last $branch(t, b, begin)$.
+
+
+\textbf{Feasible Set of Executions}
+
+If we know that $b$ is only over shared variables (concurrent objects) and
+no local variable of the thread is involved,
+we can further relax \emph{Local Determinism} with weaker constraints.
+We use the notations $br\_seg(\tau, e)$ to denote that,
+in a given trace $\tau$ w.r.t a branch event $e \in {begin, end}$,
+$br\_seg(\tau, e)$ is the segment in $\tau$ between $e$ and closest
+$branch(t, b, begin)$ before $e$ or $branch(t, b, end)$ after $e$.
+
+\begin{itemize}
+\item \textbf{Branch Begin:}\newline
+	Let $end_1 \in \tau_1\Rest_{t,branch(t,b,end)}$ and
+	$end_2 \in \tau_2\Rest_{t,branch(t,b,end)}$\newline
+	If $op(e_1) = branch(t, b, begin)$ and for all
+	$br\_seg(\tau_1, end_1)\Rest_{t,read} = br\_seq(\tau_2, end_2)\Rest_{t,read}$
+	and $\tau_2 e_1$ is consistent
+	then $\tau_2 e_1 \in \F$
+\item \textbf{Branch End:}\newline
+	Let $begin_1 \in \tau_1\Rest_{t,branch(t,b,begin)}$ and
+	$begin_2 \in \tau_2\Rest_{t,branch(t,b,begin)}$\newline
+	If $op(e_1) = branch(t, b, end)$ and for all
+	$br\_seg(\tau_1, begin_1)\Rest_{t,read} = br\_seg(\tau_2, begin_2)\Rest_{t,read}$
+	and $\tau_2 e_1$ is consistent
+	then $\tau_2 e_1 \in \F$
+\end{itemize}
+
+For \textbf{Branch Begin}, we argue that the trace $\tau_2$ must reach
+the exact same branch condition as $\tau_1 e_1$ because every branch evaluation
+in $\tau_1$ happened before current branch $e$ should match those evaluation in $\tau_2$.
+Therefore, the program must take the same path since each branch condition $b$ 
+evaluate to same Boolean value in $\tau_1$ and $\tau_2$ since every $read$ value during
+branch evaluation matches and no local variable is in $b$.
+This is weaker than considering all $read$ ever happened since we only check $read$ in
+branch evaluation segments.
+ 
+For \textbf{Branch End}, the same argument can be applied.
+Therefore, the traces inferred from these 2 axioms must be feasible.
+
+\textbf{Soundness Theorem}
+
+For　both $branch(t, b, begin)$ and $branch(t, b, begin)$,
+we know that the assignment to symbolic values $\theta_1$ and $\theta_2$
+can be different.
+However, because $br\_seg(\tau_1, br_1)\Rest_{t,read} = br\_seq(\tau_2, br_2)\Rest_{t,read}$
+ensures the assigned value to variables used in $b$ still matches,
+the same assignment $\theta_2$ to symbolic values can guarantee $\tau_2 e_1$
+goes same direction as $\tau_1 e_1$.
+
+\textbf{Maximality Theorem}
+
+To construct the witness CONC program which doesn't contain any 
+$\tau' \notin feasible(\tau)$,
+we have to build checks to ensure for all
+$br\_seg(\tau_1, br_1)\Rest_{t,read} = br\_seq(\tau_2, br_2)\Rest_{t,read}$.
+Assume given trace $\tau$ where $\tau \Rest_{t, branch} = begin_1end_1begin_2end_2\cdots$,
+we build a check for $begin_i$ and $end_i$ by
+\begin{lstlisting}
+$begin_i$ := $end_{i-1}$;
+if($begin_i$){
+  ... // Reading Values
+  $r_i$ := $read(x_i)$;
+  ... // End of reading
+  $end_i$ := $begin_i$ && $(r_1 = v_1)$ && $(r_2 = v_2) \cdots$;
+  if($end_i$)
+     $b$ := $end_i$;
+}
+\end{lstlisting}
+where $r_j = v_j$ ensures the $read$ values in evaluating $b$ should remain the same.
+
+\textbf{Encoding as SMT formula}
+
+$$
+\Phi_{cf}(e) = \bigwedge_{r \in br\_seg(t, e) \Rest_{t, read}} \Phi_{cf}(r),
+\quad op(e) \in \{branch(t, b, begin), branch(t, b, end)\}
+$$
 
 \end{enumerate}
 
