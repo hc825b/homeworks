@@ -1,0 +1,47 @@
+\RequirePackage{xspace}
+\RequirePackage{todonotes}
+\RequirePackage[dvipsnames,table]{xcolor}
+\usepackage{cancel}
+
+\RequirePackage{listings}
+\lstset{
+    language=[Sharp]C,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{OliveGreen},
+    morekeywords={function},
+    numbers=left,
+    numberstyle=\small,
+    stepnumber=1,
+    numbersep=4pt,
+    columns=fullflexible,
+    breaklines=true,
+    breakatwhitespace=false,
+    breakindent=1em,
+    captionpos=b,
+    tabsize=2,
+    mathescape=true
+}
+
+\RequirePackage{tikz}
+\usetikzlibrary{overlay-beamer-styles,backgrounds}
+\RequirePackage{multicol}
+%\RequirePackage{multirow}
+
+\newcommand{\todoline}[1]{\todo[inline]{#1}}
+\newcommand{\myopinion}{\color{Blue}}
+
+\newcommand{\MultiSE}{MultiSE\xspace}
+\newcommand{\SymExe}{Symbolic Execution\xspace}
+\newcommand{\PathCond}{Path Condition\xsapce}
+\newcommand{\ValSum}{Value Summary\xspace}
+\newcommand{\ValSums}{Value Summaries\xspace}
+\newcommand{\GuardExp}{Guarded Expression\xspace}
+\newcommand{\GuardExps}{Guarded Expressions\xspace}
+\newcommand{\DynSymExe}{Dynamic \SymExe\xspace}
+
+\newcommand{\TT}{\ensuremath{\mathbf{\mathtt{True}}}\xspace}
+\newcommand{\FF}{\ensuremath{\mathbf{\mathtt{False}}}\xspace}
+
+\newcommand{\pc}{\ensuremath{\phi}\xspace} % path constraint
