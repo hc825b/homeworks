@@ -97,6 +97,7 @@ maximality theorem, encoding as SMT formula.
 Ans.
 
 If $branch(t, begin)$ and $branch(t,end)$ are also encoded in event traces,
+<<<<<<< Updated upstream
 all prefixes of a consistent trace must contains equally many or one more
 $branch(t, begin)$ than $branch(t, end)$ because the evaluation must begin before end,
 and some begins may not match ends when the trace stop at the middle of evaluating $b$.
@@ -106,6 +107,22 @@ However, these are not necessarily true since one can invoke a function call dur
 evaluation and lead to branches in that function call,
 and, if exception handling happens during evaluation, $branch(t, end)$ may not be
 emitted for some $branch(t, begin)$.   
+=======
+a consistent trace must contains equally many or more $branch(t, begin)$ than
+$branch(t, end)$ because an evaluation must begin before end,
+and some begins may not match ends when evaluation stops in the middle.
+Further, an evaluation of $b$ may reach other branches due to function calls.
+Formally, for a given thread $t$, $\tau\Rest_{t,branch}$ should satisfy following grammar.
+$$
+\begin{array}{rcl}
+	S & ::= &        M \mid branch(t, begin)\ S \mid S\ branch(t, begin) \\
+	M & ::= & \epsilon \mid branch(t, begin)\ M\ branch(t, end) \mid M\ M
+\end{array}
+$$
+$M$ represents the grammar for matching pairs of $begin$ and $end$,
+and $S$ shows that we can insert $begin$ arbitrarily.
+The membership query to the language can be formulate as a FOL formula.
+>>>>>>> Stashed changes
 
 Formally, for a given thread $t$ and $\tau\Rest_{t,branch} = e_1 e_2 \cdots e_n$,
 odd indexed events $e_{2k+1} = branch(t, begin)$ and even indexed events
