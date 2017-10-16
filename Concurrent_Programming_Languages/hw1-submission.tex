@@ -95,6 +95,43 @@ possible.
 possible.
 
 \end{enumerate}
+
+\item Assume that fairness is equivalent to the property that the probability
+of eventual message delivery for all messages is 1. If all transitions from a
+configuration are always equiprobable, does fairness hold?
+
+Ans.
+
+\item \textbf{Brock-Ackerman Anomaly.} Consider the following two actor
+systems (assume the sink behavior ignores all messages):
+
+\begin{enumerate}
+\item A system $\alpha_1$ has three actors. The actor $r$ sends two copies of
+any message it receives to an actor $s$. For every message $m$ it receives,
+$s$ sends the message to an actor called $v$. See code below.
+\begin{verbatim}
+B-recep = rec(lambda b. lambda c. lambda m.
+                seq(send(c,m),
+                send(c,m),
+                ready(B-recep(c))))
+
+B-eager = rec(lambda b. lambda c. lambda k. lambda m
+    if((zero? k)
+        seq(send(c,m),
+            ready(B-eager(c, 1)),
+        seq(send(c,m),
+            ready(B-sink)))))
+
+B-viewer =rec(lambda b. ...)
+
+letactor {r = B-recep(s),
+          s = B-eager(v, (0, nil)),
+          v = B-viewer( )}
+    send(r, nil)
+\end{verbatim}
+
+\end{enumerate}
+
 \end{enumerate}
 
 \end{document}
