@@ -20,15 +20,15 @@ Define \textit{global time} using the order of message receives along the
 path\textemdash global time is initially zero and is incremented each time a
 message is received by some actor.
 Define \textit{delivery} time as the difference between the global time of the
-transition which causes a given message $(a, m)$ to be sent and the time of 
+transition which causes a given message $(a, m)$ to be sent and the time of
 the event in which the message $m$ is received by $a$.
 You may assume that the oldest message of the form $(a, m)$ is received before
 any subsequent message $m$ sent to $a$.
-The order of events on computation paths may be constrained by one of the 
+The order of events on computation paths may be constrained by one of the
 following:
 
-\textbf{Local Boundedness Axiom}: 
-The set of delivery times of all messages which share the same target $a$ has 
+\textbf{Local Boundedness Axiom}:
+The set of delivery times of all messages which share the same target $a$ has
 an upper bound.
 
 \textbf{Global Boundedness Axiom}:
@@ -45,29 +45,42 @@ Ans.
 
 No. Consider following Actor system,
 \begin{verbatim}
-A = rec(lambda b. lambda c. lambda m.
+A1 = rec(lambda b. lambda c. lambda m.
            seq(send(c, m),
                non-terminating lambda expression,
-               ready(A(c))))
-letactor {a := A(a)} send(a, nil)
+               ready(A1(c))))
+letactor {a1 := A1(a1)} send(a1, nil)
 \end{verbatim}
 The actor program \texttt{A} will send itself a message and does not
 terminate. By definition of global time, the time is incremented only when an
 actor receives a message. Since there is no other messages being sent, we
-know the delivery time of each message sent by \texttt{A} is exactly 1. 
-Therefore, it's locally bounded. However, the actor is never idle and hence 
+know the delivery time of each message sent by \texttt{A} is exactly 1.
+Therefore, it's locally bounded. However, the actor is never idle and hence
 cannot process the message sent by itself.
 
 \item Local boundedness implies global boundedness.
+
+Ans.
+
+No. Consider Actor system below,
 \begin{verbatim}
-A2 = rec(lambda b. lambda c. lambda k. lambda m.
-         if(k < m,
-            ready(A2(c, k+1)),
-            seq(letactor {succ := A2(succ, 0)}
-                    for(i=0; i<m+1, i++) send(succ, m+1),
+A2 = rec(lambda b. lambda c. lambda k. lambda n. lambda m.
+         if(k < n,
+            ready(A2(c, k+1, n)),
+            seq(letactor {succ := A2(succ, 0, n+1)}
+                    for(i=0; i<n+1, i++) send(succ, nil),
                 ready(sink))))
-letactor {a2 := A2(a2, 0)} send(a2, 1)
+letactor {a2 := A2(a2, 0, 1)} send(a2, nil)
 \end{verbatim}
+In this system, each created actor will increment \texttt{k} when receiving a
+message until \texttt{k >= n}, and it will create a new actor, \texttt{succ},
+and send \texttt{n+1} messages to \texttt{succ}.For each actor, we know
+exactly \texttt{n} messages are sent from its creator to itself, and all
+other actors already became sink so there is no other message. The worst case
+delivery time for each actor therefore will be locally bounded by an integer
+\texttt{n}. However, a newly created actor can always have a larger bound, so
+there is no global upper-bound for all actors. Hence we found a
+counter-example for the statement.
 
 \item Global boundedness implies fairness.
 
@@ -75,10 +88,10 @@ Ans.
 
 See (a).
 
-\item If global boundedness is assumed, unbounded nondeterminism is not 
+\item If global boundedness is assumed, unbounded nondeterminism is not
 possible.
 
-\item If local boundedness is assumed then unbounded nondeterminism is not 
+\item If local boundedness is assumed then unbounded nondeterminism is not
 possible.
 
 \end{enumerate}
