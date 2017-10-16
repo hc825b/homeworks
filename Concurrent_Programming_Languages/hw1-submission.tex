@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\usepackage[margin=3cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+
+\title{\Large\bfseries
+CS 524: Concurrent Programming Languages \\
+Fall 2017 \\
+Homework 1}
+\author{Chiao Hsieh, chsieh16@illinois.edu}
+
+\begin{document}
+\maketitle
+
+
+\begin{enumerate}
+\item Consider a computation path from an actor configuration.
+Define \textit{global time} using the order of message receives along the
+path\textemdash global time is initially zero and is incremented each time a
+message is received by some actor.
+Define \textit{delivery} time as the difference between the global time of the
+transition which causes a given message $(a, m)$ to be sent and the time of 
+the event in which the message $m$ is received by $a$.
+You may assume that the oldest message of the form $(a, m)$ is received before
+any subsequent message $m$ sent to $a$.
+The order of events on computation paths may be constrained by one of the 
+following:
+
+\textbf{Local Boundedness Axiom}: 
+The set of delivery times of all messages which share the same target $a$ has 
+an upper bound.
+
+\textbf{Global Boundedness Axiom}:
+The set of delivery times of all messages has an upper bound.
+
+\textbf{Equiprobable Delivery Axiom}:
+All pending events are equally likely to occur next.
+
+Prove or disprove:
+\begin{enumerate}
+\item Local boundedness implies fairness.
+
+Ans.
+
+No. Consider following Actor system,
+\begin{verbatim}
+A = rec(lambda b. lambda c. lambda m.
+           seq(send(c, m),
+               non-terminating lambda expression,
+               ready(A(c))))
+letactor {a := A(a)} send(a, nil)
+\end{verbatim}
+The actor program \texttt{A} will send itself a message and does not
+terminate. By definition of global time, the time is incremented only when an
+actor receives a message. Since there is no other messages being sent, we
+know the delivery time of each message sent by \texttt{A} is exactly 1. 
+Therefore, it's locally bounded. However, the actor is never idle and hence 
+cannot process the message sent by itself.
+
+\item Local boundedness implies global boundedness.
+
+\item Global boundedness implies fairness.
+
+Ans.
+
+See (a).
+
+\item If global boundedness is assumed, unbounded nondeterminism is not 
+possible.
+
+\item If local boundedness is assumed then unbounded nondeterminism is not 
+possible.
+
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
