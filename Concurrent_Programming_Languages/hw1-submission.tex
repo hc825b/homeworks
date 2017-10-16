@@ -14,7 +14,6 @@ Homework 1}
 \begin{document}
 \maketitle
 
-
 \begin{enumerate}
 \item Consider a computation path from an actor configuration.
 Define \textit{global time} using the order of message receives along the
@@ -60,6 +59,15 @@ Therefore, it's locally bounded. However, the actor is never idle and hence
 cannot process the message sent by itself.
 
 \item Local boundedness implies global boundedness.
+\begin{verbatim}
+A2 = rec(lambda b. lambda c. lambda k. lambda m.
+         if(k < m,
+            ready(A2(c, k+1)),
+            seq(letactor {succ := A2(succ, 0)}
+                    for(i=0; i<m+1, i++) send(succ, m+1),
+                ready(sink))))
+letactor {a2 := A2(a2, 0)} send(a2, 1)
+\end{verbatim}
 
 \item Global boundedness implies fairness.
 
