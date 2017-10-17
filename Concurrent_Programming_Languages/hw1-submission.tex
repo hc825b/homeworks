@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[margin=3cm]{geometry}
+\usepackage[margin=1.5cm]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{xspace}
@@ -43,20 +43,13 @@ Prove or disprove:
 
 Ans.
 
-No. Consider following Actor system,
-\begin{verbatim}
-A1 = rec(lambda b. lambda c. lambda m.
-           seq(send(c, m),
-               non-terminating lambda expression,
-               ready(A1(c))))
-letactor {a1 := A1(a1)} send(a1, nil)
-\end{verbatim}
-The actor program \texttt{A} will send itself a message and does not
-terminate. By definition of global time, the time is incremented only when an
-actor receives a message. Since there is no other messages being sent, we
-know the delivery time of each message sent by \texttt{A} is exactly 1.
-Therefore, it's locally bounded. However, the actor is never idle and hence
-cannot process the message sent by itself.
+Yes. If each message sent to an actor $a$ has a bounded delivery time $B$, we 
+know that, when transition $<\texttt{rec}: a, m>$ is enabled at time $t_0$, 
+there are at most $B-1$ messages $a$ can receive before accepting $(a,m)$ by 
+definition of local boundedness. Therefore, either $(a,m)$ is received by $a$ 
+before $t_0+B$, or $<\texttt{rec}: a, m>$ is disabled forever. In either 
+case, the computation path is fair. Hence, we conclude that local boundedness 
+implies fairness.
 
 \item Local boundedness implies global boundedness.
 
@@ -72,24 +65,30 @@ A2 = rec(lambda b. lambda c. lambda k. lambda n. lambda m.
                 ready(sink))))
 letactor {a2 := A2(a2, 0, 1)} send(a2, nil)
 \end{verbatim}
-In this system, each created actor will increment \texttt{k} when receiving a
-message until \texttt{k >= n}, and it will create a new actor, \texttt{succ},
-and send \texttt{n+1} messages to \texttt{succ}.For each actor, we know
-exactly \texttt{n} messages are sent from its creator to itself, and all
-other actors already became sink so there is no other message. The worst case
-delivery time for each actor therefore will be locally bounded by an integer
-\texttt{n}. However, a newly created actor can always have a larger bound, so
-there is no global upper-bound for all actors. Hence we found a
+In this system, each actor will increment \texttt{k} when receiving a message 
+until \texttt{k>=n}, and it will create a new actor, \texttt{succ}, and send 
+\texttt{n+1} messages to \texttt{succ}. For each actor, we know exactly 
+\texttt{n} messages are sent from its creator to itself, and all other actors 
+already became \texttt{sink}, so there is no other message. The worst case 
+delivery time for each actor therefore will be locally bounded by an integer 
+\texttt{n}. However, a newly created actor can always have a larger bound, so 
+there is no global upper-bound for infinitely many actors. Hence we found a 
 counter-example for the statement.
 
 \item Global boundedness implies fairness.
 
 Ans.
 
-See (a).
+By definition, global boundedness implies local boundedness. From (a), we 
+know global boundedness implies fairness.
 
 \item If global boundedness is assumed, unbounded nondeterminism is not
 possible.
+
+Ans.
+
+Assuming unbounded nondeterminism is possible, there exists a configuration 
+$\kappa$ has unbounded many choices of enabled transitions. 
 
 \item If local boundedness is assumed then unbounded nondeterminism is not
 possible.
