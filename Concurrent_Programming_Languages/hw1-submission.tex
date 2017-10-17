@@ -101,6 +101,48 @@ configuration are always equiprobable, does fairness hold?
 
 Ans.
 
+Consider the following actor system,
+\begin{verbatim}
+A3 = rec(lambda b. lambda c. lambda k. lambda m.
+         if(m == stop,
+            ready(sink),
+            seq(for(i=1; i<k*k; i++) send(c, next),
+                ready(A3(c,k+1))),
+            )
+         )
+letactor {a3 := A3(a3, 2)} seq(send(a3, next), send(a3,stop))
+\end{verbatim}
+The behavior of the actor is simple. It becomes a \texttt{sink} whenever 
+\text{stop} message is received, or it sends \texttt{k*k-1} messages to 
+itself and increment \texttt{k}. Therefore, except for the beginning 2 
+messages, there is always $k^2$ total messages if \texttt{stop} message is 
+not received; thus the probability of not choosing \texttt{stop} is 
+$\frac{k^2 - 1}{k^2}$. We can then calculate the probability that 
+\texttt{stop} message is never received.
+$$
+\begin{aligned}
+p &= \frac{1}{2} \cdot \prod_{k=2}^{\infty} \frac{k^2 - 1}{k^2}
+   = \frac{1}{2} \cdot \prod_{k=2}^{\infty} \frac{(k-1)(k+1)}{k^2}
+   = \frac{1}{2} \cdot \prod_{k=2}^{\infty} \frac{k-1}{k}\cdot\frac{k+1}{k} \\
+  &= \frac{1}{2} \cdot \left(\frac{1}{2}\cdot\frac{3}{2}\right)\cdot
+                 \left(\frac{2}{3}\cdot\frac{4}{3}\right)\cdot 
+                 \left(\frac{3}{4}\cdot\frac{5}{4}\right) \cdots
+                 \left(\frac{n-1}{n}\cdot\frac{n+1}{n}\right) \qquad n \to \infty\\
+  &= \frac{1}{2} \cdot \frac{1}{2}\cdot
+                 \left(\frac{3}{2}\cdot\frac{2}{3}\right)\cdot
+                 \left(\frac{4}{3}\cdot\frac{3}{4}\right)\cdot 
+                 \left(\frac{5}{4}\cdot\frac{4}{5}\right)\cdots
+                 \left(\frac{n}{n-1}\cdot\frac{n-1}{n}\right)\cdot
+                 \frac{n+1}{n} \qquad n \to \infty\\
+  &= \frac{1}{2} \cdot \frac{1}{2}\cdot 1 \cdot 1 \cdot 1 \cdots 1
+                 \cdot \frac{n+1}{n} \qquad n \to \infty\\
+  &= \frac{1}{4}\\
+\end{aligned}
+$$
+For this example, the probability of eventual message delivery for \texttt{stop}
+is $1-p = \frac{3}{4} \neq 1$. Therefore, fairness is not guaranteed even when
+all transitions are always equiprobable.
+
 \item \textbf{Brock-Ackerman Anomaly.} Consider the following two actor
 systems (assume the sink behavior ignores all messages):
 
@@ -121,7 +163,7 @@ B-eager = rec(lambda b. lambda c. lambda k. lambda m
         seq(send(c,m),
             ready(B-sink)))))
 
-B-viewer =rec(lambda b. ...)
+B-viewer = rec(lambda b. ...)
 
 letactor {r = B-recep(s),
           s = B-eager(v, (0, nil)),
@@ -129,6 +171,39 @@ letactor {r = B-recep(s),
     send(r, nil)
 \end{verbatim}
 
+\item Another system $\alpha_2$ also has three actors. The actor \texttt{r}
+sends two copies of any message it receives to an actor called \texttt{s}. The
+actor \texttt{s} sits on the first message \texttt{m1} and when it receives a
+second message \texttt{m2}, it sends the two message \texttt{m1} and \texttt{m2}
+to an actor \texttt{v}. See code below:
+\begin{verbatim}
+B-recep = rec(lambda b. lambda c. lambda m
+                seq(send(c,m),
+                    send(c,m),
+                    ready(B-recep(c))))
+
+B-lazy = rec(lambda b. lambda c. lambda k. lambda m_1. lambda m.
+                if((zero? k)
+                    ready (B-lazy(c,1,m))
+                    seq(send(c,m1),
+                        send(c,m),
+                        ready(B-sink))))
+
+B-viewer =rec(lambda b. ...)
+
+letactor {r = B-recep(s),
+          s = B-lazy(v, (0, nil)),
+          v = B-viewer( )}
+    send(r, nil)
+\end{verbatim}
+\end{enumerate}
+
+Assume the actor \texttt{v} can invoke a 0-ary function \texttt{event()} if it
+receives a message.
+\begin{enumerate}
+\item Define the behavior of \texttt{B-viewer} so that if it is composed with
+$\alpha_2$ it will never invoke \texttt{event()}, but if is composed with
+$\alpha_1$, it may invoke \texttt{event()}. Give proofs.
 \end{enumerate}
 
 \end{enumerate}
