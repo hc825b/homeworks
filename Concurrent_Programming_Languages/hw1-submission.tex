@@ -182,14 +182,14 @@ B-recep = rec(lambda b. lambda c. lambda m
                     send(c,m),
                     ready(B-recep(c))))
 
-B-lazy = rec(lambda b. lambda c. lambda k. lambda m_1. lambda m.
-                if((zero? k)
-                    ready (B-lazy(c,1,m))
-                    seq(send(c,m1),
-                        send(c,m),
-                        ready(B-sink))))
+B-lazy = rec(lambda b. lambda c. lambda k. lambda m1. lambda m.
+    if((zero? k)
+        ready(B-lazy(c,1,m))
+        seq(send(c,m1),
+            send(c,m),
+            ready(B-sink))))
 
-B-viewer =rec(lambda b. ...)
+B-viewer = rec(lambda b. ...)
 
 letactor {r = B-recep(s),
           s = B-lazy(v, (0, nil)),
@@ -204,6 +204,48 @@ receives a message.
 \item Define the behavior of \texttt{B-viewer} so that if it is composed with
 $\alpha_2$ it will never invoke \texttt{event()}, but if is composed with
 $\alpha_1$, it may invoke \texttt{event()}. Give proofs.
+
+Ans.
+
+\begin{verbatim}
+B-viewer = rec(lambda b. lambda c. lambda k. lambda m
+                if((zero? k),
+                   seq(send(c, true),
+                       ready(B-viewer(c, 1))),
+                   if(m,
+                      seq(event(),ready(B-sink)),
+                      ready(B-sink)))))
+\end{verbatim}
+We also need to change \texttt{letactor} so that \texttt{v = B-viewer(r, 0)}.
+To trigger \texttt{event()}, the viewer must receive a message that is
+\texttt{true}. Actor \texttt{r} will send actor \texttt{s} will become \texttt{sink} after receive 2
+messages for both eager and lazy versions.
+
+\item Assume that all messages from a given sender to a given recipient are
+ordered. Are the two systems now equivalent? Prove.
+
+\item As above, assume that all messages from a given sender to a given
+recipient are ordered. Modify the two systems so that they are not equivalent:
+the two modified systems should have the same behavior (modulo who they
+communicate with) for the receptionist, viewer, and any other actors, but differ
+only in that one has an ``eager'' actor (as above) and the other has a ``lazy
+actor.'' Prove.
+\end{enumerate}
+
+\item In actor semantics, names (called addresses) of actors cannot be computed
+and the names of an actor are unique and persistent. Suppose we wish to develop
+an actor model for mobile robots with sensors. In particular, we want to address
+actors by their ``current'' physical location. Assume a 2d world and that
+configurations contain only contiguous points in a continuous 2d surface. Change
+the behavior definition of an actor and an actor configuration to model
+mobility. What is a reasonable notion of a receptionist, external actor,
+composition of configurations? How should the messages and transitions be
+defined?
+\begin{enumerate}
+\item Write out some interesting example in your system. State some properties
+you may want to prove.
+
+\item How would you define equivalence of actor expressions in your system?
 \end{enumerate}
 
 \end{enumerate}
