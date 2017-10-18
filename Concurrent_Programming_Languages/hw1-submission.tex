@@ -87,11 +87,35 @@ possible.
 
 Ans.
 
-Assuming unbounded nondeterminism is possible, there exists a configuration 
-$\kappa$ has unbounded many choices of enabled transitions. 
+Yes. Assuming unbounded nondeterminism is possible, there exists a 
+configuration has an unbounded number of choices between enabled transitions. 
+Since the behavior of each actor is Turing complete, it can only have boundedly 
+many choices. The sources of unboundness can only be from (1) unbounded number 
+of messages in an actor's queue and (2) unbounded number of actors with 
+boundedly many messages in queue.
+
+For (1), it is invalidated by local boundedness because the message delivery 
+time will be unbounded if there are unbounded many messages in the queue.
+
+For (2), it is invalidated by global boundedness because there won't be a 
+global upper-bound on message delivery time for all actor's messages.
+
+Therefore, we prove this by contradiction.
 
 \item If local boundedness is assumed then unbounded nondeterminism is not
 possible.
+
+No. Consider a special case (2) discussed in (d), we can construct a 
+configuration for a countably infinite set of actors $\{a_i \mid i \in 
+\mathbb{N}\}$. Let each actor have only one message $m_i$ in its queue, so we 
+have unbounded many choices between actors to proceed. We then can find a 
+computation path that is locally bounded to disprove the statement.
+
+Lets assume a particular scheduling to process $m_1$, $m_2$, ..., $m_i$ in 
+order. The delivery time for each $m_i$ is then bounded by time $i$ because 
+only $i-1$ messages was received before $m_i$. We then can find upper-bound 
+$B_i=i$ for each actor $a_i$ to satisfy local boundedness for this computation 
+path.
 
 \end{enumerate}
 
@@ -284,9 +308,15 @@ defined?
 \item Write out some interesting example in your system. State some properties
 you may want to prove.
 
+Ans.
+
 
 
 \item How would you define equivalence of actor expressions in your system?
+
+Ans.
+
+
 \end{enumerate}
 
 \end{enumerate}
