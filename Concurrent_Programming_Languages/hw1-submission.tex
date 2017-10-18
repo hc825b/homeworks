@@ -216,10 +216,23 @@ B-viewer = rec(lambda b. lambda c. lambda k. lambda m
                       seq(event(),ready(B-sink)),
                       ready(B-sink)))))
 \end{verbatim}
-We also need to change \texttt{letactor} so that \texttt{v = B-viewer(r, 0)}.
-To trigger \texttt{event()}, the viewer must receive a message that is
-\texttt{true}. Actor \texttt{r} will send actor \texttt{s} will become \texttt{sink} after receive 2
-messages for both eager and lazy versions.
+Note that To trigger \texttt{event()}, the viewer must receive a message that 
+is \texttt{true}. In addition, we need to change \texttt{letactor} so that 
+\texttt{v = B-viewer(r, 0)}.
+
+In the beginning, actor \texttt{r} receives \texttt{nil} and then send 2 
+copies of \texttt{nil} to \texttt{s}.
+Now for eager version, \texttt{s} will forward \texttt{nil} to \texttt{v}, 
+\texttt{v} then send \texttt{true} to \texttt{r}, and \texttt{r} send 2 
+copies of \texttt{true} to \texttt{s}. If at this time \texttt{s} has not 
+yet received the second \texttt{nil}, it can possibly get \texttt{true}, 
+forward it to \texttt{v}, and consequently trigger \texttt{event()}.
+
+For lazy version, this can never happen because \texttt{s} will wait until 
+it receives both \texttt{nil} messages, forward them to \texttt{v}, and 
+become \texttt{sink}. There is no chance for \texttt{r} to receive and 
+forward a \texttt{true} message, so it can never let \texttt{v} trigger 
+\texttt{event()}.
 
 \item Assume that all messages from a given sender to a given recipient are
 ordered. Are the two systems now equivalent? Prove.
