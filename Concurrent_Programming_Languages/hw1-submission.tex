@@ -216,7 +216,7 @@ B-viewer = rec(lambda b. lambda c. lambda k. lambda m
                       seq(event(),ready(B-sink)),
                       ready(B-sink)))))
 \end{verbatim}
-Note that To trigger \texttt{event()}, the viewer must receive a message that 
+Note that to trigger \texttt{event()}, the viewer must receive a message that
 is \texttt{true}. In addition, we need to change \texttt{letactor} so that 
 \texttt{v = B-viewer(r, 0)}.
 
@@ -237,12 +237,24 @@ forward a \texttt{true} message, so it can never let \texttt{v} trigger
 \item Assume that all messages from a given sender to a given recipient are
 ordered. Are the two systems now equivalent? Prove.
 
+Ans.
+
+If all messages from a given sender to a given recipient are ordered,
+\texttt{true} messages can never be received earlier than the second
+\texttt{nil} message; therefore actor \texttt{s} will become \texttt{sink}
+after receiving 2 \texttt{nil} messages for both eager and lazy version. Hence,
+the behavior of both $\alpha_1$ and $\alpha_2$ are now equivalent.
+
 \item As above, assume that all messages from a given sender to a given
 recipient are ordered. Modify the two systems so that they are not equivalent:
 the two modified systems should have the same behavior (modulo who they
 communicate with) for the receptionist, viewer, and any other actors, but differ
-only in that one has an ``eager'' actor (as above) and the other has a ``lazy
-actor.'' Prove.
+only in that one has an ``eager'' actor (as above) and the other has a ``lazy''
+actor. Prove.
+
+Ans.
+
+
 \end{enumerate}
 
 \item In actor semantics, names (called addresses) of actors cannot be computed
