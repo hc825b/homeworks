@@ -254,6 +254,20 @@ actor. Prove.
 
 Ans.
 
+We can modify \texttt{letactor} so that \texttt{v = B-viewer(s, 0)}, that is, 
+the viewer \texttt{v} will send \texttt{true} message to \texttt{s}.
+
+For eager version of \texttt{s}, it's possible to send a message to \texttt{v} 
+between first and second \texttt{nil} messages. Actor \texttt{v} then can send 
+a \texttt{true} message to \texttt{s}. Since second \texttt{nil} is from 
+\texttt{r} and \texttt{true} is from \texttt{v}, it's possible for \texttt{s} 
+to receive \texttt{true} and forward it to viewer and trigger the 
+\texttt{event()}.
+
+For lazy version of \texttt{s}, there can be no message sent to \texttt{v}
+between first and second \texttt{nil} messages, and \texttt{s} will become 
+\texttt{sink} to disable all further messages. Therefore, \texttt{event()} can 
+never be triggered.
 
 \end{enumerate}
 
@@ -269,6 +283,8 @@ defined?
 \begin{enumerate}
 \item Write out some interesting example in your system. State some properties
 you may want to prove.
+
+
 
 \item How would you define equivalence of actor expressions in your system?
 \end{enumerate}
