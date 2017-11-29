@@ -5,9 +5,6 @@ set shiftwidth=4
 " On pressing tab, insert 4 spaces
 set expandtab
 
-" Set folding by indent only for Python
-autocmd FileType python setlocal foldmethod=indent
-
 " Only do this part when compiled with support for autocommands.
 if has("autocmd") 
   " Enable file type detection.
@@ -18,5 +15,8 @@ if has("autocmd")
 
   " For all text files set 'textwidth' to 78 characters. 
   autocmd FileType text,markdown,tex setlocal textwidth=78
+
+  " Set folding by indent only for Python
+  autocmd FileType python setlocal foldmethod=indent
 
 endif " has("autocmd")
