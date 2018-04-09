@@ -37,7 +37,9 @@
 \newcommand{\NewEntry}[3]{\noindent\hangindent=2em\hangafter=0 \parbox{\datebox}{\small \textit{#1}}\hspace{1em} #2 #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
 
-\newcommand{\Description}[1]{\hangindent=2em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{1em}} % Define a command for descriptions of each entry - change spacing and font sizes here
+\newcommand{\Description}[1]{\hangindent=2em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.8em}}
+ % Define a command for descriptions of each entry - change spacing and font
+ % sizes here
 
 %----------------------------------------------------------------------------------------
 
@@ -56,7 +58,7 @@
 
 \noindent\spacedlowsmallcaps{Personal Information}\vspace{0.5em} % Personal information heading
 
-\NewEntry{}{\textit{Born in Taiwan,}}{25 August 1989} % Birthplace and date
+\NewEntry{}{\textit{Born in Taiwan,}}{1989} % Birthplace and date
 
 \NewEntry{email}{\href{mailto:chsieh16@illinois.edu}{chsieh16@illinois.edu}} % Email address
 
@@ -81,7 +83,17 @@
 
 \noindent\spacedlowsmallcaps{Work Experience}\vspace{1em}
 
-\NewEntry{2017--}{Teaching Assistant, \textsc{UIUC}, Urbana-Champaign}
+\NewEntry{Spring 2018}{Teaching Assistant, \textsc{UIUC}, Urbana-Champaign}
+
+\Description{\MarginText{University of Illinois at Urbana-Champaign}Teaching
+    Assistant for the course, CS 421 Programming Languages and Compilers, in
+    Department of Computer Science.\\
+    Reference: Beckman, Mattox $\cdot$
+    \href{mailto:mattox@illinois.edu}{mattox@illinois.edu}}
+
+%------------------------------------------------
+
+\NewEntry{Fall 2017}{Teaching Assistant, \textsc{UIUC}, Urbana-Champaign}
 
 \Description{\MarginText{University of Illinois at Urbana-Champaign}Teaching
 Assistant for the course, CS 527 Topics in Software Engineering, in Department
@@ -218,7 +230,8 @@ Bash $\cdot$ Ubuntu Linux}
 \Description{\MarginText{Intermediate} Verilog $\cdot$ SystemC $\cdot$
 Subversion $\cdot$ \LaTeX $\cdot$ LEGO Mindstorms NXT}
 
-\Description{\MarginText{Basic} OCaml $\cdot$ K Semantic Framework}
+\Description{\MarginText{Basic} Haskell $\cdot$ K Semantic Framework $\cdot$
+Dafny}
 
 %------------------------------------------------
 
