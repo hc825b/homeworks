@@ -22,9 +22,15 @@
 
 \reversemarginpar % Move the margin to the left of the page
 
+
+
 \newcommand{\MarginText}[1]{\marginpar{\raggedleft\itshape\small#1}} % New command defining the margin text style
 
 \usepackage[nochapters]{classicthesis} % Use the classicthesis style for the style of the document
+
+\setlength{\marginparsep}{5mm}
+
+\usepackage[letterpaper, top=20mm, bottom=20mm, outer=20mm,inner=35mm]{geometry}
 \usepackage[LabelsAligned]{currvita} % Use the currvita style for the layout of the document
 
 \renewcommand{\cvheadingfont}{\LARGE\color{Maroon}} % Font color of your name at the top
@@ -38,7 +44,7 @@
 \newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\small \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
 
-\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.5em}}
+\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.3em}}
  % Define a command for descriptions of each entry - change spacing and font
  % sizes here
 
@@ -55,37 +61,29 @@
 %----------------------------------------------------------------------------------------
 \begin{CJK}{UTF8}{bkai}
 
-\begin{cv}{謝~橋~(\spacedallcaps{Hsieh, Chiao})}\vspace{1.5em} % Your name
+\begin{cv}{謝~橋~(\spacedallcaps{Hsieh, Chiao})}\vspace{1em} % Your name
 
-\noindent\spacedlowsmallcaps{Personal Information}\vspace{0.5em} % Personal information heading
-
-\NewEntry{}{\textit{Born in Taiwan,}}{1989} % Birthplace and date
-
-\NewEntry{email}{\href{mailto:chsieh16@illinois.edu}{chsieh16@illinois.edu}} % Email address
-
-\NewEntry{LinkedIn}{\url{http://www.linkedin.com/in/hc825b}} % Personal website
+% Email address and Personal website
+\NewEntry{}{Email: \href{mailto:chsieh16@illinois.edu}{chsieh16@illinois.edu}\qquad LinkedIn: \url{http://www.linkedin.com/in/hc825b}}{}
 
 %\NewEntry{phone}{(H) +1 (000) 111 1111\ \ $\cdotp$\ \ (M) +1 (000) 111 1112} % Phone number(s)
 
 \vspace{1em} % Extra white space between the personal information section and goal
 
-\noindent\spacedlowsmallcaps{Research Interest}\vspace{1em} % Goal heading, could be used for a quotation or short profile instead
+\noindent\spacedlowsmallcaps{Research Interest}\vspace{0.5em} % Goal heading, could be used for a quotation or short profile instead
 
 \Description{Software Verification $\cdot$
     Software Testing $\cdot$
     Formal Methods $\cdot$
-    Model Checking $\cdot$
-    Automated Test Generation $\cdot$
-    Runtime Verification $\cdot$
-    Distributed Protocol Verification $\cdot$
-    Cyber-physical System Verification
+    Cyber-physical System Verification $\cdot$
+    Automated Test Generation
     }\vspace{1em} % Goal text
 
 %----------------------------------------------------------------------------------------
 %	EDUCATION
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Education}\vspace{1em}
+\spacedlowsmallcaps{Education}\vspace{0.5em}
 
 \NewEntry{2015 -- Today}{\MarginText{CS@Illinois}Ph.D. Student}
 
@@ -93,7 +91,7 @@
     in Dept. of Computer Science at University of Illinois at Urbana-Champaign\newline
     Advisor:
     Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}\newline
-    Previous Advisor: Prof. Xie, Tao}
+    Previous Advisor: Prof. Xie, Tao $\cdot$ \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}}
 
 %------------------------------------------------
 
@@ -102,11 +100,10 @@
 \Description{\textbf{Verification Automation \& Software Testing Lab}
     in Graduate Institute of Electronics Engineering at National Taiwan University\newline
     Thesis: \textit{Verifying Recursive Programs Using Intraprocedural Analyzers}\newline
-    Description: Research on approximating programs with recursion
-    by programs without recursion to modularize verification procedure\newline
     Advisors:
-    Prof. Wang, Farn $\cdot$ \href{mailto:farn@ntu.edu.tw}{farn@ntu.edu.tw},
-    Prof. Chen, Yu-Fang}
+    Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw},
+    Prof. Wang, Farn $\cdot$ \href{mailto:farn@ntu.edu.tw}{farn@ntu.edu.tw}
+}
 
 %------------------------------------------------
 
@@ -114,9 +111,7 @@
 
 \Description{\textbf{Design Verification Lab}
     in Department of Electrical Engineering at National Taiwan University\newline
-    Projects: \textit{Symbolic model checking on SystemC designs}\newline
-    Description: Helping the senior Ph.D. student to build a symbolic model checking framework for system level hardware design written in SystemC.\newline
-    Advisors:
+    Projects: \textit{Symbolic model checking on SystemC designs} with
     Prof. Huang, Chung-Yang $\cdot$ \href{mailto:cyhuang@ntu.edu.tw}{cyhuang@ntu.edu.tw}}
 
 %------------------------------------------------
@@ -128,22 +123,28 @@
 %	PUBLICATIONS
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Publications}\vspace{1em}
+\spacedlowsmallcaps{Publications}\vspace{0.5em}
 
 \NewEntry{2016-Today}{\MarginText{CS@Illinois}Mitra Research Group in PL/FM/SE area}
+
+\Description{%
+\textbf{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.}
+Chiao~Hsieh, Hussein~Sibai, Hebron~Taylor, Yifeng~Ni, Sayan~Mitra.
+\textit{Proc. 2021 IEEE International Intelligent Transportation Systems Conference (ITSC 2021)}.
+\doi{10.1109/ITSC48978.2021.9564492}
+}
 
 \Description{%
 \textbf{Koord: A Language for Programming and Verifying Distributed Robotics Application.}
 Ritwika~Ghosh, Chiao~Hsieh, Sasa~Misailovic, Sayan~Mitra.
 \textit{Proc. 2020 ACM SIGPLAN Intl. Conf. on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA 2020)}.
-Virtual Conference, Nov. 2020.
+\doi{10.1145/3428300}
 }
 
 \Description{%
 \textbf{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.}
 Ritwika Ghosh, Joao~P. Jansch-Porto, Chiao Hsieh, Amelia Gosse, Minghao Jiang, Hebron Taylor, Peter Du, Sayan Mitra, Geir Dullerud.
 \textit{Proc. 2020 IEEE International Conference on Robotics and Automation (ICRA 2020)},
-Paris, France, May 2020.
 \doi{10.1109/ICRA40945.2020.9196513}
 }
 
@@ -151,21 +152,17 @@ Paris, France, May 2020.
 \textbf{Dione: A Protocol Verification System Built with Dafny for I/O Automata.}
 Chiao~Hsieh, Sayan Mitra.
 \textit{Proc. 15\textsubscript{th} Intl. Conf. on integrated Formal Methods (iFM 2019)}.
-Bergen, Norway, Dec. 2019.
 \doi{10.1007/978-3-030-34968-4\_13}
 }
 
-\pagebreak
-
 %------------------------------------------------
 
-\NewEntry{2013-2016}{\MarginText{Academia Sinica}Programming Languages and Formal Methods Group}
+\NewEntry{2013-2016}{\MarginText{Academia\\Sinica}Programming Languages and Formal Methods Group}
 
 \Description{%
 \textbf{PAC Learning-Based Verification and Model Synthesis.}
 Yu-Fang~Chen, Chiao~Hsieh, Ond\v{r}ej~Leng\'{a}l, Tsung-Ju~Lii, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 38\textsuperscript{th} Intl. Conf. on Software Engineering (ICSE 2016)}.
-Austin, Texas, USA, May 2016.
 \doi{10.1145/2884781.2884860}
 }
 
@@ -173,7 +170,6 @@ Austin, Texas, USA, May 2016.
 \textbf{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).}
 Yu-Fang~Chen, Chiao~Hsieh, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsubscript{st} Intl. Conf. on Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2015)}.
-London, UK, Apr. 2015.
 \doi{10.1007/978-3-662-46681-0\_35}
 }
 
@@ -181,7 +177,6 @@ London, UK, Apr. 2015.
 \textbf{Verifying Recursive Programs Using Intraprocedural Analyzers.}
 Yu-Fang~Chen, Chiao~Hsieh, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsuperscript{st} Intl. Static Analysis Symposium (SAS 2014)}.
-Munich, Germany, Sept. 2014.
 \doi{10.1007/978-3-319-10936-7\_8}
 }
 
@@ -193,7 +188,6 @@ Munich, Germany, Sept. 2014.
 \textbf{Symbolic model checking on SystemC designs.}
 Chun-Nan Chou, Yen-Sheng Ho, Chiao Hsieh, Chung-Yang (Ric) Huang.
 \textit{Proc. 49\textsuperscript{th} Annual Design Automation Conf. (DAC 2012)}.
-San Francisco, California, USA, June 2012.
 \doi{10.1145/2228360.2228421}
 }
 
@@ -206,12 +200,12 @@ San Francisco, California, USA, June 2012.
 %	WORK EXPERIENCE
 %----------------------------------------------------------------------------------------
 
-\noindent\spacedlowsmallcaps{Work Experience}\vspace{1em}
+\noindent\spacedlowsmallcaps{Work Experience}\vspace{0.5em}
 
 \NewEntry{2018 -- today}{\MarginText{ITI@Illinois}Research Assistant, UIUC, Urbana-Champaign}
 
-\Description{Graduate Research Assistant at \textbf{Information Trust Institute} in Coordinated Science Laboratory.\newline
-    Reference: Mitra, Sayan $\cdot$
+\Description{Graduate Research Assistant at \textbf{Information Trust Institute} in Coordinated Science Laboratory with
+    Prof. Mitra, Sayan $\cdot$
     \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}}
 
 %------------------------------------------------
@@ -219,42 +213,40 @@ San Francisco, California, USA, June 2012.
 \NewEntry{2017 -- 2018}{\MarginText{CS@Illinois}Teaching Assistant, \textsc{UIUC}, Urbana-Champaign}
 
 \Description{Teaching Assistant for following courses in Department of Computer Science.\newline
-    SP18 CS 421 Programming Languages and Compilers\newline
-    Instructor: Beckman, Mattox $\cdot$
+    SP18 CS 421 Programming Languages and Compilers by
+    Prof. Beckman, Mattox $\cdot$
     \href{mailto:mattox@illinois.edu}{mattox@illinois.edu}\newline
-    FA17 CS 527 Topics in Software Engineering\newline
-    Instructor: Marinov, Darko $\cdot$
+    FA17 CS 527 Topics in Software Engineering by 
+    Prof. Marinov, Darko $\cdot$
     \href{mailto:marinov@illinois.edu}{marinov@illinois.edu}}
 
 %------------------------------------------------
 
 \NewEntry{2015 -- 2016}{\MarginText{CS@Illinois}Research Assistant, \textsc{UIUC}, Urbana-Champaign}
 
-\Description{Research Assistant at \textbf{Programming Language/Formal Methods/Software Engineering Group}, Department of Computer Science.\\
-    Reference: Xie, Tao $\cdot$
+\Description{Research Assistant at \textbf{PL/FM/SE}, Department of Computer Science with
+    Prof. Xie, Tao $\cdot$
     \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}}
 
 %------------------------------------------------
 
 \NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern, \textsc{IBM Research}, New York}
 
-\Description{Research Intern at \textbf{Cloud DevOps and Cognitive Platform group}.\\
-	Reference: Nagpurkar, Priya $\cdot$
+\Description{Research Intern at \textbf{Cloud DevOps and Cognitive Platform group}
+	under Dr. Nagpurkar, Priya $\cdot$
 	\href{mailto:pnagpurkar@us.ibm.com}{pnagpurkar@us.ibm.com}}
 
 %------------------------------------------------
 
-\NewEntry{2012 -- 2015}{\MarginText{Academia Sinica}Research Assistant, \textsc{Academia Sinica}, Taipei}
+\NewEntry{2012 -- 2015}{\MarginText{Academia\\Sinica}Research Assistant, \textsc{Academia Sinica}, Taipei}
 
 \Description{Research assistant at \textbf{Programming Languages and Formal Methods Group},
-    Institute of Information Science. \\
-    Reference: Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
+    Institute of Information Science
+    with Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
 
 %------------------------------------------------
 
-\NewEntry{2011 -- 2012}{\MarginText{ROC Navy}Secondary Lieutenant}
-
-\Description{Compulsory Military Service at \textbf{Republic of China Navy}}
+\NewEntry{2011 -- 2012}{\MarginText{ROC Navy}Secondary Lieutenant. Compulsory Military Service at \textbf{Republic of China Navy}}
 
 %------------------------------------------------
 
@@ -264,7 +256,7 @@ San Francisco, California, USA, June 2012.
 %	COMPUTER SKILLS
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{software/hardware development skills}\vspace{1em}
+\spacedlowsmallcaps{software/hardware development skills}\vspace{0.5em}
 
 \Description{\MarginText{Familiar With}C/C++ $\cdot$ Python $\cdot$ Git $\cdot$
 Bash $\cdot$ Ubuntu Linux $\cdot$ \LaTeX}
@@ -282,17 +274,19 @@ Subversion}
 %	OTHER INFORMATION
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Other Information}\vspace{1em}
+\spacedlowsmallcaps{Other Information}\vspace{0.5em}
 
 %------------------------------------------------
 
-\vspace{1em}
-
-\Description{\MarginText{Presentations}2020 $\cdot$ 20 min. research paper presentation at OOPSLA 2020}
+\Description{\MarginText{Presentations}2021 $\cdot$ 15 min. presentation for SkyTrakx at ITSC 2021}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
-\Description{2019 $\cdot$ 30 min. research paper presentation at iFM 2019}
+\Description{2020, 2021 $\cdot$ 20 min. presentation for Koord at OOPSLA 2020 and SPLASH 2021}
+
+\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+
+\Description{2019 $\cdot$ 30 min. presentation for Dione at iFM 2019}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
@@ -303,8 +297,6 @@ Subversion}
 \Description{2014 $\cdot$ 20 min. research paper presentation at SAS 2014}
 
 %------------------------------------------------
-
-\vspace{1em}
 
 \newlength{\langbox} % Create a new length for the length of languages to keep them equally spaced
 \settowidth{\langbox}{English} % Length equals the length of "English" - if you have a longer language in your list put it here
@@ -319,11 +311,11 @@ Subversion}
 
 \Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages and light novels)}
 
-\vspace{1em} % Negative vertical space to counteract the vertical space between every \Description command
+\vspace{0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
 %------------------------------------------------
 
-\Description{\MarginText{Interests}Reading novels and manga $\cdot$ Palying Chinese Chess and Mahjong $\cdot$ Playing video games}
+\Description{\MarginText{Interests}Reading novels and manga $\cdot$ Playing Chinese Chess and Mahjong $\cdot$ Playing video games}
 
 %----------------------------------------------------------------------------------------
 
