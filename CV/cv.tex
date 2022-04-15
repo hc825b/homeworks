@@ -30,7 +30,7 @@
 
 \setlength{\marginparsep}{5mm}
 
-\usepackage[letterpaper, top=20mm, bottom=20mm, outer=20mm,inner=35mm]{geometry}
+\usepackage[letterpaper, top=20mm, bottom=20mm, outer=18mm,inner=33mm]{geometry}
 \usepackage[LabelsAligned]{currvita} % Use the currvita style for the layout of the document
 
 \renewcommand{\cvheadingfont}{\LARGE\color{Maroon}} % Font color of your name at the top
@@ -87,11 +87,13 @@
 
 \NewEntry{2015 -- Today}{\MarginText{CS@Illinois}Ph.D. Student}
 
-\Description{\textbf{Programming Language/Formal Methods/Software Engineering (PL/FM/SE)}
-    in Dept. of Computer Science at University of Illinois at Urbana-Champaign\newline
+\Description{\textbf{Reliable Autonomy Group} in \textit{Programming Language/Formal Methods/Software Engineering (PL/FM/SE) area}
+    in Department of Computer Science at University of Illinois at Urbana-Champaign\newline
     Advisor:
-    Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}\newline
-    Previous Advisor: Prof. Xie, Tao $\cdot$ \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}}
+    Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}%
+    % \newline
+    % Previous Advisor: Prof. Xie, Tao $\cdot$ \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}
+}
 
 %------------------------------------------------
 
@@ -123,35 +125,49 @@
 %    PUBLICATIONS
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Publications}\vspace{0.5em}
+\spacedlowsmallcaps{Ongoing Works and Publications}\vspace{0.5em}
 
-\NewEntry{2016-Today}{\MarginText{CS@Illinois}Mitra Research Group in PL/FM/SE area}
+\NewEntry{2016-Today}{\MarginText{CS@Illinois}Reliable Autonomy Group in PL/FM/SE area}
+
+\Description{%
+    \textbf{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions}\newline
+    \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
+    \textit{Under Submission}.
+}
+
+\Description{%
+    \textbf{Verifying Controllers with Convolutional Neural Network-based Perception: A Case for Intelligible, Safe, and Precise Abstractions
+    }\newline
+    \underline{Chiao~Hsieh}, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
+    \textit{arXiv:2111.05534}.
+    \url{https://arxiv.org/abs/2111.05534}
+}
 
 \Description{%
 \textbf{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.}\newline
 \underline{Chiao~Hsieh}, Hussein~Sibai, Hebron~Taylor, Yifeng~Ni, Sayan~Mitra.
-\textit{Proc. 2021 IEEE Intl. Intelligent Transportation Systems Conf. (ITSC 2021)}.
+\textit{Proc. 2021 IEEE Intl. Intelligent Transportation Systems Conf. (ITSC~2021)}.
 \doi{10.1109/ITSC48978.2021.9564492}
 }
 
 \Description{%
 \textbf{Koord: A Language for Programming and Verifying Distributed Robotics Application.}\newline
 Ritwika~Ghosh, \underline{Chiao~Hsieh}, Sasa~Misailovic, Sayan~Mitra.
-\textit{Proc. 2020 ACM SIGPLAN Intl. Conf. on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA 2020)}.
+\textit{Proc. 2020 ACM SIGPLAN Intl. Conf. Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA~2020)}.
 \doi{10.1145/3428300}
 }
 
 \Description{%
 \textbf{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.}\newline
 Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Minghao Jiang, Hebron Taylor, Peter Du, Sayan Mitra, Geir Dullerud.
-\textit{Proc. 2020 IEEE Intl. Conf. on Robotics and Automation (ICRA 2020)},
+\textit{Proc. 2020 IEEE Intl. Conf. Robotics and Automation (ICRA~2020)},
 \doi{10.1109/ICRA40945.2020.9196513}
 }
 
 \Description{%
 \textbf{Dione: A Protocol Verification System Built with Dafny for I/O Automata.}\newline
 \underline{Chiao~Hsieh}, Sayan Mitra.
-\textit{Proc. 15\textsubscript{th} Intl. Conf. on integrated Formal Methods (iFM 2019)}.
+\textit{Proc. 15\textsubscript{th} Intl. Conf. integrated Formal Methods (iFM~2019)}.
 \doi{10.1007/978-3-030-34968-4\_13}
 }
 
@@ -162,21 +178,21 @@ Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Ming
 \Description{%
 \textbf{PAC Learning-Based Verification and Model Synthesis.}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ond\v{r}ej~Leng\'{a}l, Tsung-Ju~Lii, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
-\textit{Proc. 38\textsuperscript{th} Intl. Conf. on Software Engineering (ICSE 2016)}.
+\textit{Proc. 38\textsuperscript{th} Intl. Conf. Software Engineering (ICSE~2016)}.
 \doi{10.1145/2884781.2884860}
 }
 
 \Description{%
 \textbf{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
-\textit{Proc. 21\textsubscript{st} Intl. Conf. on Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2015)}.
+\textit{Proc. 21\textsuperscript{st} Intl. Conf. Tools and Algorithms for the Construction and Analysis of Systems (TACAS~2015)}.
 \doi{10.1007/978-3-662-46681-0\_35}
 }
 
 \Description{%
 \textbf{Verifying Recursive Programs Using Intraprocedural Analyzers.}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
-\textit{Proc. 21\textsuperscript{st} Intl. Static Analysis Symposium (SAS 2014)}.
+\textit{Proc. 21\textsuperscript{st} Intl. Static Analysis Symposium (SAS~2014)}.
 \doi{10.1007/978-3-319-10936-7\_8}
 }
 
@@ -253,6 +269,30 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 \vspace{1em} % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
+%    SERVICES
+%----------------------------------------------------------------------------------------
+
+\spacedlowsmallcaps{Services and Volunteering}\vspace{0.5em}
+
+\Description{2022 $\cdot$ Artifact Evaluation Committee at 2022 European Conf. Object-Oriented Programming~(ECOOP~2022)}
+
+\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+
+\Description{2018 $\cdot$ Graduate Mentor in Promoting Undergraduate Research in Engineering~(PURE) at UIUC}
+
+\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+
+\Description{2017 $\cdot$ Student Volunteer at the 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
+
+\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+
+\Description{2015 $\cdot$ Teaching Assistant at Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015) at NTU}
+
+%------------------------------------------------
+
+\vspace{1em} % Extra space between major sections
+
+%----------------------------------------------------------------------------------------
 %    COMPUTER SKILLS
 %----------------------------------------------------------------------------------------
 
@@ -278,19 +318,19 @@ Subversion}
 
 %------------------------------------------------
 
-\Description{\MarginText{Presentations}2021 $\cdot$ 15 min. presentation for SkyTrakx at ITSC 2021}
+\Description{\MarginText{Presentations}2021 $\cdot$ 15 min. presentation for SkyTrakx at ITSC~2021}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
-\Description{2020, 2021 $\cdot$ 20 min. presentation for Koord at OOPSLA 2020 and SPLASH 2021}
+\Description{2020, 2021 $\cdot$ 20 min. presentation for Koord at OOPSLA~2020 and SPLASH~2021}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
-\Description{2019 $\cdot$ 30 min. presentation for Dione at iFM 2019}
+\Description{2019 $\cdot$ 30 min. presentation for Dione at iFM~2019}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
-\Description{2015 $\cdot$ 5 min. tool paper presentation at TACAS 2015}
+\Description{2015 $\cdot$ 5 min. tool paper presentation at TACAS~2015}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
@@ -309,15 +349,9 @@ Subversion}
 
 \vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
 
-\Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages and light novels)}
-
-\vspace{0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages)}
 
 %------------------------------------------------
-
-\Description{\MarginText{Interests}Reading novels and manga $\cdot$ Playing Chinese Chess and Mahjong $\cdot$ Playing video games}
-
-%----------------------------------------------------------------------------------------
 
 \end{cv}
 \end{CJK}
