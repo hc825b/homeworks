@@ -20,6 +20,8 @@
 
 \documentclass[letterpaper]{scrartcl}
 
+\usepackage{comment}
+
 \reversemarginpar % Move the margin to the left of the page
 
 
@@ -44,9 +46,12 @@
 \newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\small \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
 
-\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.3em}}
+\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.2em}}
  % Define a command for descriptions of each entry - change spacing and font
  % sizes here
+ 
+\newcommand{\newsectsep}{\vspace{0.9em}}
+\newcommand{\reducesep}{\vspace{-0.3em}}
 
 %----------------------------------------------------------------------------------------
 
@@ -68,7 +73,7 @@
 
 %\NewEntry{phone}{(H) +1 (000) 111 1111\ \ $\cdotp$\ \ (M) +1 (000) 111 1112} % Phone number(s)
 
-\vspace{1em} % Extra white space between the personal information section and goal
+\newsectsep % Extra white space between the personal information section and goal
 
 \noindent\spacedlowsmallcaps{Research Interest}\vspace{0.5em} % Goal heading, could be used for a quotation or short profile instead
 
@@ -91,8 +96,6 @@
     in Department of Computer Science at University of Illinois at Urbana-Champaign\newline
     Advisor:
     Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}%
-    % \newline
-    % Previous Advisor: Prof. Xie, Tao $\cdot$ \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}
 }
 
 %------------------------------------------------
@@ -118,7 +121,7 @@
 
 %------------------------------------------------
 
-\vspace{1em} % Extra space between major sections
+\newsectsep % Extra space between major sections
 
 
 %----------------------------------------------------------------------------------------
@@ -132,7 +135,20 @@
 \Description{%
     \textbf{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions}\newline
     \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
-    \textit{Under Submission}.
+    \textit{To appear in 2022 Intl. Conf. Embedded Software (EMSOFT~2022)}.
+}
+
+\Description{%
+    \textbf{Industry-track: Challenges in Rebooting Autonomy with Deep Learned Perception}\newline
+    Michael Abraham, Aaron Mayne, Tristan Perez, Italo Romani De Oliveira, Huafeng Yu,
+    \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, and Sayan~Mitra.
+    \textit{To appear in 2022 Embedded Systems Week (ESWEEK~2022)}.
+}
+
+\Description{%
+    \textbf{Programming Abstractions for Simulation and Testing on Smart Manufacturing Systems}\newline
+    \underline{Chiao~Hsieh}, Daniel Wu, Yubin Koh, Sayan~Mitra.
+    \textit{Proc. 18\textsubscript{th} Intl. Conf. Automation Science and Engineering (CASE~2022)}.
 }
 
 \Description{%
@@ -209,7 +225,7 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 %------------------------------------------------
 
-\vspace{1em} % Extra space between major sections
+\newsectsep % Extra space between major sections
 
 
 %----------------------------------------------------------------------------------------
@@ -248,7 +264,7 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern, \textsc{IBM Research}, New York}
 
-\Description{Research Intern at \textbf{Cloud DevOps and Cognitive Platform group} under\newline
+\Description{Research Intern at \textbf{Cloud DevOps and Cognitive Platform group} under
     Dr. Nagpurkar, Priya $\cdot$
     \href{mailto:pnagpurkar@us.ibm.com}{pnagpurkar@us.ibm.com}}
 
@@ -266,7 +282,7 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 %------------------------------------------------
 
-\vspace{1em} % Extra space between major sections
+\newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    SERVICES
@@ -274,23 +290,27 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \spacedlowsmallcaps{Services and Volunteering}\vspace{0.5em}
 
+\Description{2022 $\cdot$ Student Volunteer at 34\textsuperscript{th} Intl. Conf. Computer Aided Verification~(CAV~2022)}
+
+\reducesep
+
 \Description{2022 $\cdot$ Artifact Evaluation Committee at 2022 European Conf. Object-Oriented Programming~(ECOOP~2022)}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2018 $\cdot$ Graduate Mentor in Promoting Undergraduate Research in Engineering~(PURE) at UIUC}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
-\Description{2017 $\cdot$ Student Volunteer at the 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
+\Description{2017 $\cdot$ Student Volunteer at 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2015 $\cdot$ Teaching Assistant at Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015) at NTU}
 
 %------------------------------------------------
 
-\vspace{1em} % Extra space between major sections
+\newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    COMPUTER SKILLS
@@ -308,7 +328,7 @@ Subversion}
 
 %------------------------------------------------
 
-\vspace{1em} % Extra space between major sections
+\newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    OTHER INFORMATION
@@ -317,24 +337,26 @@ Subversion}
 \spacedlowsmallcaps{Other Information}\vspace{0.5em}
 
 %------------------------------------------------
-
+\begin{comment}
 \Description{\MarginText{Presentations}2021 $\cdot$ 15 min. presentation for SkyTrakx at ITSC~2021}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2020, 2021 $\cdot$ 20 min. presentation for Koord at OOPSLA~2020 and SPLASH~2021}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2019 $\cdot$ 30 min. presentation for Dione at iFM~2019}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2015 $\cdot$ 5 min. tool paper presentation at TACAS~2015}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{2014 $\cdot$ 20 min. research paper presentation at SAS 2014}
+
+\end{comment}
 
 %------------------------------------------------
 
@@ -343,11 +365,11 @@ Subversion}
 
 \Description{\MarginText{Languages}\parbox{\langbox}{\textsc{Chinese}} $\cdot$ Mother tongue}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{\parbox{\langbox}{\textsc{English}} $\cdot$ Professionally Fluent}
 
-\vspace{-0.5em} % Negative vertical space to counteract the vertical space between every \Description command
+\reducesep
 
 \Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages)}
 
