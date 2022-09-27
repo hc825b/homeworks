@@ -46,12 +46,16 @@
 \newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\small \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
 
-\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.2em}}
+\newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.3em}}
  % Define a command for descriptions of each entry - change spacing and font
  % sizes here
  
 \newcommand{\newsectsep}{\vspace{0.9em}}
 \newcommand{\reducesep}{\vspace{-0.3em}}
+
+\newcommand{\papertitle}[1]{{``#1''}}
+
+\newcounter{papers}
 
 %----------------------------------------------------------------------------------------
 
@@ -92,7 +96,7 @@
 
 \NewEntry{2015 -- Today}{\MarginText{CS@Illinois}Ph.D. Student}
 
-\Description{\textbf{Reliable Autonomy Group} in \textit{Programming Language/Formal Methods/Software Engineering (PL/FM/SE) area}
+\Description{\textbf{Reliable Autonomy Group} in Programming Language/Formal Methods/Software Engineering (PL/FM/SE) area
     in Department of Computer Science at University of Illinois at Urbana-Champaign\newline
     Advisor:
     Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}%
@@ -104,7 +108,7 @@
 
 \Description{\textbf{Verification Automation \& Software Testing Lab}
     in Graduate Institute of Electronics Engineering at National Taiwan University\newline
-    Thesis: \textit{Verifying Recursive Programs Using Intraprocedural Analyzers}\newline
+    Thesis: \papertitle{Verifying Recursive Programs Using Intraprocedural Analyzers}\newline
     Advisors:
     Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw},
     Prof. Wang, Farn $\cdot$ \href{mailto:farn@ntu.edu.tw}{farn@ntu.edu.tw}
@@ -116,7 +120,7 @@
 
 \Description{\textbf{Design Verification Lab}
     in Department of Electrical Engineering at National Taiwan University\newline
-    Projects: \textit{Symbolic model checking on SystemC designs} with
+    Projects: \papertitle{Symbolic model checking on SystemC designs} with
     Prof. Huang, Chung-Yang $\cdot$ \href{mailto:cyhuang@ntu.edu.tw}{cyhuang@ntu.edu.tw}}
 
 %------------------------------------------------
@@ -130,58 +134,64 @@
 
 \spacedlowsmallcaps{Ongoing Works and Publications}\vspace{0.5em}
 
-\NewEntry{2016-Today}{\MarginText{CS@Illinois}Reliable Autonomy Group in PL/FM/SE area}
+\NewEntry{2019-Today}{\MarginText{CS@Illinois}\textbf{Reliable Autonomy Group} in PL/FM/SE area}
 
-\Description{%
-    \textbf{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+    \papertitle{Assuring Safety of Vision-based Formation Control}\newline
+    \underline{Chiao~Hsieh}, Yangge~Li, Yubin Koh, Sayan~Mitra.
+    \textit{Submitted to 2023 Intl. Conf. Robotics and Automation (ICRA~2023)}.
+}
+
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+    \papertitle{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions}\newline
     \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
     \textit{To appear in 2022 Intl. Conf. Embedded Software (EMSOFT~2022)}.
 }
 
-\Description{%
-    \textbf{Industry-track: Challenges in Rebooting Autonomy with Deep Learned Perception}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+    \papertitle{Industry-track: Challenges in Rebooting Autonomy with Deep Learned Perception}\newline
     Michael Abraham, Aaron Mayne, Tristan Perez, Italo Romani De Oliveira, Huafeng Yu,
     \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, and Sayan~Mitra.
     \textit{To appear in 2022 Embedded Systems Week (ESWEEK~2022)}.
 }
 
-\Description{%
-    \textbf{Programming Abstractions for Simulation and Testing on Smart Manufacturing Systems}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+    \papertitle{Programming Abstractions for Simulation and Testing on Smart Manufacturing Systems}\newline
     \underline{Chiao~Hsieh}, Daniel Wu, Yubin Koh, Sayan~Mitra.
     \textit{Proc. 18\textsubscript{th} Intl. Conf. Automation Science and Engineering (CASE~2022)}.
 }
 
-\Description{%
-    \textbf{Verifying Controllers with Convolutional Neural Network-based Perception: A Case for Intelligible, Safe, and Precise Abstractions
-    }\newline
-    \underline{Chiao~Hsieh}, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
-    \textit{arXiv:2111.05534}.
-    \url{https://arxiv.org/abs/2111.05534}
-}
-
-\Description{%
-\textbf{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.}\newline
 \underline{Chiao~Hsieh}, Hussein~Sibai, Hebron~Taylor, Yifeng~Ni, Sayan~Mitra.
 \textit{Proc. 2021 IEEE Intl. Intelligent Transportation Systems Conf. (ITSC~2021)}.
 \doi{10.1109/ITSC48978.2021.9564492}
 }
 
-\Description{%
-\textbf{Koord: A Language for Programming and Verifying Distributed Robotics Application.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{Koord: A Language for Programming and Verifying Distributed Robotics Application.}\newline
 Ritwika~Ghosh, \underline{Chiao~Hsieh}, Sasa~Misailovic, Sayan~Mitra.
 \textit{Proc. 2020 ACM SIGPLAN Intl. Conf. Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA~2020)}.
 \doi{10.1145/3428300}
 }
 
-\Description{%
-\textbf{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.}\newline
 Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Minghao Jiang, Hebron Taylor, Peter Du, Sayan Mitra, Geir Dullerud.
 \textit{Proc. 2020 IEEE Intl. Conf. Robotics and Automation (ICRA~2020)},
 \doi{10.1109/ICRA40945.2020.9196513}
 }
 
-\Description{%
-\textbf{Dione: A Protocol Verification System Built with Dafny for I/O Automata.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{Dione: A Protocol Verification System Built with Dafny for I/O Automata.}\newline
 \underline{Chiao~Hsieh}, Sayan Mitra.
 \textit{Proc. 15\textsubscript{th} Intl. Conf. integrated Formal Methods (iFM~2019)}.
 \doi{10.1007/978-3-030-34968-4\_13}
@@ -189,24 +199,27 @@ Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Ming
 
 %------------------------------------------------
 
-\NewEntry{2013-2016}{\MarginText{Academia\\Sinica}Programming Languages and Formal Methods Group}
+\NewEntry{2014-2016}{\MarginText{Academia\\Sinica}\textbf{Programming Languages and Formal Methods Group}}
 
-\Description{%
-\textbf{PAC Learning-Based Verification and Model Synthesis.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{PAC Learning-Based Verification and Model Synthesis.}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ond\v{r}ej~Leng\'{a}l, Tsung-Ju~Lii, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 38\textsuperscript{th} Intl. Conf. Software Engineering (ICSE~2016)}.
 \doi{10.1145/2884781.2884860}
 }
 
-\Description{%
-\textbf{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsuperscript{st} Intl. Conf. Tools and Algorithms for the Construction and Analysis of Systems (TACAS~2015)}.
 \doi{10.1007/978-3-662-46681-0\_35}
 }
 
-\Description{%
-\textbf{Verifying Recursive Programs Using Intraprocedural Analyzers.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{Verifying Recursive Programs Using Intraprocedural Analyzers.}\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsuperscript{st} Intl. Static Analysis Symposium (SAS~2014)}.
 \doi{10.1007/978-3-319-10936-7\_8}
@@ -214,10 +227,11 @@ Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 
 %------------------------------------------------
 
-\NewEntry{June 2012}{\MarginText{NTU EE}Design Verification Lab}
+\NewEntry{June 2012}{\MarginText{NTU EE}\textbf{Design Verification Lab}}
 
-\Description{%
-\textbf{Symbolic model checking on SystemC designs.}\newline
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+\papertitle{Symbolic model checking on SystemC designs.}\newline
 Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 \textit{Proc. 49\textsuperscript{th} Annual Design Automation Conf. (DAC 2012)}.
 \doi{10.1145/2228360.2228421}
@@ -227,6 +241,31 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \newsectsep % Extra space between major sections
 
+%----------------------------------------------------------------------------------------
+%    TEACHING EXPERIENCE
+%----------------------------------------------------------------------------------------
+
+\noindent\spacedlowsmallcaps{Teaching Experience}\vspace{0.5em}
+
+\NewEntry{Spring 2018}{\MarginText{CS@Illinois}TA for CS 421 Programming Languages and Compilers}
+
+\Description{%
+    Prof. Beckman, Mattox $\cdot$
+    \href{mailto:mattox@illinois.edu}{mattox@illinois.edu}}
+
+\NewEntry{Fall 2017}{TA for CS 527 Topics in Software Engineering}
+
+\Description{%
+    Prof. Marinov, Darko $\cdot$
+    \href{mailto:marinov@illinois.edu}{marinov@illinois.edu}}
+
+\NewEntry{Summer 2015}{\MarginText{NTU} TA for Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015)}
+
+\Description{%
+    Prof. Chen, Yu-Fang $\cdot$
+    \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
+
+\newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    WORK EXPERIENCE
@@ -234,51 +273,24 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \noindent\spacedlowsmallcaps{Work Experience}\vspace{0.5em}
 
-\NewEntry{2018 -- today}{\MarginText{ITI@Illinois}Research Assistant, UIUC, Urbana-Champaign}
-
-\Description{Graduate Research Assistant at \textbf{Information Trust Institute} in Coordinated Science Laboratory with\newline
-    Prof. Mitra, Sayan $\cdot$
-    \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}}
-
 %------------------------------------------------
 
-\NewEntry{2017 -- 2018}{\MarginText{CS@Illinois}Teaching Assistant, \textsc{UIUC}, Urbana-Champaign}
+\NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern at IBM Research, New York}
 
-\Description{Teaching Assistant for following courses in Department of Computer Science.\newline
-    SP18 CS 421 Programming Languages and Compilers by
-    Prof. Beckman, Mattox $\cdot$
-    \href{mailto:mattox@illinois.edu}{mattox@illinois.edu}\newline
-    FA17 CS 527 Topics in Software Engineering by 
-    Prof. Marinov, Darko $\cdot$
-    \href{mailto:marinov@illinois.edu}{marinov@illinois.edu}}
-
-%------------------------------------------------
-
-\NewEntry{2015 -- 2016}{\MarginText{CS@Illinois}Research Assistant, \textsc{UIUC}, Urbana-Champaign}
-
-\Description{Research Assistant at \textbf{PL/FM/SE}, Department of Computer Science with
-    Prof. Xie, Tao $\cdot$
-    \href{mailto:taoxie@illinois.edu}{taoxie@illinois.edu}}
-
-%------------------------------------------------
-
-\NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern, \textsc{IBM Research}, New York}
-
-\Description{Research Intern at \textbf{Cloud DevOps and Cognitive Platform group} under
+\Description{\textbf{Cloud DevOps and Cognitive Platform group},
     Dr. Nagpurkar, Priya $\cdot$
     \href{mailto:pnagpurkar@us.ibm.com}{pnagpurkar@us.ibm.com}}
 
 %------------------------------------------------
 
-\NewEntry{2012 -- 2015}{\MarginText{Academia\\Sinica}Research Assistant, \textsc{Academia Sinica}, Taipei}
+\NewEntry{2012 -- 2013}{\MarginText{Academia\\Sinica}Research Assistant at Institute of Information Science, Academia Sinica, Taipei}
 
-\Description{Research assistant at \textbf{Programming Languages and Formal Methods Group},
-    Institute of Information Science
-    with Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
+\Description{\textbf{Programming Languages and Formal Methods Group},
+    Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
 
 %------------------------------------------------
 
-\NewEntry{2011 -- 2012}{\MarginText{ROC Navy}Secondary Lieutenant. Compulsory Military Service at \textbf{Republic of China Navy}}
+\NewEntry{2011 -- 2012}{\MarginText{ROC Navy}Secondary Lieutenant. Compulsory Military Service at Republic of China Navy}
 
 %------------------------------------------------
 
@@ -304,9 +316,6 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \Description{2017 $\cdot$ Student Volunteer at 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
 
-\reducesep
-
-\Description{2015 $\cdot$ Teaching Assistant at Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015) at NTU}
 
 %------------------------------------------------
 
