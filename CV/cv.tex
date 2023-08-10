@@ -18,7 +18,7 @@
 %    PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[letterpaper]{scrartcl}
+\documentclass[letterpaper, UTF8]{scrartcl}
 
 \usepackage{comment}
 
@@ -58,8 +58,7 @@
 \newcounter{papers}
 
 %----------------------------------------------------------------------------------------
-
-\usepackage{CJKutf8}
+\usepackage{ctex}
 
 \begin{document}
 
@@ -68,13 +67,13 @@
 %----------------------------------------------------------------------------------------
 %    NAME AND CONTACT INFORMATION SECTION
 %----------------------------------------------------------------------------------------
-\begin{CJK}{UTF8}{bkai}
+\begin{CJK}{UTF8}{kai}
 
-\begin{cv}{謝~橋~Hsieh, Chiao}\vspace{1em} % Your name
+\begin{cv}{謝~橋/Hsieh, Chiao/シェ~チャオ}\vspace{1em} % Your name
 
 % Email address and Personal website
 \Description{%
-Email: \href{mailto:chsieh16@illinois.edu}{chsieh16@illinois.edu} $\cdot$
+Email: \href{mailto:hsieh.chiao.7k@kyoto-u.ac.jp}{hsieh.chiao.7k@kyoto-u.ac.jp} $\cdot$
 LinkedIn: \url{https://linkedin.com/in/hc825b} $\cdot$
 Website: \url{https://hc825b.github.io}
 }
@@ -101,7 +100,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \spacedlowsmallcaps{Education}\vspace{0.5em}
 
-\NewEntry{2015 -- Today}{\MarginText{CS@Illinois}Ph.D. Student}
+\NewEntry{2015 -- 2023}{\MarginText{CS@Illinois} Doctor of Philosophy}
 
 \Description{\textbf{Reliable Autonomy Group} in Programming Language/Formal Methods/Software Engineering (PL/FM/SE) area
     in Department of Computer Science at University of Illinois at Urbana-Champaign\newline
@@ -112,7 +111,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 %------------------------------------------------
 
-\NewEntry{2013 -- 2015}{\MarginText{NTU GIEE}Master of Science}
+\NewEntry{2013 -- 2015}{\MarginText{臺大電子所}Master of Science}
 
 \Description{\textbf{Verification Automation \& Software Testing Lab}
     in Graduate Institute of Electronics Engineering at National Taiwan University\newline
@@ -124,7 +123,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 %------------------------------------------------
 
-\NewEntry{2007 -- 2011}{\MarginText{NTU EE}Bachelor of Science}
+\NewEntry{2007 -- 2011}{\MarginText{臺大電機系}Bachelor of Science}
 
 \Description{\textbf{Design Verification Lab}
     in Department of Electrical Engineering at National Taiwan University\newline
@@ -135,20 +134,65 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \newsectsep % Extra space between major sections
 
+%----------------------------------------------------------------------------------------
+%    WORK EXPERIENCES
+%----------------------------------------------------------------------------------------
+
+\spacedlowsmallcaps{Work Experiences}\vspace{0.5em}
+
+\NewEntry{2023 -- Today}{\MarginText{京都大学\\情報学研究科} Postdoc at Graduate School of Informatics, Kyoto University}
+
+\Description{\textbf{Computer Software Group},
+    Prof. Suenaga, Kohei $\cdot$ \href{mailto:ksuenaga@fos.kuis.kyoto-u.ac.jp}{ksuenaga@fos.kuis.kyoto-u.ac.jp}}
+
+\NewEntry{2018 -- 2023}{\MarginText{CSL@Illinois} Graduate Research Assistant at Coordinated Science Laboratory, UIUC}
+
+\Description{\textbf{Reliable Autonomy Group},
+	Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}}
+
+\NewEntry{2017 --- 2018}{\MarginText{CS@Illinois} Teaching Assistant at Department of Computer Science, UIUC}
+
+\Description{\textbf{CS 527}
+    Prof. Marinov, Darko $\cdot$ \href{mailto:marinov@illinois.edu}{marinov@illinois.edu},
+    \textbf{CS 421} Prof. Beckman, Mattox $\cdot$ \href{mailto:mattox@illinois.edu}{mattox@illinois.edu}}
+
+\NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern at IBM Research, New York}
+
+\Description{\textbf{Cloud DevOps and Cognitive Platform group},
+	Dr. Nagpurkar, Priya $\cdot$
+	\href{mailto:pnagpurkar@us.ibm.com}{pnagpurkar@us.ibm.com}}
+
+
+\NewEntry{2015 -- 2017}{\MarginText{CS@Illinois} Research Assistant at Department of Computer Science, UIUC}
+
+\Description{\textbf{Automated Software Engineering Group},
+	Prof. Xie, Tao $\cdot$ \href{mailto:mitras@illinois.edu}{taoxie@pku.edu.cn}}
+
+%------------------------------------------------
+
+\NewEntry{2012 -- 2015}{\MarginText{中研院資訊所}Research Assistant at Institute of Information Science, Academia Sinica, Taipei}
+
+\Description{\textbf{Programming Languages and Formal Methods Group},
+	Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
+
+%------------------------------------------------
+
+\NewEntry{2011 -- 2012}{\MarginText{海軍}Secondary Lieutenant. Compulsory Military Service at Republic of China Navy}
+\newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    PUBLICATIONS
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Ongoing Works and Publications}\vspace{0.5em}
+\spacedlowsmallcaps{Ongoing Research and Publications}\vspace{0.5em}
 
-\NewEntry{2019-Today}{\MarginText{CS@Illinois}\textbf{Reliable Autonomy Group} in PL/FM/SE area}
+\NewEntry{2018-Today}{\MarginText{CS@Illinois}\textbf{Reliable Autonomy Group} in PL/FM/SE area}
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
     \papertitle{Assuring Safety of Vision-based Swarm Formation Control}\newline
     \underline{Chiao~Hsieh}, Yangge~Li, Yubin Koh, Sayan~Mitra.
-    \textit{Submitted to 2023 Intl. Conf. Robotics and Automation (ICRA~2023)}.
+    \textit{arXiv preprint}. \doi{10.48550/arXiv.2210.00982}
 }
 
 \stepcounter{papers}
@@ -208,9 +252,8 @@ Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Ming
 }
 
 %------------------------------------------------
-\pagebreak
 
-\NewEntry{2014-2016}{\MarginText{Academia\\Sinica}\textbf{Programming Languages and Formal Methods Group}}
+\NewEntry{2014-2016}{\MarginText{中研院資訊所}\textbf{Programming Languages and Formal Methods Group}}
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
@@ -238,7 +281,7 @@ Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 
 %------------------------------------------------
 
-\NewEntry{June 2012}{\MarginText{NTU EE}\textbf{Design Verification Lab}}
+\NewEntry{June 2012}{\MarginText{臺大電機系}\textbf{Design Verification Lab}}
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
@@ -247,6 +290,22 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 \textit{Proc. 49\textsuperscript{th} Annual Design Automation Conf. (DAC 2012)}.
 \doi{10.1145/2228360.2228421}
 }
+
+%------------------------------------------------
+
+\newsectsep % Extra space between major sections
+
+%----------------------------------------------------------------------------------------
+%    COMPUTER SKILLS
+%----------------------------------------------------------------------------------------
+
+\spacedlowsmallcaps{software/hardware development skills}\vspace{0.5em}
+
+\Description{\MarginText{Familiar With}C/C++ $\cdot$ Python $\cdot$ Git $\cdot$
+	Bash $\cdot$ Ubuntu Linux $\cdot$ \LaTeX $\cdot$ Dafny $\cdot$ Robot Operating System $\cdot$ Gazebo simulator $\cdot$
+	Subversion $\cdot$ AirSim simulator}
+
+% \Description{\MarginText{Basic}Haskell $\cdot$ K Semantic Framework}
 
 %------------------------------------------------
 
@@ -273,41 +332,12 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
     \href{mailto:marinov@illinois.edu}{marinov@illinois.edu}}
 
 
-\NewEntry{Summer 2015}{\MarginText{NTU} TA for Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015)}
+\NewEntry{Summer 2015}{\MarginText{臺大} TA for Formosan Summer School on Logic, Language, and Computation~(FLOLAC~2015)}
 \reducesep
 
 \Description{%
     Prof. Chen, Yu-Fang $\cdot$
     \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
-
-\newsectsep % Extra space between major sections
-
-%----------------------------------------------------------------------------------------
-%    WORK EXPERIENCE
-%----------------------------------------------------------------------------------------
-
-\noindent\spacedlowsmallcaps{Work Experience}\vspace{0.5em}
-
-%------------------------------------------------
-
-\NewEntry{Summer 2016}{\MarginText{IBM Research}Research Intern at IBM Research, New York}
-
-\Description{\textbf{Cloud DevOps and Cognitive Platform group},
-    Dr. Nagpurkar, Priya $\cdot$
-    \href{mailto:pnagpurkar@us.ibm.com}{pnagpurkar@us.ibm.com}}
-
-%------------------------------------------------
-
-\NewEntry{2012 -- 2013}{\MarginText{Academia\\Sinica}Research Assistant at Institute of Information Science, Academia Sinica, Taipei}
-
-\Description{\textbf{Programming Languages and Formal Methods Group},
-    Prof. Chen, Yu-Fang $\cdot$ \href{mailto:yfc@iis.sinica.edu.tw}{yfc@iis.sinica.edu.tw}}
-
-%------------------------------------------------
-
-\NewEntry{2011 -- 2012}{\MarginText{ROC Navy}Secondary Lieutenant. Compulsory Military Service at Republic of China Navy}
-
-%------------------------------------------------
 
 \newsectsep % Extra space between major sections
 
@@ -334,34 +364,15 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 %------------------------------------------------
 
-\newsectsep % Extra space between major sections
-
-%----------------------------------------------------------------------------------------
-%    COMPUTER SKILLS
-%----------------------------------------------------------------------------------------
-
-\spacedlowsmallcaps{software/hardware development skills}\vspace{0.5em}
-
-\Description{\MarginText{Familiar With}C/C++ $\cdot$ Python $\cdot$ Git $\cdot$
-Bash $\cdot$ Ubuntu Linux $\cdot$ \LaTeX}
-
-\Description{\MarginText{Intermediate}Dafny $\cdot$ Robot Operating System $\cdot$ Gazebo simulator $\cdot$
-Subversion $\cdot$ AirSim simulator}
-
-\Description{\MarginText{Basic}Haskell $\cdot$ K Semantic Framework}
-
-%------------------------------------------------
-
-\newsectsep % Extra space between major sections
+% \newsectsep % Extra space between major sections
 
 %----------------------------------------------------------------------------------------
 %    OTHER INFORMATION
 %----------------------------------------------------------------------------------------
-
+\begin{comment}
 \spacedlowsmallcaps{Other Information}\vspace{0.5em}
 
 %------------------------------------------------
-\begin{comment}
 \Description{\MarginText{Presentations}2021 $\cdot$ 15 min. presentation for SkyTrakx at ITSC~2021}
 
 \reducesep
@@ -380,7 +391,7 @@ Subversion $\cdot$ AirSim simulator}
 
 \Description{2014 $\cdot$ 20 min. research paper presentation at SAS 2014}
 
-\end{comment}
+
 
 %------------------------------------------------
 
@@ -396,7 +407,7 @@ Subversion $\cdot$ AirSim simulator}
 \reducesep
 
 \Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages)}
-
+\end{comment}
 %------------------------------------------------
 
 \end{cv}
