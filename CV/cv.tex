@@ -19,7 +19,6 @@
 %----------------------------------------------------------------------------------------
 
 \documentclass[letterpaper, UTF8]{scrartcl}
-
 \usepackage{comment}
 
 \reversemarginpar % Move the margin to the left of the page
@@ -32,7 +31,7 @@
 
 \setlength{\marginparsep}{5mm}
 
-\usepackage[letterpaper, top=20mm, bottom=20mm, outer=18mm,inner=33mm]{geometry}
+\usepackage[letterpaper, top=20mm, bottom=20mm, outer=18mm,inner=28mm]{geometry}
 \usepackage[LabelsAligned]{currvita} % Use the currvita style for the layout of the document
 
 \renewcommand{\cvheadingfont}{\LARGE\color{Maroon}} % Font color of your name at the top
@@ -40,12 +39,13 @@
 \usepackage{doi}
 \usepackage{hyperref} % Required for adding links    and customizing them
 \hypersetup{colorlinks, breaklinks, urlcolor=Maroon, linkcolor=Maroon} % Set link colors
+\usepackage{soul}
 
 \date{}
 
-\newlength{\datebox}\settowidth{\datebox}{Spring 2011} % Set the width of the date box in each block
+\newlength{\datebox}\settowidth{\datebox}{2011--Now} % Set the width of the date box in each block
 
-\newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\small \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
+\newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\footnotesize \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
 
 \newcommand{\Description}[1]{\hangindent=0em\hangafter=0\noindent\raggedright\footnotesize{#1}\par\normalsize\vspace{0.3em}}
@@ -54,13 +54,15 @@
  
 \newcommand{\newsectsep}{\vspace{0.9em}}
 \newcommand{\reducesep}{\vspace{-0.3em}}
-
+\sethlcolor{lightgray}
+\newcommand{\reviewed}{\hl{Peer-reviewed}}
 \newcommand{\papertitle}[1]{{``#1''}}
 
 \newcounter{papers}
 
 %----------------------------------------------------------------------------------------
 \usepackage{ctex}
+
 
 \begin{document}
 
@@ -102,7 +104,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \spacedlowsmallcaps{Ongoing Research Projects}\vspace{0.5em}
 
-\NewEntry{FY 2024 -- 2025}{\MarginText{科研費\\KAKENHI}\papertitle{Safety Verification of Black Box Cyber-Physical Systems via Lyapunov Stability Certificates}
+\NewEntry{2024 -- 2025}{\MarginText{科研費\\KAKENHI}\papertitle{Safety Verification of Black Box Cyber-Physical Systems via Lyapunov Stability Certificates}
 
 \Description{%
 	Category: JSPS Grant-in-Aid for Research Activity Start-Up (Grant \# \href{https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-24K23861}{24K23861})}
@@ -153,7 +155,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \spacedlowsmallcaps{Work Experiences}\vspace{0.5em}
 
-\NewEntry{2023 -- Today}{\MarginText{京都大学\\情報学研究科} Postdoc in \textbf{Computer Software Group} at Graduate School of Informatics, Kyoto University}
+\NewEntry{2023 -- Today}{\MarginText{京都大学\\情報学研究科} Project-specific researcher in \textbf{Computer Software Group} at Graduate School of Informatics, Kyoto University}
 
 \Description{%\textbf{Computer Software Group},
 %    Prof. Suenaga, Kohei $\cdot$ \href{mailto:ksuenaga@fos.kuis.kyoto-u.ac.jp}{ksuenaga@fos.kuis.kyoto-u.ac.jp}
@@ -232,16 +234,16 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-    \papertitle{Perception Contracts for Safety of ML-Enabled Systems}\newline
+    \papertitle{Perception Contracts for Safety of ML-Enabled Systems} \reviewed\newline
     Angello~Astorga*, \underline{Chiao~Hsieh}*, P.~Madhusudan, Sayan~Mitra.
     \textit{Proc. ACM on Programming Languages (PACMPL), vol. 7, iss. OOPSLA2, Article No. 232, Oct. 2023}. \doi{10.1145/3622875}\newline
-    *Equal contributions as co-first authors.\newline
+    *Equal contributions as co-first authors. 
     \textreferencemark This paper is accepted by OOPSLA, a CORE rank ``A" conference.
 }
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-    \papertitle{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions}\newline
+    \papertitle{Verifying Controllers with Vision-based Perception using Safe Approximate Abstractions} \reviewed\newline
     \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, Keyur~Joshi, Sasa~Misailovic, Sayan~Mitra.
     \textit{IEEE Trans. Computer-Aided Design of Integrated Circuits and Systems (TCAD), vol. 41, no. 11, Nov. 2022}. \doi{10.1109/TCAD.2022.3197508}\newline
     \textreferencemark This paper is accepted by EMSOFT, a CORE rank ``A" conference.
@@ -249,10 +251,10 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-    \papertitle{Koord: A Language for Programming and Verifying Distributed Robotics Application.}\newline
+    \papertitle{Koord: A Language for Programming and Verifying Distributed Robotics Application.} \reviewed\newline
     Ritwika~Ghosh, \underline{Chiao~Hsieh}, Sasa~Misailovic, Sayan~Mitra.
     \textit{Proc. ACM on Programming Languages (PACMPL), vol. 4, iss. OOPSLA, Article No. 232, Nov. 2020}.
-    \doi{10.1145/3428300}\newline
+    \doi{10.1145/3428300} \newline
     \textreferencemark This paper is accepted by OOPSLA, a CORE rank ``A" conference.
 }
 
@@ -262,21 +264,23 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-	\papertitle{GAS: Generating Fast and Accurate Surrogate Models for Autonomous Vehicle Systems}\newline
+	\papertitle{GAS: Generating Fast and Accurate Surrogate Models for Autonomous Vehicle Systems} \reviewed\newline
 	Keyur~Joshi, \underline{Chiao~Hsieh}, Sayan~Mitra, Sasa~Misailovic.
-	\textit{To appear in 35\textsuperscript{th} Intl. Symp. Software Reliability Engineering (ISSRE~2024)}. preprint \doi{10.48550/arXiv.2208.02232}
+	\textit{Proc. 2024 IEEE 35\textsuperscript{th} Intl. Symp. Software Reliability Engineering (ISSRE~2024)}.
+    \doi{10.1109/ISSRE62328.2024.00033}
+    \textreferencemark ISSRE is a CORE rank ``A" conference.
 }
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-	\papertitle{Assuring Safety of Vision-based Swarm Formation Control}\newline
+	\papertitle{Assuring Safety of Vision-based Swarm Formation Control} \reviewed\newline
 	\underline{Chiao~Hsieh}, Yangge~Li, Yubin Koh, Sayan~Mitra.
 	\textit{Proc. 2024 American Control Conf. (ACC~2024)}. \doi{10.23919/ACC60939.2024.10644491}
 }
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-    \papertitle{Industry-track: Challenges in Rebooting Autonomy with Deep Learned Perception}\newline
+    \papertitle{Industry-track: Challenges in Rebooting Autonomy with Deep Learned Perception} \reviewed\newline
     Michael Abraham, Aaron Mayne, Tristan Perez, Italo Romani De Oliveira, Huafeng Yu,
     \underline{Chiao~Hsieh}, Yangge~Li, Dawei~Sun, and Sayan~Mitra.
     \textit{Proc. 2022 Intl. Conf. Embedded Software (EMSOFT~2022)}.
@@ -285,7 +289,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-    \papertitle{Programming Abstractions for Simulation and Testing on Smart Manufacturing Systems}\newline
+    \papertitle{Programming Abstractions for Simulation and Testing on Smart Manufacturing Systems} \reviewed\newline
     \underline{Chiao~Hsieh}, Daniel Wu, Yubin Koh, Sayan~Mitra.
     \textit{Proc. 18\textsuperscript{th} Intl. Conf. Automation Science and Engineering (CASE~2022)}.
     \doi{10.1109/CASE49997.2022.9926564}
@@ -293,7 +297,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.}\newline
+\papertitle{SkyTrakx: A Toolkit for Simulation and Verification of Unmanned Air-Traffic Management Systems.} \reviewed\newline
 \underline{Chiao~Hsieh}, Hussein~Sibai, Hebron~Taylor, Yifeng~Ni, Sayan~Mitra.
 \textit{Proc. 2021 IEEE Intl. Intelligent Transportation Systems Conf. (ITSC~2021)}.
 \doi{10.1109/ITSC48978.2021.9564492}
@@ -301,15 +305,16 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.}\newline
+\papertitle{CyPhyHouse: A Programming, Simulation, and Deployment Toolchain for Heterogeneous Distributed Coordination.} \reviewed\newline
 Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Minghao Jiang, Hebron Taylor, Peter Du, Sayan Mitra, Geir Dullerud.
 \textit{Proc. 2020 IEEE Intl. Conf. Robotics and Automation (ICRA~2020)},
 \doi{10.1109/ICRA40945.2020.9196513}
+\textreferencemark ICRA is a CORE rank ``A*" conference.
 }
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{Dione: A Protocol Verification System Built with Dafny for I/O Automata.}\newline
+\papertitle{Dione: A Protocol Verification System Built with Dafny for I/O Automata.} \reviewed\newline
 \underline{Chiao~Hsieh}, Sayan Mitra.
 \textit{Proc. 15\textsuperscript{th} Intl. Conf. integrated Formal Methods (iFM~2019)}.
 \doi{10.1007/978-3-030-34968-4\_13}
@@ -319,15 +324,15 @@ Ritwika Ghosh, Joao~P. Jansch-Porto, \underline{Chiao Hsieh}, Amelia Gosse, Ming
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{PAC Learning-Based Verification and Model Synthesis.}\newline
+\papertitle{PAC Learning-Based Verification and Model Synthesis.} \reviewed\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ond\v{r}ej~Leng\'{a}l, Tsung-Ju~Lii, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 38\textsuperscript{th} Intl. Conf. Software Engineering (ICSE~2016)}.
-\doi{10.1145/2884781.2884860}
+\doi{10.1145/2884781.2884860} \textreferencemark ICSE is a CORE rank ``A*" conference.
 }
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).}\newline
+\papertitle{CPArec: Verifying Recursive Programs via Source-to-Source Program Transformation - (Competition Contribution).} \reviewed\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsuperscript{st} Intl. Conf. Tools and Algorithms for the Construction and Analysis of Systems (TACAS~2015)}.
 \doi{10.1007/978-3-662-46681-0\_35}
@@ -335,7 +340,7 @@ Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{Verifying Recursive Programs Using Intraprocedural Analyzers.}\newline
+\papertitle{Verifying Recursive Programs Using Intraprocedural Analyzers.} \reviewed\newline
 Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 \textit{Proc. 21\textsuperscript{st} Intl. Static Analysis Symposium (SAS~2014)}.
 \doi{10.1007/978-3-319-10936-7\_8}
@@ -345,7 +350,7 @@ Yu-Fang~Chen, \underline{Chiao~Hsieh}, Ming-Hsien~Tsai, Bow-Yaw~Wang, Farn~Wang.
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
-\papertitle{Symbolic model checking on SystemC designs.}\newline
+\papertitle{Symbolic model checking on SystemC designs.} \reviewed\newline
 Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 \textit{Proc. 49\textsuperscript{th} Annual Design Automation Conf. (DAC 2012)}.
 \doi{10.1145/2228360.2228421}
