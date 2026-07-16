@@ -1,3 +1,5 @@
+% !TeX program = xelatex
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Classicthesis-Styled CV
 % LaTeX Template
@@ -21,6 +23,10 @@
 \documentclass[a4paper, UTF8]{scrartcl}
 \usepackage{comment}
 
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{DFKai-SB}
+
 \reversemarginpar % Move the margin to the left of the page
 
 
@@ -43,7 +49,7 @@
 
 \date{}
 
-\newlength{\datebox}\settowidth{\datebox}{2011--Now} % Set the width of the date box in each block
+\newlength{\datebox}\settowidth{\datebox}{FY 2011--2013} % Set the width of the date box in each block
 
 \newcommand{\NewEntry}[3]{\noindent\hangindent=0em\hangafter=0 \parbox{\datebox}{\footnotesize \textit{#1}} {\small #2} #3 % Define a command for each new block - change spacing and font sizes here: #1 is the left margin, #2 is the italic date field and #3 is the position/employer/location field
 \vspace{0.3em}} % Add some white space after each new entry
@@ -60,9 +66,6 @@
 
 \newcounter{papers}
 
-%----------------------------------------------------------------------------------------
-\usepackage{ctex}
-
 
 \begin{document}
 
@@ -71,13 +74,12 @@
 %----------------------------------------------------------------------------------------
 %    NAME AND CONTACT INFORMATION SECTION
 %----------------------------------------------------------------------------------------
-\begin{CJK}{UTF8}{kai}
 
 \begin{cv}{謝~橋/Hsieh, Chiao/シェ~チャオ}\vspace{1em} % Your name
 
 % Email address and Personal website
 \Description{%
-Email: \href{mailto:hsieh.chiao.7k@kyoto-u.ac.jp}{hsieh.chiao.7k@kyoto-u.ac.jp} $\cdot$
+Email: \href{mailto:hsieh@jaist.ac.jp}{hsieh@jaist.ac.jp} $\cdot$
 LinkedIn: \url{https://linkedin.com/in/hc825b} $\cdot$
 Website: \url{https://hc825b.github.io}
 }
@@ -102,15 +104,15 @@ In particular, I have been studying systems with vision-based perception, blackb
 %    GRANTS
 %----------------------------------------------------------------------------------------
 
-\spacedlowsmallcaps{Research Projects}\vspace{0.5em}
+\spacedlowsmallcaps{Competitive Research Funds}\vspace{0.5em}
 
-\NewEntry{FY 2026 -- 2028}{\MarginText{科研費\\若手研究}\papertitle{Trustworthy Cyber-Physical Systems via Contracts for AI-Enabled Perception}
+\NewEntry{FY 2026--2028}{\MarginText{科研費\\若手研究}\papertitle{Trustworthy Cyber-Physical Systems via Contracts for AI-Enabled Perception}
 
 \Description{%
 	Category: JSPS Grant-in-Aid for Early-Career Scientists (Grant \# \href{https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-26K21195}{26K21195})}
 }
 
-\NewEntry{FY 2024 -- 2025}{\MarginText{科研費\\研スタート}\papertitle{Safety Verification of Black Box Cyber-Physical Systems via Lyapunov Stability Certificates}
+\NewEntry{FY 2024--2025}{\MarginText{科研費\\研スタート}\papertitle{Safety Verification of Black Box Cyber-Physical Systems via Lyapunov Stability Certificates}
 	
 	\Description{%
 		Category: JSPS Grant-in-Aid for Research Activity Start-Up (Grant \# \href{https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-24K23861}{24K23861})}
@@ -175,7 +177,7 @@ In particular, I have been studying systems with vision-based perception, blackb
 %    Prof. Suenaga, Kohei $\cdot$ \href{mailto:ksuenaga@fos.kuis.kyoto-u.ac.jp}{ksuenaga@fos.kuis.kyoto-u.ac.jp}
 }
 
-\NewEntry{2018 -- 2023}{\MarginText{CSL@Illinois} Graduate Research Assistant in \textbf{Reliable Autonomy Group} at Coordinated Science Laboratory, UIUC}
+\NewEntry{2018 -- 2023}{\MarginText{CSL@Illinois} Graduate RA in \textbf{Reliable Autonomy Group} at Coordinated Science Laboratory, UIUC}
 
 %\Description{%\textbf{Reliable Autonomy Group},
 %	Prof. Mitra, Sayan $\cdot$ \href{mailto:mitras@illinois.edu}{mitras@illinois.edu}
@@ -250,6 +252,13 @@ In particular, I have been studying systems with vision-based perception, blackb
 
 
 \spacedlowsmallcaps{Conference Publications}\vspace{0.5em}
+
+\stepcounter{papers}
+\Description{\MarginText{\thepapers}%
+	\papertitle{Evaluating Hybrid Automata Learning Tools Based on Their Success in Formal Verification} \reviewed\newline
+	Niklas~Kochdumper, \underline{Chiao~Hsieh}, Hadi~Dayekh, Amit~Gurung, Hidekazu~Segawa, Thao~Dang, Masaki~Waga, Kohei~Suenaga
+	\textit{Proc. 34\textsuperscript{th} Mediterranean Conf. Control and Automation (MED~2026)}.
+}
 
 \stepcounter{papers}
 \Description{\MarginText{\thepapers}%
@@ -359,31 +368,40 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \spacedlowsmallcaps{Services and Volunteering}\vspace{0.5em}
 
-\Description{2025 $\cdot$ Artifact Evaluation Committee at 23\textsuperscript{rd} Intl. Symp. Automated Technology for Verification and Analysis~(ATVA~2025)}
+\Description{\MarginText{2026}%
+Review Committee at 2026 ACM Intl. Conf. Object-Oriented Programming, Systems, Languages \& Applications}
 
 \reducesep
 
-\Description{2025 $\cdot$ Artifact Evaluation Committee at 31\textsuperscript{st} Intl. Symp. Model Checking Software~(SPIN~2025)}
+\Description{Artifact Evaluation Committee at 27\textsuperscript{th} Intl. Symp. Formal Methods~(FM 2026)}
 
 \reducesep
 
-\Description{2024 $\cdot$ Fast Abstracts Track Committee at 35\textsuperscript{th} Intl. Symp. Software Reliability Engineering~(ISSRE~2024)}
+\Description{\MarginText{2025}%
+Artifact Evaluation Committee at 23\textsuperscript{rd} Intl. Symp. Automated Technology for Verification and Analysis~(ATVA~2025)}
 
 \reducesep
 
-\Description{2022 $\cdot$ Artifact Evaluation Committee at 2022 European Conf. Object-Oriented Programming~(ECOOP~2022)}
+\Description{Artifact Evaluation Committee at 31\textsuperscript{st} Intl. Symp. Model Checking Software~(SPIN~2025)}
 
 \reducesep
 
-\Description{2022 $\cdot$ Student Volunteer at 34\textsuperscript{th} Intl. Conf. Computer Aided Verification~(CAV~2022)}
+\Description{\MarginText{2024}%
+Fast Abstracts Track Committee at 35\textsuperscript{th} Intl. Symp. Software Reliability Engineering~(ISSRE~2024)}
 
 \reducesep
 
-\Description{2018 $\cdot$ Graduate Mentor in Promoting Undergraduate Research in Engineering~(PURE) at UIUC}
+\Description{\MarginText{2022}%
+Artifact Evaluation Committee at 2022 European Conf. Object-Oriented Programming~(ECOOP~2022)}
 
 \reducesep
 
-\Description{2017 $\cdot$ Student Volunteer at 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
+\Description{Student Volunteer at 34\textsuperscript{th} Intl. Conf. Computer Aided Verification~(CAV~2022)}
+
+\reducesep
+
+\Description{\MarginText{2017}%
+Student Volunteer at 32\textsuperscript{nd} Intl. Conf. Automated Software Engineering~(ASE~2017)}
 
 
 
@@ -445,7 +463,7 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 %----------------------------------------------------------------------------------------
 %    OTHER INFORMATION
 %----------------------------------------------------------------------------------------
-\begin{comment}
+
 \spacedlowsmallcaps{Other Information}\vspace{0.5em}
 
 %------------------------------------------------
@@ -468,7 +486,6 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 \Description{2014 $\cdot$ 20 min. research paper presentation at SAS 2014}
 
 
-
 %------------------------------------------------
 
 \newlength{\langbox} % Create a new length for the length of languages to keep them equally spaced
@@ -482,11 +499,9 @@ Chun-Nan~Chou, Yen-Sheng~Ho, \underline{Chiao~Hsieh}, Chung-Yang (Ric) Huang.
 
 \reducesep
 
-\Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Basic (can read news passages)}
-\end{comment}
+\Description{\parbox{\langbox}{\textsc{Japanese}} $\cdot$ Limited Working Proficiency (can have conversations and reply emails without AI assistance)}
 %------------------------------------------------
 
 \end{cv}
-\end{CJK}
 
 \end{document}
